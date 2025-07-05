@@ -15,34 +15,38 @@ function FloatingTestimonials() {
     { text: "Spart Nerven und Zeit", author: "David K." }
   ];
   
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
+  const [visibleTestimonials, setVisibleTestimonials] = useState([0, 1, 2]);
   
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsVisible(false);
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-        setIsVisible(true);
-      }, 500);
-    }, 3000);
+      setVisibleTestimonials(prev => {
+        const nextStart = (prev[0] + 3) % testimonials.length;
+        return [nextStart, (nextStart + 1) % testimonials.length, (nextStart + 2) % testimonials.length];
+      });
+    }, 4000);
     
     return () => clearInterval(interval);
   }, [testimonials.length]);
   
   return (
-    <div className="absolute right-8 top-1/2 transform -translate-y-1/2 w-64">
-      <div className={`transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-x-0 scale-100' : 'opacity-0 translate-x-8 scale-95'}`}>
-        <div className="bg-white/95 backdrop-blur-md p-5 rounded-xl shadow-2xl border border-white/30 hover:shadow-3xl transition-all duration-300">
-          <div className="flex items-start space-x-3">
-            <div className="text-primary text-2xl">💬</div>
-            <div>
-              <p className="text-sm text-foreground mb-2 italic font-medium">"{testimonials[currentIndex].text}"</p>
-              <p className="text-xs text-muted-foreground font-semibold">- {testimonials[currentIndex].author}</p>
+    <div className="absolute right-8 top-1/4 transform -translate-y-1/2 w-80 space-y-4">
+      {visibleTestimonials.map((index, i) => (
+        <div 
+          key={`${index}-${i}`}
+          className="animate-fade-in transition-all duration-700 ease-out"
+          style={{ animationDelay: `${i * 200}ms` }}
+        >
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-xl shadow-2xl border border-white/30 hover:shadow-3xl transition-all duration-300 hover:scale-105">
+            <div className="flex items-start space-x-3">
+              <div className="text-primary text-xl">💬</div>
+              <div>
+                <p className="text-sm text-foreground mb-2 italic font-medium">"{testimonials[index].text}"</p>
+                <p className="text-xs text-muted-foreground font-semibold">- {testimonials[index].author}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 }
@@ -85,16 +89,18 @@ const Hero = () => {
         <div className="absolute inset-0 bg-black/30"></div>
       </div>
 
-      {/* Content - Centered */}
-      <div className="relative z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-        {/* Main Heading */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-8 animate-fade-in">
-          Automatisierte<br />
-          Arbeitsstundennachweise
-        </h1>
+      {/* Content - Header oben, Buttons Mitte */}
+      <div className="relative z-10 flex flex-col items-center h-full">
+        {/* Main Heading - Weiter oben */}
+        <div className="mt-24 mb-auto">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight text-center animate-fade-in">
+            Automatisierte<br />
+            Arbeitsstundennachweise
+          </h1>
+        </div>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        {/* CTA Buttons - In der Mitte */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-auto">
           <button className="bg-white border-2 border-white text-foreground font-medium px-8 py-4 text-lg rounded-full hover:bg-foreground hover:text-white transition-all duration-200 shadow-lg">
             Jetzt starten
           </button>
