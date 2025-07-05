@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import laptopCentered from "@/assets/laptop-centered.jpg";
+import heroLaptop from "@/assets/hero-laptop.jpg";
 
 // Floating Math Symbols Component
 function FloatingMathSymbols() {
@@ -32,8 +32,8 @@ const Hero = () => {
       {/* Centered Laptop Background */}
       <div className="absolute inset-0 z-0">
         <img 
-          src={laptopCentered} 
-          alt="Zentrierter Laptop mit Excel"
+          src={heroLaptop} 
+          alt="Laptop auf Schreibtisch im Studio"
           className="w-full h-full object-cover"
         />
         {/* Light Overlay */}
