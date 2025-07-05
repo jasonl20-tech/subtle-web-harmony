@@ -27,16 +27,21 @@ function FloatingTestimonials() {
     
     return () => clearInterval(interval);
   }, [testimonials.length]);
+
+  const handleTestimonialClick = (clickedIndex: number) => {
+    setVisibleTestimonials(prev => prev.filter((_, i) => i !== clickedIndex));
+  };
   
   return (
     <div className="absolute bottom-8 right-8 w-80 space-y-3">
       {visibleTestimonials.map((index, i) => (
         <div 
           key={`${index}-${i}`}
-          className="animate-fade-in transition-all duration-700 ease-out"
+          className="animate-fade-in transition-all duration-700 ease-out cursor-pointer"
           style={{ animationDelay: `${i * 200}ms` }}
+          onClick={() => handleTestimonialClick(i)}
         >
-          <div className="bg-white/95 backdrop-blur-md p-4 rounded-xl shadow-2xl border border-white/30 hover:shadow-3xl transition-all duration-300 hover:scale-105">
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-xl shadow-2xl border border-white/30 hover:shadow-3xl transition-all duration-300 hover:scale-105 hover:bg-white">
             <div className="flex items-start space-x-3">
               <div className="text-primary text-xl">💬</div>
               <div>
