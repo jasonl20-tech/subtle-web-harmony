@@ -363,23 +363,21 @@ All colors MUST be HSL.
     border-radius: var(--radius);
   }
   
-  /* Floating Animation for Math Symbols */
-  @keyframes float {
-    0% {
-      transform: translateY(0px);
-      opacity: 0;
-    }
-    20% {
-      opacity: 1;
-    }
-    80% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-300px);
-      opacity: 0;
-    }
-  }
+      /* Float Animation for Company Logos */
+      @keyframes float {
+        0%, 100% {
+          transform: translateY(0px) translateX(0px);
+        }
+        25% {
+          transform: translateY(-15px) translateX(5px);
+        }
+        50% {
+          transform: translateY(-10px) translateX(-8px);
+        }
+        75% {
+          transform: translateY(-20px) translateX(3px);
+        }
+      }
   
   .animate-float {
     animation: float linear infinite;

@@ -89,108 +89,153 @@ function FloatingDashboardCards() {
   );
 }
 
-// Smartphone Mockup Component
-function SmartphoneMockup() {
+// Desktop Mockup Component with Animated Excel
+function DesktopMockup() {
+  const [currentRow, setCurrentRow] = useState(1);
+  const [excelData, setExcelData] = useState([
+    { date: "01.07.2025", start: "08:00", end: "16:30", break: "00:30", hours: "8.0", status: "Erfasst" },
+    { date: "02.07.2025", start: "08:15", end: "17:00", break: "00:45", hours: "8.0", status: "Bearbeitung..." },
+    { date: "03.07.2025", start: "07:45", end: "16:15", break: "00:30", hours: "8.0", status: "Warten..." },
+    { date: "04.07.2025", start: "08:30", end: "17:30", break: "01:00", hours: "8.0", status: "Warten..." },
+    { date: "05.07.2025", start: "08:00", end: "16:00", break: "00:30", hours: "7.5", status: "Warten..." }
+  ]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentRow(prev => (prev % excelData.length) + 1);
+      
+      // Update status animation
+      setExcelData(prevData => 
+        prevData.map((row, index) => {
+          if (index === currentRow - 1) {
+            return { ...row, status: "Bearbeitung..." };
+          } else if (index < currentRow - 1) {
+            return { ...row, status: "Erfasst" };
+          }
+          return { ...row, status: "Warten..." };
+        })
+      );
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [currentRow, excelData.length]);
+
   return (
-    <div className="absolute top-24 right-32 z-10">
-      <div className="w-72 h-[580px] bg-gray-900 rounded-[3rem] p-2 shadow-2xl">
-        <div className="w-full h-full bg-white rounded-[2.5rem] overflow-hidden">
-          {/* Status Bar */}
-          <div className="bg-gray-50 h-12 flex items-center justify-between px-6 text-sm">
-            <span className="font-medium">9:41</span>
-            <div className="flex space-x-1">
-              <div className="w-4 h-2 bg-green-500 rounded-sm"></div>
-              <div className="w-6 h-2 bg-gray-300 rounded-sm"></div>
-            </div>
-          </div>
-          
-          {/* Payment Form */}
-          <div className="p-6 space-y-4">
-            <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Zahlung</h3>
-              <p className="text-2xl font-bold text-blue-600">€9,99</p>
-              <p className="text-sm text-gray-500">pro Monat</p>
-            </div>
-            
-            {/* Apple Pay Button */}
-            <button className="w-full bg-black text-white py-4 rounded-xl font-medium flex items-center justify-center space-x-2">
-              <span>🍎</span>
-              <span>Pay</span>
-            </button>
-            
-            <div className="flex items-center space-x-2 my-4">
-              <div className="flex-1 h-px bg-gray-200"></div>
-              <span className="text-sm text-gray-500">oder mit Karte bezahlen</span>
-              <div className="flex-1 h-px bg-gray-200"></div>
-            </div>
-            
-            {/* Card Form */}
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">E-Mail</label>
-                <input
-                  type="email"
-                  className="w-full p-3 border border-gray-200 rounded-lg text-sm"
-                  placeholder="kunde@beispiel.de"
-                />
+    <div className="absolute top-16 right-20 z-10">
+      {/* Desktop Monitor */}
+      <div className="relative">
+        {/* Monitor Screen */}
+        <div className="w-96 h-72 bg-gray-900 rounded-t-2xl p-1 shadow-2xl">
+          <div className="w-full h-full bg-white rounded-t-xl overflow-hidden">
+            {/* Excel Interface */}
+            <div className="h-full flex flex-col">
+              {/* Excel Toolbar */}
+              <div className="bg-gray-50 px-3 py-2 border-b border-gray-200 flex items-center space-x-2">
+                <div className="flex space-x-1">
+                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                </div>
+                <div className="flex-1 text-center">
+                  <span className="text-xs font-medium text-gray-700">Arbeitsstunden_Juli_2025.xlsx</span>
+                </div>
               </div>
-              
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">Kartendaten</label>
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    className="flex-1 p-3 border border-gray-200 rounded-lg text-sm"
-                    placeholder="1234 1234 1234 1234"
-                  />
-                  <div className="flex space-x-1">
-                    <span className="text-blue-600 text-lg">💳</span>
-                    <span className="text-yellow-500 text-lg">💳</span>
+
+              {/* Excel Header */}
+              <div className="bg-green-600 text-white text-xs font-bold px-2 py-1">
+                <div className="grid grid-cols-6 gap-1">
+                  <div>Datum</div>
+                  <div>Start</div>
+                  <div>Ende</div>
+                  <div>Pause</div>
+                  <div>Stunden</div>
+                  <div>Status</div>
+                </div>
+              </div>
+
+              {/* Excel Data Rows */}
+              <div className="flex-1 overflow-hidden">
+                {excelData.map((row, index) => (
+                  <div 
+                    key={index}
+                    className={`grid grid-cols-6 gap-1 px-2 py-1 text-xs border-b border-gray-200 transition-all duration-500 ${
+                      index === currentRow - 1 ? 'bg-blue-100 border-blue-300' : 'bg-white'
+                    }`}
+                  >
+                    <div className="font-medium">{row.date}</div>
+                    <div>{row.start}</div>
+                    <div>{row.end}</div>
+                    <div>{row.break}</div>
+                    <div className="font-bold text-green-600">{row.hours}h</div>
+                    <div className={`font-medium ${
+                      row.status === 'Erfasst' ? 'text-green-600' :
+                      row.status === 'Bearbeitung...' ? 'text-blue-600 animate-pulse' :
+                      'text-gray-400'
+                    }`}>
+                      {row.status}
+                    </div>
                   </div>
-                </div>
-                <div className="flex space-x-2 mt-2">
-                  <input
-                    type="text"
-                    className="flex-1 p-3 border border-gray-200 rounded-lg text-sm"
-                    placeholder="MM/JJ"
-                  />
-                  <input
-                    type="text"
-                    className="flex-1 p-3 border border-gray-200 rounded-lg text-sm"
-                    placeholder="CVC"
-                  />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-sm text-gray-600 mb-1">Land/Region</label>
-                  <select className="w-full p-3 border border-gray-200 rounded-lg text-sm">
-                    <option>Deutschland</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-600 mb-1">PLZ</label>
-                  <input
-                    type="text"
-                    className="w-full p-3 border border-gray-200 rounded-lg text-sm"
-                    placeholder="12345"
-                  />
+                ))}
+                
+                {/* Sum Row */}
+                <div className="grid grid-cols-6 gap-1 px-2 py-1 text-xs bg-gray-100 border-t-2 border-gray-300 font-bold">
+                  <div className="col-span-4">Gesamt:</div>
+                  <div className="text-green-700">39.5h</div>
+                  <div className="text-green-600">✓</div>
                 </div>
               </div>
             </div>
-            
-            <button className="w-full bg-blue-600 text-white py-4 rounded-xl font-medium mt-6">
-              Zahlen
-            </button>
           </div>
         </div>
+        
+        {/* Monitor Stand */}
+        <div className="w-32 h-8 bg-gray-300 mx-auto rounded-b-lg"></div>
+        <div className="w-48 h-3 bg-gray-400 mx-auto rounded-full"></div>
       </div>
     </div>
   );
 }
 
-// Tankstellen Logos Component
+// Floating Company Logos Component
+function FloatingCompanyLogos() {
+  const companies = [
+    { name: "Shell", color: "#FFCF00", textColor: "#000" },
+    { name: "Aral", color: "#0066CC", textColor: "#FFF" },
+    { name: "Jet", color: "#E31E24", textColor: "#FFF" },
+    { name: "Agip", color: "#FFD700", textColor: "#000" },
+    { name: "Esso", color: "#FF0000", textColor: "#FFF" }
+  ];
+
+  return (
+    <div className="absolute inset-0 pointer-events-none z-5">
+      {companies.map((company, index) => (
+        <div
+          key={company.name}
+          className="absolute animate-pulse"
+          style={{
+            left: `${15 + index * 18}%`,
+            top: `${20 + (index % 2) * 40}%`,
+            animationDelay: `${index * 0.8}s`,
+            animationDuration: `${4 + index}s`
+          }}
+        >
+          <div 
+            className="w-16 h-16 rounded-2xl flex items-center justify-center text-xs font-bold shadow-lg transition-all duration-1000 hover:scale-110"
+            style={{ 
+              backgroundColor: company.color,
+              color: company.textColor,
+              animation: `float ${6 + index}s ease-in-out infinite`
+            }}
+          >
+            {company.name}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Tankstellen Logos Component (static at bottom)
 function TankstellenLogos() {
   const tankstellen = [
     { name: "Shell", color: "#FFCF00" },
@@ -364,11 +409,14 @@ const Hero = () => {
 
             {/* Right Content - Visualizations */}
             <div className="relative lg:h-[600px]">
-              {/* Smartphone Mockup */}
-              <SmartphoneMockup />
+              {/* Desktop Mockup */}
+              <DesktopMockup />
               
               {/* Floating Dashboard Cards */}
               <FloatingDashboardCards />
+              
+              {/* Floating Company Logos */}
+              <FloatingCompanyLogos />
             </div>
           </div>
         </div>
