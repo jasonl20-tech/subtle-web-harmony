@@ -121,12 +121,12 @@ function DesktopMockup() {
   }, [currentRow, excelData.length]);
 
   return (
-    <div className="absolute top-16 right-20 z-10">
+    <div className="absolute top-8 -right-32 z-10 animate-slide-in-right">
       {/* Desktop Monitor */}
       <div className="relative">
         {/* Monitor Screen */}
-        <div className="w-96 h-72 bg-gray-900 rounded-t-2xl p-1 shadow-2xl">
-          <div className="w-full h-full bg-white rounded-t-xl overflow-hidden">
+        <div className="w-[600px] h-[400px] bg-gray-900 rounded-t-3xl p-2 shadow-2xl">
+          <div className="w-full h-full bg-white rounded-t-2xl overflow-hidden">
             {/* Excel Interface */}
             <div className="h-full flex flex-col">
               {/* Excel Toolbar */}
@@ -189,8 +189,8 @@ function DesktopMockup() {
         </div>
         
         {/* Monitor Stand */}
-        <div className="w-32 h-8 bg-gray-300 mx-auto rounded-b-lg"></div>
-        <div className="w-48 h-3 bg-gray-400 mx-auto rounded-full"></div>
+        <div className="w-48 h-12 bg-gray-300 mx-auto rounded-b-xl"></div>
+        <div className="w-64 h-4 bg-gray-400 mx-auto rounded-full"></div>
       </div>
     </div>
   );
@@ -411,9 +411,6 @@ const Hero = () => {
             <div className="relative lg:h-[600px]">
               {/* Desktop Mockup */}
               <DesktopMockup />
-              
-              {/* Floating Dashboard Cards */}
-              <FloatingDashboardCards />
               
               {/* Floating Company Logos */}
               <FloatingCompanyLogos />
