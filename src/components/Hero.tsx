@@ -29,7 +29,7 @@ function FloatingTestimonials() {
   }, [testimonials.length]);
   
   return (
-    <div className="absolute right-8 top-1/4 transform -translate-y-1/2 w-80 space-y-4">
+    <div className="absolute bottom-8 right-8 w-80 space-y-3">
       {visibleTestimonials.map((index, i) => (
         <div 
           key={`${index}-${i}`}
