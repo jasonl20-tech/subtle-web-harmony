@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import heroLaptop from "@/assets/hero-laptop.jpg";
+import heroLaptop from "@/assets/laptop-excel.jpg";
 import { ArrowDown } from "lucide-react";
 
 // Floating Testimonials Component  
@@ -70,27 +70,27 @@ const Hero = () => {
       <div className="absolute inset-0 z-0">
         <img 
           src={heroLaptop} 
-          alt="Laptop auf Schreibtisch im Studio"
+          alt="Laptop mit Excel Tabelle"
           className="w-full h-full object-cover"
         />
-        {/* Light Overlay */}
-        <div className="absolute inset-0 bg-white/10"></div>
+        {/* Darker Overlay */}
+        <div className="absolute inset-0 bg-black/30"></div>
       </div>
 
       {/* Content - Upper Left */}
-      <div className="relative z-10 absolute top-16 left-8 lg:left-16">
+      <div className="relative z-10 absolute top-32 left-8 lg:left-16">
         {/* Main Heading */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-8">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-8">
           Automatisierte<br />
           Arbeitsstundennachweise
         </h1>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4">
-          <button className="bg-white border-2 border-foreground text-foreground font-medium px-8 py-4 text-lg rounded-full hover:bg-foreground hover:text-white transition-all duration-200 shadow-lg">
+          <button className="bg-white border-2 border-white text-foreground font-medium px-8 py-4 text-lg rounded-full hover:bg-foreground hover:text-white transition-all duration-200 shadow-lg">
             Jetzt starten
           </button>
-          <button className="bg-transparent border-2 border-foreground text-foreground font-medium px-8 py-4 text-lg rounded-full hover:bg-foreground hover:text-white transition-all duration-200">
+          <button className="bg-transparent border-2 border-white text-white font-medium px-8 py-4 text-lg rounded-full hover:bg-white hover:text-foreground transition-all duration-200">
             Demo ansehen
           </button>
         </div>
@@ -99,8 +99,8 @@ const Hero = () => {
       {/* Scroll Down Animation */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
         <div className="flex flex-col items-center animate-bounce">
-          <span className="text-foreground/60 text-sm mb-2">Mehr erfahren</span>
-          <ArrowDown className="w-6 h-6 text-foreground/60" />
+          <span className="text-white/60 text-sm mb-2">Mehr erfahren</span>
+          <ArrowDown className="w-6 h-6 text-white/60" />
         </div>
       </div>
 
