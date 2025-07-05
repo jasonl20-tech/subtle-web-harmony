@@ -20,7 +20,12 @@ const Header = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Links - Website Name */}
           <div className="flex items-center">
-            <span className="font-bold text-xl text-gray-900">ARBEITSSTUNDENNACHWEISE</span>
+            <Link 
+              to="/"
+              className="font-bold text-xl text-gray-900 hover:text-primary transition-colors duration-200"
+            >
+              ARBEITSSTUNDENNACHWEISE
+            </Link>
           </div>
 
           {/* Mitte - Navigation */}

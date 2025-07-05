@@ -11,6 +11,7 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          api_key: string
           created_at: string
           email: string | null
           full_name: string | null
@@ -19,6 +20,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          api_key?: string
           created_at?: string
           email?: string | null
           full_name?: string | null
@@ -27,6 +29,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          api_key?: string
           created_at?: string
           email?: string | null
           full_name?: string | null
@@ -35,6 +38,54 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      reports: {
+        Row: {
+          api_key: string
+          created_at: string
+          download_url: string
+          file_type: string | null
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          api_key: string
+          created_at?: string
+          download_url: string
+          file_type?: string | null
+          id?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          api_key?: string
+          created_at?: string
+          download_url?: string
+          file_type?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_api_key_fkey"
+            columns: ["api_key"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["api_key"]
+          },
+          {
+            foreignKeyName: "reports_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
     }
     Views: {

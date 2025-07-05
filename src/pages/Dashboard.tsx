@@ -8,8 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Upload, FileText, LogOut, Plus, X } from 'lucide-react';
+import { Upload, FileText, LogOut, Plus, X, Download, Calendar, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -24,6 +25,8 @@ const Dashboard = () => {
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedBundesland, setSelectedBundesland] = useState('');
   const [rules, setRules] = useState(['']);
+  const [userApiKey, setUserApiKey] = useState<string>('');
+  const [reports, setReports] = useState<any[]>([]);
 
   const months = [
     { value: '01', label: 'Januar' },
@@ -88,6 +91,41 @@ const Dashboard = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  const fetchUserData = async () => {
+    if (!user) return;
+    
+    try {
+      // Get user profile with API key
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('api_key')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (profileError) {
+        console.error('Profile error:', profileError);
+        return;
+      }
+      
+      if (profile?.api_key) {
+        setUserApiKey(profile.api_key);
+        
+        // Fetch user reports
+        const { data: reportsData, error: reportsError } = await supabase
+          .from('reports')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+        
+        if (!reportsError && reportsData) {
+          setReports(reportsData);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
@@ -97,6 +135,7 @@ const Dashboard = () => {
       formData.append('year', selectedYear);
       formData.append('bundesland', selectedBundesland);
       formData.append('rules', JSON.stringify(rules.filter(rule => rule.trim())));
+      formData.append('api_key', userApiKey);
       
       // Add files
       if (stundenplanFile) {
@@ -116,6 +155,13 @@ const Dashboard = () => {
           title: "Erfolgreich gesendet",
           description: "Ihre Daten wurden erfolgreich verarbeitet.",
         });
+        // Reset form
+        setStundenplanFile(null);
+        setGesamtstundenFile(null);
+        setSelectedMonth('');
+        setSelectedYear('');
+        setSelectedBundesland('');
+        setRules(['']);
       } else {
         throw new Error('Upload failed');
       }
@@ -131,6 +177,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
+    } else if (user) {
+      fetchUserData();
     }
   }, [user, loading, navigate]);
 
@@ -167,93 +215,122 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <Header />
 
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section */}
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+            Willkommen zurück!
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            Verwalten Sie Ihre Arbeitsstundennachweise einfach und effizient
+          </p>
+        </div>
+
         <Tabs defaultValue="upload" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
-            <TabsTrigger value="upload" className="flex items-center space-x-2">
+          <TabsList className="grid w-full grid-cols-2 max-w-lg mx-auto mb-8 bg-card/50 backdrop-blur-sm">
+            <TabsTrigger value="upload" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Upload className="w-4 h-4" />
-              <span>Upload</span>
+              <span className="hidden sm:inline">Upload</span>
             </TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center space-x-2">
+            <TabsTrigger value="reports" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <FileText className="w-4 h-4" />
-              <span>Berichte</span>
+              <span className="hidden sm:inline">Berichte</span>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="upload" className="mt-8">
-            <Card className="max-w-2xl mx-auto">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Upload className="w-5 h-5" />
+            <Card className="max-w-4xl mx-auto shadow-lg border-0 bg-card/50 backdrop-blur-sm">
+              <CardHeader className="text-center pb-8">
+                <CardTitle className="flex items-center justify-center space-x-3 text-2xl">
+                  <Upload className="w-6 h-6 text-primary" />
                   <span>Dateien hochladen</span>
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-lg mt-2">
                   Laden Sie Ihre Stundendaten hoch und lassen Sie sie automatisch verarbeiten
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-8">
                 {/* Upload Sections */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   {/* Stundenplan Upload */}
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <Label className="text-base font-medium">Stundenplan</Label>
+                      <Label className="text-lg font-semibold flex items-center space-x-2">
+                        <Calendar className="w-5 h-5 text-primary" />
+                        <span>Stundenplan</span>
+                      </Label>
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => downloadTemplate('stundenplan')}
+                        className="flex items-center space-x-2"
                       >
-                        Download Template
+                        <Download className="w-4 h-4" />
+                        <span>Template</span>
                       </Button>
                     </div>
-                    <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-4 text-center">
-                      <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
-                      <p className="text-sm text-muted-foreground mb-2">Stundenplan hier ablegen</p>
+                    <div className="border-2 border-dashed border-primary/20 hover:border-primary/40 transition-colors rounded-xl p-6 text-center bg-gradient-to-b from-card to-card/50">
+                      <Upload className="w-12 h-12 mx-auto text-primary mb-3" />
+                      <p className="text-sm text-muted-foreground mb-3">Stundenplan hier ablegen oder durchsuchen</p>
                       <Input
                         type="file"
                         accept=".xlsx,.xls,.csv"
                         onChange={(e) => setStundenplanFile(e.target.files?.[0] || null)}
-                        className="text-sm"
+                        className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
                       />
+                      {stundenplanFile && (
+                        <p className="text-sm text-primary mt-2">✓ {stundenplanFile.name}</p>
+                      )}
                     </div>
                   </div>
 
                   {/* Gesamtstundenübersicht Upload */}
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <Label className="text-base font-medium">Gesamtstundenübersicht</Label>
+                      <Label className="text-lg font-semibold flex items-center space-x-2">
+                        <FileText className="w-5 h-5 text-primary" />
+                        <span>Gesamtstundenübersicht</span>
+                      </Label>
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => downloadTemplate('gesamtstunden')}
+                        className="flex items-center space-x-2"
                       >
-                        Download Template
+                        <Download className="w-4 h-4" />
+                        <span>Template</span>
                       </Button>
                     </div>
-                    <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-4 text-center">
-                      <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
-                      <p className="text-sm text-muted-foreground mb-2">Gesamtstunden hier ablegen</p>
+                    <div className="border-2 border-dashed border-primary/20 hover:border-primary/40 transition-colors rounded-xl p-6 text-center bg-gradient-to-b from-card to-card/50">
+                      <Upload className="w-12 h-12 mx-auto text-primary mb-3" />
+                      <p className="text-sm text-muted-foreground mb-3">Gesamtstunden hier ablegen oder durchsuchen</p>
                       <Input
                         type="file"
                         accept=".xlsx,.xls,.csv"
                         onChange={(e) => setGesamtstundenFile(e.target.files?.[0] || null)}
-                        className="text-sm"
+                        className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
                       />
+                      {gesamtstundenFile && (
+                        <p className="text-sm text-primary mt-2">✓ {gesamtstundenFile.name}</p>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {/* Month and Year Selection */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Monat</Label>
+                {/* Month, Year and Bundesland Selection */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="space-y-3">
+                    <Label className="text-base font-medium flex items-center space-x-2">
+                      <Calendar className="w-4 h-4 text-primary" />
+                      <span>Monat</span>
+                    </Label>
                     <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-12 bg-card/50">
                         <SelectValue placeholder="Monat auswählen" />
                       </SelectTrigger>
                       <SelectContent>
@@ -265,10 +342,13 @@ const Dashboard = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Jahr</Label>
+                  <div className="space-y-3">
+                    <Label className="text-base font-medium flex items-center space-x-2">
+                      <Calendar className="w-4 h-4 text-primary" />
+                      <span>Jahr</span>
+                    </Label>
                     <Select value={selectedYear} onValueChange={setSelectedYear}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-12 bg-card/50">
                         <SelectValue placeholder="Jahr auswählen" />
                       </SelectTrigger>
                       <SelectContent>
@@ -280,78 +360,88 @@ const Dashboard = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
-
-                {/* Bundesland Selection */}
-                <div className="space-y-2">
-                  <Label>Bundesland</Label>
-                  <Select value={selectedBundesland} onValueChange={setSelectedBundesland}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Bundesland auswählen" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {bundeslaender.map((land) => (
-                        <SelectItem key={land} value={land}>
-                          {land}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-3 sm:col-span-2 lg:col-span-1">
+                    <Label className="text-base font-medium flex items-center space-x-2">
+                      <MapPin className="w-4 h-4 text-primary" />
+                      <span>Bundesland</span>
+                    </Label>
+                    <Select value={selectedBundesland} onValueChange={setSelectedBundesland}>
+                      <SelectTrigger className="h-12 bg-card/50">
+                        <SelectValue placeholder="Bundesland auswählen" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {bundeslaender.map((land) => (
+                          <SelectItem key={land} value={land}>
+                            {land}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 {/* Rules Section */}
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label className="text-base font-medium">Regeln</Label>
+                    <Label className="text-lg font-semibold">Regeln & Besonderheiten</Label>
                     {rules.length < 10 && (
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         onClick={addRule}
-                        className="flex items-center space-x-1"
+                        className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors"
                       >
                         <Plus className="w-4 h-4" />
                         <span>Regel hinzufügen</span>
                       </Button>
                     )}
                   </div>
-                  {rules.map((rule, index) => (
-                    <div key={index} className="flex items-center space-x-2">
-                      <Input
-                        value={rule}
-                        onChange={(e) => updateRule(index, e.target.value)}
-                        placeholder="z.B: Die Nachtschicht am Wochenende geht von 6 bis 12 Uhr"
-                        className="flex-1"
-                      />
-                      {rules.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeRule(index)}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  ))}
+                  <div className="space-y-3">
+                    {rules.map((rule, index) => (
+                      <div key={index} className="relative">
+                        <Input
+                          value={rule}
+                          onChange={(e) => updateRule(index, e.target.value)}
+                          placeholder="z.B: Die Nachtschicht am Wochenende geht von 6 bis 12 Uhr"
+                          className="pr-12 h-12 bg-card/50 border-primary/20 focus:border-primary"
+                        />
+                        {rules.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeRule(index)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="text-sm text-muted-foreground">
-                  <p className="font-medium mb-2">Unterstützte Dateiformate:</p>
-                  <ul className="list-disc list-inside space-y-1">
-                    <li>Excel-Dateien (.xlsx, .xls)</li>
-                    <li>CSV-Dateien (.csv)</li>
-                  </ul>
+                <div className="bg-muted/30 rounded-xl p-6">
+                  <p className="font-semibold mb-3 text-base">Unterstützte Dateiformate:</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span>Excel-Dateien (.xlsx, .xls)</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span>CSV-Dateien (.csv)</span>
+                    </div>
+                  </div>
                 </div>
 
                 <Button 
-                  className="w-full" 
-                  size="lg"
+                  className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-200" 
                   onClick={handleSubmit}
-                  disabled={!selectedMonth || !selectedYear || !selectedBundesland}
+                  disabled={!selectedMonth || !selectedYear || !selectedBundesland || (!stundenplanFile && !gesamtstundenFile)}
                 >
+                  <Upload className="w-5 h-5 mr-2" />
                   Daten verarbeiten
                 </Button>
               </CardContent>
@@ -359,24 +449,74 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="reports" className="mt-8">
-            <Card className="max-w-4xl mx-auto">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <FileText className="w-5 h-5" />
+            <Card className="max-w-6xl mx-auto shadow-lg border-0 bg-card/50 backdrop-blur-sm">
+              <CardHeader className="text-center pb-8">
+                <CardTitle className="flex items-center justify-center space-x-3 text-2xl">
+                  <FileText className="w-6 h-6 text-primary" />
                   <span>Berichte</span>
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-lg mt-2">
                   Übersicht über Ihre verarbeiteten Arbeitsstundennachweise
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12">
-                  <FileText className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Keine Berichte vorhanden</h3>
-                  <p className="text-muted-foreground">
-                    Laden Sie zuerst Ihre Stundendaten hoch, um Berichte zu erstellen.
-                  </p>
-                </div>
+                {reports.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {reports.map((report) => (
+                      <Card key={report.id} className="bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-shadow duration-200">
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <FileText className="w-5 h-5 text-primary" />
+                              </div>
+                              <div>
+                                <h3 className="font-semibold text-foreground line-clamp-1">{report.title}</h3>
+                                <p className="text-sm text-muted-foreground">
+                                  {new Date(report.created_at).toLocaleDateString('de-DE')}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-muted-foreground">
+                              {report.file_type || 'Bericht'}
+                            </span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.open(report.download_url, '_blank')}
+                              className="flex items-center space-x-2"
+                            >
+                              <Download className="w-4 h-4" />
+                              <span>Download</span>
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-16">
+                    <div className="w-24 h-24 bg-muted/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <FileText className="w-12 h-12 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-3">Keine Berichte vorhanden</h3>
+                    <p className="text-muted-foreground text-lg mb-6">
+                      Laden Sie zuerst Ihre Stundendaten hoch, um Berichte zu erstellen.
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        const uploadTab = document.querySelector('[value="upload"]') as HTMLElement;
+                        uploadTab?.click();
+                      }}
+                      className="px-6"
+                    >
+                      Zum Upload
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
