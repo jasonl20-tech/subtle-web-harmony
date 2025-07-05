@@ -15,7 +15,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 const Dashboard = () => {
-  const { user, signOut, loading } = useAuth();
+  const { user, subscription, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -177,13 +177,14 @@ const Dashboard = () => {
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
-    } else if (user) {
-      fetchUserData();
     }
   }, [user, loading, navigate]);
 
   const handleSignOut = async () => {
-    const { error } = await signOut();
+    const auth = useAuth();
+    if (!auth?.signOut) return;
+    
+    const { error } = await auth.signOut();
     if (error) {
       toast({
         title: "Fehler beim Abmelden",
@@ -214,6 +215,48 @@ const Dashboard = () => {
     return null;
   }
 
+  // Check if user has active subscription
+  if (!subscription.subscribed) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+        <Header />
+        <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <Card className="max-w-2xl mx-auto text-center shadow-lg border-0 bg-card/50 backdrop-blur-sm">
+            <CardContent className="py-16">
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Upload className="w-10 h-10 text-primary" />
+              </div>
+              <h1 className="text-3xl font-bold text-foreground mb-4">
+                Premium-Mitgliedschaft erforderlich
+              </h1>
+              <p className="text-lg text-muted-foreground mb-8">
+                Um das Dashboard und alle Funktionen nutzen zu können, benötigen Sie eine aktive Premium-Mitgliedschaft.
+              </p>
+              <div className="space-y-4">
+                <Button 
+                  size="lg" 
+                  onClick={() => navigate('/pricing')}
+                  className="w-full max-w-sm mx-auto bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+                >
+                  Jetzt Premium werden
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={handleSignOut}
+                  className="w-full max-w-sm mx-auto"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Abmelden
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <Header />
@@ -230,7 +273,7 @@ const Dashboard = () => {
         </div>
 
         <Tabs defaultValue="upload" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 max-w-lg mx-auto mb-8 bg-card/50 backdrop-blur-sm">
+          <TabsList className="grid w-full grid-cols-3 max-w-2xl mx-auto mb-8 bg-card/50 backdrop-blur-sm">
             <TabsTrigger value="upload" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Upload className="w-4 h-4" />
               <span className="hidden sm:inline">Upload</span>
@@ -238,6 +281,10 @@ const Dashboard = () => {
             <TabsTrigger value="reports" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <FileText className="w-4 h-4" />
               <span className="hidden sm:inline">Berichte</span>
+            </TabsTrigger>
+            <TabsTrigger value="subscription" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Calendar className="w-4 h-4" />
+              <span className="hidden sm:inline">Abonnement</span>
             </TabsTrigger>
           </TabsList>
 
@@ -517,6 +564,129 @@ const Dashboard = () => {
                     </Button>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="subscription" className="mt-8">
+            <Card className="max-w-4xl mx-auto shadow-lg border-0 bg-card/50 backdrop-blur-sm">
+              <CardHeader className="text-center pb-8">
+                <CardTitle className="flex items-center justify-center space-x-3 text-2xl">
+                  <Calendar className="w-6 h-6 text-primary" />
+                  <span>Mein Abonnement</span>
+                </CardTitle>
+                <CardDescription className="text-lg mt-2">
+                  Verwalten Sie Ihr Abonnement und Zahlungseinstellungen
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                {/* Current Subscription Status */}
+                <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 border border-primary/20">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">Aktives Abonnement</h3>
+                      <p className="text-muted-foreground">
+                        {subscription.subscription_tier} Plan
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">
+                        ✓ Aktiv
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {subscription.subscription_end && (
+                    <div className="text-sm text-muted-foreground">
+                      <p>Nächste Abrechnung: {new Date(subscription.subscription_end).toLocaleDateString('de-DE', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Management Actions */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card className="bg-gradient-to-br from-card to-card/50">
+                    <CardContent className="p-6">
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <Calendar className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Zahlungseinstellungen</h3>
+                          <p className="text-sm text-muted-foreground">Zahlungsmethode & Rechnungen</p>
+                        </div>
+                      </div>
+                      <Button 
+                        className="w-full" 
+                        variant="outline"
+                        onClick={async () => {
+                          try {
+                            const auth = useAuth();
+                            if (!auth?.session) return;
+                            
+                            const { data, error } = await supabase.functions.invoke('customer-portal', {
+                              headers: {
+                                Authorization: `Bearer ${auth.session.access_token}`,
+                              },
+                            });
+                            
+                            if (error) {
+                              toast({
+                                title: "Fehler",
+                                description: "Kundenportal konnte nicht geöffnet werden.",
+                                variant: "destructive",
+                              });
+                              return;
+                            }
+                            
+                            window.open(data.url, '_blank');
+                          } catch (error) {
+                            toast({
+                              title: "Fehler",
+                              description: "Ein unerwarteter Fehler ist aufgetreten.",
+                              variant: "destructive",
+                            });
+                          }
+                        }}
+                      >
+                        Zahlungen verwalten
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-gradient-to-br from-card to-card/50">
+                    <CardContent className="p-6">
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <Download className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Subscription Status</h3>
+                          <p className="text-sm text-muted-foreground">Status aktualisieren</p>
+                        </div>
+                      </div>
+                      <Button 
+                        className="w-full" 
+                        variant="outline"
+                        onClick={async () => {
+                          const auth = useAuth();
+                          if (auth?.checkSubscription) {
+                            await auth.checkSubscription();
+                            toast({
+                              title: "Erfolgreich aktualisiert",
+                              description: "Abonnement-Status wurde überprüft.",
+                            });
+                          }
+                        }}
+                      >
+                        Status aktualisieren
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
