@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import heroLaptop from "@/assets/laptop-clean-studio.jpg";
+import heroLaptop from "@/assets/laptop-centered.jpg";
 import { ArrowDown } from "lucide-react";
 
 // Floating Testimonials Component  
