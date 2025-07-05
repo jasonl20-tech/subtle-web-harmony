@@ -432,6 +432,7 @@ const Dashboard = () => {
 
   const grantSubscription = async (userId: string, userEmail: string) => {
     try {
+      console.log('[ADMIN] Granting subscription to:', { userId, userEmail });
       const { error } = await supabase
         .from('subscribers')
         .upsert({
@@ -440,10 +441,16 @@ const Dashboard = () => {
           subscribed: true,
           subscription_tier: 'Standard',
           updated_at: new Date().toISOString()
+        }, { 
+          onConflict: 'email' 
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('[ADMIN] Error granting subscription:', error);
+        throw error;
+      }
 
+      console.log('[ADMIN] Subscription granted successfully');
       toast({
         title: "Abonnement gewährt",
         description: "Der Benutzer kann jetzt das Dashboard nutzen.",
@@ -451,6 +458,7 @@ const Dashboard = () => {
       
       fetchAdminData();
     } catch (error) {
+      console.error('[ADMIN] Failed to grant subscription:', error);
       toast({
         title: "Fehler",
         description: "Abonnement konnte nicht gewährt werden.",
@@ -461,6 +469,7 @@ const Dashboard = () => {
 
   const revokeSubscription = async (userId: string, userEmail: string) => {
     try {
+      console.log('[ADMIN] Revoking subscription from:', { userId, userEmail });
       const { error } = await supabase
         .from('subscribers')
         .upsert({
@@ -469,10 +478,16 @@ const Dashboard = () => {
           subscribed: false,
           subscription_tier: null,
           updated_at: new Date().toISOString()
+        }, { 
+          onConflict: 'email' 
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('[ADMIN] Error revoking subscription:', error);
+        throw error;
+      }
 
+      console.log('[ADMIN] Subscription revoked successfully');
       toast({
         title: "Abonnement entzogen",
         description: "Der Benutzer hat keinen Zugriff mehr auf das Dashboard.",
@@ -480,6 +495,7 @@ const Dashboard = () => {
       
       fetchAdminData();
     } catch (error) {
+      console.error('[ADMIN] Failed to revoke subscription:', error);
       toast({
         title: "Fehler",
         description: "Abonnement konnte nicht entzogen werden.",
