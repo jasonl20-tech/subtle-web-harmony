@@ -15,9 +15,11 @@ const Header = () => {
           <div className="flex items-center">
             <Link 
               to="/"
-              className="font-bold text-2xl text-white hover:text-white/90 transition-colors duration-200"
+              className="font-bold text-2xl text-gray-900 hover:text-gray-700 transition-colors duration-200"
             >
-              Arbeitsstundennachweis
+              <span className="block leading-tight">
+                Arbeits-<br />stundennachweis
+              </span>
             </Link>
           </div>
 
@@ -25,19 +27,19 @@ const Header = () => {
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
               to="/help" 
-              className="text-white/90 hover:text-white transition-colors font-medium"
+              className="text-gray-900 hover:text-gray-700 transition-colors font-medium"
             >
               Hilfe
             </Link>
             <Link 
               to="/tutorial" 
-              className="text-white/90 hover:text-white transition-colors font-medium"
+              className="text-gray-900 hover:text-gray-700 transition-colors font-medium"
             >
               Tutorial
             </Link>
             <Link 
               to="/pricing" 
-              className="text-white/90 hover:text-white transition-colors font-medium"
+              className="text-gray-900 hover:text-gray-700 transition-colors font-medium"
             >
               Preisgestaltung
             </Link>
@@ -48,7 +50,7 @@ const Header = () => {
             {user ? (
               <Link 
                 to="/dashboard" 
-                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-md hover:bg-white/20 transition-all duration-200 font-medium"
+                className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-all duration-200 font-medium"
               >
                 Dashboard →
               </Link>
@@ -56,7 +58,7 @@ const Header = () => {
               <>
                 <Link 
                   to="/auth" 
-                  className="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-md hover:bg-white/20 transition-all duration-200 font-medium"
+                  className="bg-gray-100 border border-gray-300 text-gray-900 px-4 py-2 rounded-md hover:bg-gray-200 transition-all duration-200 font-medium"
                 >
                   Login oder Registrierung
                 </Link>
