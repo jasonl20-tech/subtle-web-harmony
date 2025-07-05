@@ -5,7 +5,12 @@ const Header = () => {
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm border-b border-gray-200">
       <div className="container mx-auto px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Links - Navigation */}
+          {/* Links - Website Name */}
+          <div className="flex items-center">
+            <span className="font-bold text-xl text-gray-900">Arbeitsstundennachweise</span>
+          </div>
+
+          {/* Mitte - Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <a 
               href="#home" 
@@ -43,11 +48,6 @@ const Header = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </a>
           </nav>
-
-          {/* Mitte - Website Name */}
-          <div className="absolute left-1/2 transform -translate-x-1/2">
-            <span className="font-bold text-xl text-gray-900">Arbeitsstundennachweise</span>
-          </div>
 
           {/* Rechts - Einloggen und Registrieren */}
           <div className="flex items-center space-x-4">

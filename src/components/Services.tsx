@@ -2,26 +2,21 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const Services = () => {
-  const features = [
+  const steps = [
     {
-      title: "Automatische Zeiterfassung",
-      description: "Keine manuellen Eingaben mehr - unsere KI erfasst Ihre Arbeitszeiten vollautomatisch.",
-      features: ["KI-basierte Erkennung", "Präzise Minutenangaben", "Pausenzeiten automatisch", "Fehlerfreie Dokumentation"]
+      number: "1",
+      title: "Gesamtstunden hochladen",
+      description: "Laden Sie Ihre Gesamtstunden und Gesamtstundenübersicht hoch."
     },
     {
-      title: "Excel-Integration", 
-      description: "Nahtlose Integration in Ihre bestehenden Excel-Tabellen und Workflows.",
-      features: ["Direkte Excel-Ausgabe", "Vorlagen verfügbar", "Kompatibel mit Office 365", "Backup-Funktion"]
+      number: "2", 
+      title: "5 Minuten warten",
+      description: "Unsere KI verarbeitet automatisch Ihre Daten und erstellt den Nachweis."
     },
     {
-      title: "Berichtswesen",
-      description: "Professionelle Stundenberichte für Kunden, Steuerberater und interne Zwecke.",
-      features: ["PDF-Export", "Anpassbare Templates", "Monats-/Wochenberichte", "Automatischer Versand"]
-    },
-    {
-      title: "Team-Management",
-      description: "Perfekt für Teams und Freiberufler - verwalten Sie alle Arbeitszeiten zentral.",
-      features: ["Multi-User Support", "Projektverwaltung", "Kundenzuordnung", "Echtzeit-Übersicht"]
+      number: "3",
+      title: "Fertiges Dokument herunterladen",
+      description: "Laden Sie Ihren professionellen Arbeitsstundennachweis herunter."
     }
   ];
 
@@ -39,36 +34,20 @@ const Services = () => {
           </p>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
-            <Card key={index} className="card-elegant p-6 h-full flex flex-col hover:shadow-lg transition-all duration-300">
-              <div className="mb-4">
-                <div className={`w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4`}>
-                  <div className={`w-6 h-6 bg-primary ${
-                    index === 0 ? 'rounded' : 
-                    index === 1 ? 'rounded-full' : 
-                    index === 2 ? 'rounded-lg transform rotate-45' : 
-                    'rounded-sm'
-                  }`}></div>
+        {/* Steps Grid */}
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {steps.map((step, index) => (
+            <Card key={index} className="card-elegant p-8 text-center hover:shadow-lg transition-all duration-300">
+              <div className="mb-6">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold text-primary">{step.number}</span>
                 </div>
                 <h3 className="text-xl font-semibold text-foreground mb-3">
-                  {feature.title}
+                  {step.title}
                 </h3>
-                <p className="text-muted-foreground mb-6 leading-relaxed">
-                  {feature.description}
+                <p className="text-muted-foreground leading-relaxed">
+                  {step.description}
                 </p>
-              </div>
-
-              <div className="flex-1">
-                <ul className="space-y-2 mb-6">
-                  {feature.features.map((item, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center text-sm text-muted-foreground">
-                      <div className="w-2 h-2 bg-primary rounded-full mr-3 flex-shrink-0"></div>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
               </div>
             </Card>
           ))}
@@ -81,21 +60,26 @@ const Services = () => {
               Ihre Vorteile auf einen Blick
             </h3>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">95%</div>
-              <p className="text-lg font-medium text-foreground mb-2">Weniger Fehler</p>
-              <p className="text-muted-foreground">bei der Zeiterfassung</p>
+              <div className="text-3xl font-bold text-primary mb-2">🔒</div>
+              <p className="text-lg font-medium text-foreground mb-2">Datenschutz konform</p>
+              <p className="text-muted-foreground">DSGVO-konforme Verarbeitung</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">2h</div>
-              <p className="text-lg font-medium text-foreground mb-2">Täglich gespart</p>
-              <p className="text-muted-foreground">durchschnittlich pro Nutzer</p>
+              <div className="text-3xl font-bold text-primary mb-2">⚡</div>
+              <p className="text-lg font-medium text-foreground mb-2">Schnell</p>
+              <p className="text-muted-foreground">in nur 5 Minuten fertig</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">100%</div>
-              <p className="text-lg font-medium text-foreground mb-2">Automatisch</p>
-              <p className="text-muted-foreground">keine manuelle Eingabe nötig</p>
+              <div className="text-3xl font-bold text-primary mb-2">💰</div>
+              <p className="text-lg font-medium text-foreground mb-2">Spare Kosten und Zeit</p>
+              <p className="text-muted-foreground">keine Mitarbeiter mehr erforderlich</p>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary mb-2">🤖</div>
+              <p className="text-lg font-medium text-foreground mb-2">100% automatisch</p>
+              <p className="text-muted-foreground">vollständig automatisiert</p>
             </div>
           </div>
         </div>
@@ -110,19 +94,12 @@ const Services = () => {
               Starten Sie noch heute und sparen Sie sich täglich wertvolle Zeit. 
               Testen Sie unsere Lösung 30 Tage kostenlos und unverbindlich.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Button 
                 size="lg"
-                className="bg-primary hover:bg-primary-hover text-primary-foreground font-medium px-8 shadow-card hover:shadow-hover transition-all duration-200"
+                className="bg-primary hover:bg-primary-hover text-primary-foreground font-medium px-12 shadow-card hover:shadow-hover transition-all duration-200"
               >
-                30 Tage kostenlos testen
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="border-border text-foreground hover:bg-secondary font-medium px-8 shadow-subtle hover:shadow-card transition-all duration-200"
-              >
-                Live-Demo ansehen
+                Jetzt starten
               </Button>
             </div>
           </Card>
