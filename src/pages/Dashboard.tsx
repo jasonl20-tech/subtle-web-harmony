@@ -98,6 +98,7 @@ const Dashboard = () => {
   const checkAdminRole = async () => {
     if (!user) return;
     
+    console.log('[ADMIN] Checking admin role for user:', user.email);
     try {
       const { data, error } = await supabase
         .from('user_roles')
@@ -106,9 +107,12 @@ const Dashboard = () => {
         .eq('role', 'admin')
         .single();
       
-      setIsAdmin(!error && data?.role === 'admin');
+      console.log('[ADMIN] Admin role query result:', { data, error });
+      const isUserAdmin = !error && data?.role === 'admin';
+      console.log('[ADMIN] Setting isAdmin to:', isUserAdmin);
+      setIsAdmin(isUserAdmin);
     } catch (error) {
-      console.error('Error checking admin role:', error);
+      console.error('[ADMIN] Error checking admin role:', error);
       setIsAdmin(false);
     }
   };
@@ -149,8 +153,12 @@ const Dashboard = () => {
   };
 
   const fetchAdminData = async () => {
-    if (!isAdmin) return;
+    if (!isAdmin) {
+      console.log('[ADMIN] Not admin, skipping fetchAdminData');
+      return;
+    }
     
+    console.log('[ADMIN] fetchAdminData called - fetching all profiles');
     try {
       // Use a more explicit query to get all data properly
       const { data: profilesData, error: profilesError } = await supabase
@@ -171,15 +179,21 @@ const Dashboard = () => {
         return;
       }
 
+      console.log('[ADMIN] Fetched profiles count:', profilesData?.length || 0);
+
       // Fetch user roles separately
       const { data: rolesData } = await supabase
         .from('user_roles')
         .select('user_id, role');
 
+      console.log('[ADMIN] Fetched roles:', rolesData);
+
       // Fetch subscribers separately  
       const { data: subscribersData } = await supabase
         .from('subscribers')
         .select('user_id, subscribed, subscription_tier');
+
+      console.log('[ADMIN] Fetched subscribers:', subscribersData);
 
       // Combine the data
       const enrichedProfiles = profilesData?.map(profile => {
@@ -193,11 +207,16 @@ const Dashboard = () => {
         };
       });
 
-      console.log('[ADMIN] Fetched enriched profiles:', enrichedProfiles);
+      console.log('[ADMIN] Final enriched profiles count:', enrichedProfiles?.length || 0);
       setAllProfiles(enrichedProfiles || []);
       
     } catch (error) {
-      console.error('Error fetching admin data:', error);
+      console.error('[ADMIN] Error fetching admin data:', error);
+      toast({
+        title: "Fehler",
+        description: "Benutzer konnten nicht geladen werden.",
+        variant: "destructive",
+      });
     }
   };
 
