@@ -83,15 +83,18 @@ function FloatingMathSymbols() {
 const Hero = () => {
   return (
     <section className="relative h-screen overflow-hidden">
-      {/* Centered Laptop Background */}
-      <div className="absolute inset-0 z-0">
+      {/* Background with gradient */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary/20 via-secondary/10 to-muted/20">
         <img 
           src="/lovable-uploads/6a5a0fe9-3c3f-4af0-ad8d-b64cdee58663.png" 
           alt="Laptop mit Excel Tabelle auf Schreibtisch"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover opacity-80"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
         />
         {/* Darker Overlay */}
-        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-secondary/20"></div>
       </div>
 
       {/* Content - Header oben, Buttons Mitte */}

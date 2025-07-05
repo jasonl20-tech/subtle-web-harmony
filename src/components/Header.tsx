@@ -4,10 +4,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { LogOut } from "lucide-react";
 
 const Header = () => {
-  const { user, signOut } = useAuth();
+  const auth = useAuth();
+  const user = auth?.user;
+  const signOut = auth?.signOut;
 
   const handleSignOut = async () => {
-    await signOut();
+    if (signOut) {
+      await signOut();
+    }
   };
 
   return (
