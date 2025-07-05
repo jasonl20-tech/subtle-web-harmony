@@ -4,6 +4,8 @@ import Services from "@/components/Services";
 import Footer from "@/components/Footer";
 
 const Index = () => {
+  console.log('Index page rendered');
+  
   return (
     <div className="min-h-screen bg-background">
       <Header />
