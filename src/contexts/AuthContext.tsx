@@ -40,21 +40,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const checkSubscription = async () => {
     if (!session) {
+      console.log('[AUTH] No session, setting unsubscribed state');
       setSubscription({ subscribed: false, subscription_tier: null, subscription_end: null });
       return;
     }
 
     try {
+      console.log('[AUTH] Checking subscription for user:', session.user.email);
+      
       const { data, error } = await supabase.functions.invoke('check-subscription', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
       });
 
+      console.log('[AUTH] Check-subscription response:', { data, error });
+
       if (error) {
-        console.error('Error checking subscription:', error);
+        console.error('[AUTH] Error checking subscription:', error);
+        
+        // Fallback: Check directly from database
+        console.log('[AUTH] Trying database fallback...');
+        const { data: dbData, error: dbError } = await supabase
+          .from('subscribers')
+          .select('subscribed, subscription_tier, subscription_end')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+        
+        console.log('[AUTH] Database fallback result:', { dbData, dbError });
+        
+        if (!dbError && dbData) {
+          setSubscription({
+            subscribed: dbData.subscribed || false,
+            subscription_tier: dbData.subscription_tier || null,
+            subscription_end: dbData.subscription_end || null
+          });
+          console.log('[AUTH] Using database fallback subscription data');
+          return;
+        }
+        
         return;
       }
+
+      console.log('[AUTH] Setting subscription state:', {
+        subscribed: data.subscribed || false,
+        subscription_tier: data.subscription_tier || null,
+        subscription_end: data.subscription_end || null
+      });
 
       setSubscription({
         subscribed: data.subscribed || false,
@@ -62,7 +94,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         subscription_end: data.subscription_end || null
       });
     } catch (error) {
-      console.error('Error in checkSubscription:', error);
+      console.error('[AUTH] Error in checkSubscription:', error);
+      
+      // Fallback: Check directly from database
+      try {
+        console.log('[AUTH] Exception fallback: checking database directly...');
+        const { data: dbData, error: dbError } = await supabase
+          .from('subscribers')
+          .select('subscribed, subscription_tier, subscription_end')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+        
+        console.log('[AUTH] Exception fallback result:', { dbData, dbError });
+        
+        if (!dbError && dbData) {
+          setSubscription({
+            subscribed: dbData.subscribed || false,
+            subscription_tier: dbData.subscription_tier || null,
+            subscription_end: dbData.subscription_end || null
+          });
+          console.log('[AUTH] Using exception fallback subscription data');
+        }
+      } catch (fallbackError) {
+        console.error('[AUTH] Even fallback failed:', fallbackError);
+      }
     }
   };
 

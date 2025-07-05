@@ -235,6 +235,24 @@ const Dashboard = () => {
               <div className="space-y-4">
                 <Button 
                   size="lg" 
+                  onClick={() => {
+                    const auth = useAuth();
+                    if (auth?.checkSubscription) {
+                      console.log('[DASHBOARD] Manual subscription refresh triggered');
+                      auth.checkSubscription();
+                      toast({
+                        title: "Abonnement wird überprüft...",
+                        description: "Einen Moment bitte.",
+                      });
+                    }
+                  }}
+                  variant="outline"
+                  className="w-full max-w-sm mx-auto mb-4"
+                >
+                  Abonnement aktualisieren
+                </Button>
+                <Button 
+                  size="lg" 
                   onClick={() => navigate('/pricing')}
                   className="w-full max-w-sm mx-auto bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
                 >
@@ -249,6 +267,19 @@ const Dashboard = () => {
                   Abmelden
                 </Button>
               </div>
+              
+              {/* Debug Info */}
+              <details className="mt-8 text-left">
+                <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
+                  Debug Info
+                </summary>
+                <div className="mt-2 p-4 bg-muted/50 rounded-lg text-xs font-mono">
+                  <p>User: {user?.email}</p>
+                  <p>Subscribed: {subscription.subscribed ? 'Yes' : 'No'}</p>
+                  <p>Tier: {subscription.subscription_tier || 'None'}</p>
+                  <p>End: {subscription.subscription_end || 'None'}</p>
+                </div>
+              </details>
             </CardContent>
           </Card>
         </main>
