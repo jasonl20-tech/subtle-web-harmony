@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { ArrowRight, Users, Clock, TrendingUp, BarChart } from "lucide-react";
+import Header from "@/components/Header";
 
 // Floating Dashboard Cards Component  
 function FloatingDashboardCards() {
@@ -112,12 +113,14 @@ function GasStationLogos() {
 const Hero = () => {
   return (
     <section className="relative h-screen overflow-hidden">
-      {/* Modern Gradient Background */}
+      {/* Header integriert */}
+      <Header />
+      
+      {/* Stripe-ähnlicher Gradient Background */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-blue-600 to-teal-500"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent"></div>
-        {/* Animated gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 via-transparent to-blue-600/30 animate-pulse"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-500 to-blue-500"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/80 via-blue-500/60 to-teal-400/80"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/20 to-blue-600/40"></div>
       </div>
 
       {/* Content */}
