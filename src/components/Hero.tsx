@@ -295,7 +295,7 @@ const Hero = () => {
       <div className="absolute top-0 left-0 right-0 h-full z-0">
         <svg
           className="absolute top-0 left-0 w-full h-full"
-          viewBox="0 0 1200 800"
+          viewBox="0 0 1400 800"
           preserveAspectRatio="none"
         >
           <defs>
@@ -316,7 +316,7 @@ const Hero = () => {
           </defs>
           {/* Animated wavy gradient layers with more swing */}
           <path
-            d="M0,0 L1200,0 L1200,60 Q1000,80 800,120 Q600,160 400,140 Q200,120 0,380 Z"
+            d="M-100,0 L1500,0 L1500,60 Q1200,80 1000,120 Q800,160 600,140 Q400,120 200,380 Q100,400 -100,420 Z"
             fill="url(#rainbowGradient)"
             opacity="0.18"
           >
@@ -329,7 +329,7 @@ const Hero = () => {
             />
           </path>
           <path
-            d="M0,0 L1200,0 L1200,80 Q900,60 700,140 Q500,220 300,180 Q150,140 0,420 Z"
+            d="M-100,0 L1500,0 L1500,80 Q1100,60 900,140 Q700,220 500,180 Q350,140 150,420 Q50,440 -100,460 Z"
             fill="url(#rainbowGradient2)"
             opacity="0.15"
           >
@@ -342,7 +342,7 @@ const Hero = () => {
             />
           </path>
           <path
-            d="M0,0 L1200,0 L1200,100 Q850,140 650,110 Q450,80 250,160 Q100,240 0,360 Z"
+            d="M-100,0 L1500,0 L1500,100 Q1050,140 850,110 Q650,80 450,160 Q300,240 100,360 Q0,380 -100,400 Z"
             fill="url(#rainbowGradient)"
             opacity="0.12"
           >
@@ -356,7 +356,7 @@ const Hero = () => {
           </path>
           {/* Additional flowing wave */}
           <path
-            d="M0,0 L1200,0 L1200,120 Q1050,100 850,160 Q650,220 450,200 Q250,180 50,240 Q25,260 0,300 Z"
+            d="M-100,0 L1500,0 L1500,120 Q1250,100 1050,160 Q850,220 650,200 Q450,180 250,240 Q125,260 25,300 Q0,320 -100,340 Z"
             fill="url(#rainbowGradient2)"
             opacity="0.08"
           >
@@ -381,7 +381,13 @@ const Hero = () => {
               <div className="animate-fade-in-up">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Lösung für die Arbeitstundennachweise deines Gewerbes
+                    Lösung für die 
+                  </span>
+                  <span className="text-gray-900 hover:text-blue-600 transition-all duration-300 cursor-default hover:scale-105 inline-block">
+                    Arbeitstundennachweise
+                  </span>
+                  <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    {" "}deines Gewerbes
                   </span>
                 </h1>
               </div>
