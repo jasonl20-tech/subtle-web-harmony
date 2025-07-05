@@ -4,7 +4,7 @@ import { ArrowRight, Clock, TrendingUp, BarChart, CreditCard, Users, DollarSign 
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 
-// Floating Dashboard Cards Component  
+// Floating Dashboard Cards Component - Mobile optimized
 function FloatingDashboardCards() {
   const cards = [
     {
@@ -48,33 +48,33 @@ function FloatingDashboardCards() {
   }, []);
   
   return (
-    <div className="absolute top-32 right-8 w-80 space-y-4 z-20">
-      {visibleCards.map((index, i) => (
+    <div className="absolute top-8 right-4 lg:top-32 lg:right-8 w-64 lg:w-80 space-y-3 lg:space-y-4 z-20">
+      {visibleCards.slice(0, 2).map((index, i) => (
         <div 
           key={`${index}-${i}`}
           className="animate-fade-in transition-all duration-700 ease-out"
           style={{ 
             animationDelay: `${i * 200}ms`,
-            transform: `translateX(${i * 15}px) translateY(${i * 15}px)` 
+            transform: `translateX(${i * 10}px) translateY(${i * 10}px)` 
           }}
         >
-          <div className="bg-white/95 backdrop-blur-md p-6 rounded-2xl shadow-2xl border border-gray-100">
-            <div className="flex items-center justify-between mb-4">
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${cards[index].color} flex items-center justify-center`}>
-                {index === 0 && <DollarSign className="w-5 h-5 text-white" />}
-                {index === 1 && <BarChart className="w-5 h-5 text-white" />}
-                {index === 2 && <Users className="w-5 h-5 text-white" />}
+          <div className="bg-white/95 backdrop-blur-md p-4 lg:p-6 rounded-xl lg:rounded-2xl shadow-xl lg:shadow-2xl border border-gray-100">
+            <div className="flex items-center justify-between mb-3 lg:mb-4">
+              <div className={`w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl bg-gradient-to-r ${cards[index].color} flex items-center justify-center`}>
+                {index === 0 && <DollarSign className="w-4 h-4 lg:w-5 lg:h-5 text-white" />}
+                {index === 1 && <BarChart className="w-4 h-4 lg:w-5 lg:h-5 text-white" />}
+                {index === 2 && <Users className="w-4 h-4 lg:w-5 lg:h-5 text-white" />}
               </div>
-              <span className={`text-sm font-semibold ${cards[index].trend.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+              <span className={`text-xs lg:text-sm font-semibold ${cards[index].trend.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
                 {cards[index].trend}
               </span>
             </div>
-            <h3 className="text-sm text-gray-500 mb-1">{cards[index].title}</h3>
-            <p className="text-2xl font-bold text-gray-900 mb-3">{cards[index].value}</p>
-            <p className="text-xs text-gray-400 mb-3">{cards[index].subtitle}</p>
+            <h3 className="text-xs lg:text-sm text-gray-500 mb-1">{cards[index].title}</h3>
+            <p className="text-lg lg:text-2xl font-bold text-gray-900 mb-2 lg:mb-3">{cards[index].value}</p>
+            <p className="text-xs text-gray-400 mb-2 lg:mb-3">{cards[index].subtitle}</p>
             
             {/* Mini Chart */}
-            <div className="h-12 flex items-end space-x-1">
+            <div className="h-8 lg:h-12 flex items-end space-x-1">
               {cards[index].chartData.map((height, idx) => (
                 <div
                   key={idx}
@@ -90,7 +90,7 @@ function FloatingDashboardCards() {
   );
 }
 
-// Desktop Mockup Component with Animated Excel
+// Desktop Mockup Component with Animated Excel - Mobile optimized
 function DesktopMockup() {
   const [currentRow, setCurrentRow] = useState(1);
   const [excelData, setExcelData] = useState([
@@ -122,7 +122,7 @@ function DesktopMockup() {
   }, [currentRow, excelData.length]);
 
   return (
-    <div className="absolute top-8 -right-32 z-10 animate-slide-in-right">
+    <div className="hidden lg:block absolute top-8 -right-32 z-10 animate-slide-in-right">
       {/* Desktop Monitor */}
       <div className="relative">
         {/* Monitor Screen with better styling */}
@@ -220,7 +220,7 @@ function DesktopMockup() {
 }
 
 
-// Tankstellen Logos Component - Animated
+// Tankstellen Logos Component - Animated and Mobile optimized
 function TankstellenLogos() {
   const tankstellen = [
     { name: "Shell", color: "#FFCF00" },
@@ -232,11 +232,11 @@ function TankstellenLogos() {
   ];
 
   return (
-    <div className="mt-16">
-      <p className="text-center text-gray-500 text-sm mb-8">
+    <div className="mt-8 lg:mt-16">
+      <p className="text-center text-gray-500 text-sm mb-6 lg:mb-8">
         Vertrauen von Unternehmen verschiedener Branchen
       </p>
-      <div className="flex items-center justify-center space-x-12 flex-wrap gap-6">
+      <div className="flex items-center justify-center space-x-6 sm:space-x-8 lg:space-x-12 flex-wrap gap-4 lg:gap-6">
         {tankstellen.map((station, index) => (
           <div 
             key={station.name}
@@ -247,11 +247,11 @@ function TankstellenLogos() {
             }}
           >
             <div 
-              className="w-16 h-16 rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-lg lg:rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
               style={{ backgroundColor: station.color }}
             >
               <div className="absolute inset-0 bg-white opacity-0 hover:opacity-20 transition-opacity duration-300"></div>
-              <span className="relative z-10">{station.name}</span>
+              <span className="relative z-10 text-xs">{station.name}</span>
             </div>
           </div>
         ))}
@@ -360,14 +360,14 @@ const Hero = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 pt-24 pb-16">
-        <div className="container mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div className="relative z-10 pt-24 pb-8 lg:pb-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             {/* Left Content */}
-            <div className="space-y-8">
+            <div className="space-y-6 lg:space-y-8 text-center lg:text-left">
               {/* Main Heading */}
               <div className="animate-fade-in-up">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     Lösung für die 
                   </span>
@@ -382,7 +382,7 @@ const Hero = () => {
 
               {/* Subtitle */}
               <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
+                <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                   Nutzen Sie modernste Technologie für automatisierte Arbeitsstundennachweise, 
                   optimierte Zahlungsabwicklung und nachhaltige Gewinnsteigerung in Ihrem Unternehmen.
                 </p>
@@ -390,20 +390,20 @@ const Hero = () => {
 
               {/* CTA Section */}
               <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                <div className="flex items-center space-x-4 max-w-md">
+                <div className="flex flex-col sm:flex-row items-center gap-4 max-w-md mx-auto lg:mx-0">
                   <input
                     type="email"
                     placeholder="E-Mail-Adresse"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 px-6 py-4 rounded-full border border-gray-200 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
+                    className="w-full sm:flex-1 px-4 sm:px-6 py-3 sm:py-4 rounded-full border border-gray-200 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
                   />
                   <Button 
                     onClick={handleGetStarted}
-                    className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2 whitespace-nowrap"
+                    className="w-full sm:w-auto bg-gray-900 hover:bg-gray-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 whitespace-nowrap"
                   >
                     <span>Jetzt registrieren</span>
-                    <ArrowRight className="w-5 h-5" />
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
                 </div>
               </div>
@@ -415,9 +415,12 @@ const Hero = () => {
             </div>
 
             {/* Right Content - Visualizations */}
-            <div className="relative lg:h-[600px]">
-              {/* Desktop Mockup */}
+            <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] mt-8 lg:mt-0">
+              {/* Desktop Mockup - Only on large screens */}
               <DesktopMockup />
+              
+              {/* Floating Dashboard Cards - Responsive */}
+              <FloatingDashboardCards />
             </div>
           </div>
         </div>
