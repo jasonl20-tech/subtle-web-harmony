@@ -8,7 +8,11 @@ function FloatingTestimonials() {
     { text: "Spart uns täglich 2 Stunden!", author: "Maria K." },
     { text: "Endlich keine Excel-Tabellen mehr!", author: "Thomas B." },
     { text: "Automatisch und zuverlässig", author: "Sarah L." },
-    { text: "Perfekt für unser Team", author: "Michael R." }
+    { text: "Perfekt für unser Team", author: "Michael R." },
+    { text: "95% weniger Fehler bei der Zeiterfassung", author: "Anna S." },
+    { text: "Einfach genial für Freiberufler", author: "Peter H." },
+    { text: "Nie wieder Überstunden vergessen", author: "Lisa M." },
+    { text: "Spart Nerven und Zeit", author: "David K." }
   ];
   
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -28,10 +32,15 @@ function FloatingTestimonials() {
   
   return (
     <div className="absolute right-8 top-1/2 transform -translate-y-1/2 w-64">
-      <div className={`transition-all duration-500 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}>
-        <div className="bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-white/20">
-          <p className="text-sm text-foreground mb-2 italic">"{testimonials[currentIndex].text}"</p>
-          <p className="text-xs text-muted-foreground font-medium">- {testimonials[currentIndex].author}</p>
+      <div className={`transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-x-0 scale-100' : 'opacity-0 translate-x-8 scale-95'}`}>
+        <div className="bg-white/95 backdrop-blur-md p-5 rounded-xl shadow-2xl border border-white/30 hover:shadow-3xl transition-all duration-300">
+          <div className="flex items-start space-x-3">
+            <div className="text-primary text-2xl">💬</div>
+            <div>
+              <p className="text-sm text-foreground mb-2 italic font-medium">"{testimonials[currentIndex].text}"</p>
+              <p className="text-xs text-muted-foreground font-semibold">- {testimonials[currentIndex].author}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -76,10 +85,10 @@ const Hero = () => {
         <div className="absolute inset-0 bg-black/30"></div>
       </div>
 
-      {/* Content - Upper Left */}
-      <div className="relative z-10 absolute top-32 left-8 lg:left-16">
+      {/* Content - Centered */}
+      <div className="relative z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
         {/* Main Heading */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-8">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-8 animate-fade-in">
           Automatisierte<br />
           Arbeitsstundennachweise
         </h1>
