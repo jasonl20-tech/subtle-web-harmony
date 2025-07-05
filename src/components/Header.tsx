@@ -62,7 +62,7 @@ const Header = () => {
                   to="/auth" 
                   className="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-md hover:bg-white/20 transition-all duration-200 font-medium"
                 >
-                  Dashboard →
+                  Login oder Registrierung
                 </Link>
                 <Link 
                   to="/contact" 

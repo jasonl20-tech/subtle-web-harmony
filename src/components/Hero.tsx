@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { ArrowRight, Clock, TrendingUp, BarChart, CreditCard, Users, DollarSign } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 
 // Floating Dashboard Cards Component  
@@ -272,6 +273,17 @@ function TankstellenLogos() {
 }
 
 const Hero = () => {
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    if (email.trim()) {
+      // Store email in sessionStorage for the auth page
+      sessionStorage.setItem('signup-email', email);
+    }
+    navigate('/auth');
+  };
+
   return (
     <section className="relative min-h-screen overflow-hidden bg-white">
       {/* Header */}
@@ -368,19 +380,15 @@ const Hero = () => {
               {/* Main Heading */}
               <div className="animate-fade-in-up">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-                  <span className="text-gray-900">Lösungen für die</span>
-                  <br />
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Zeiterfassung
+                    Lösung für die Arbeitstundennachweise deines Gewerbes
                   </span>
-                  <br />
-                  <span className="text-gray-900">der Zukunft</span>
                 </h1>
               </div>
 
               {/* Subtitle */}
               <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                <p className="text-xl text-gray-600 leading-relaxed max-w-2xl">
+                <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
                   Nutzen Sie modernste Technologie für automatisierte Arbeitsstundennachweise, 
                   optimierte Zahlungsabwicklung und nachhaltige Gewinnsteigerung in Ihrem Unternehmen.
                 </p>
@@ -392,9 +400,14 @@ const Hero = () => {
                   <input
                     type="email"
                     placeholder="E-Mail-Adresse"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="flex-1 px-6 py-4 rounded-full border border-gray-200 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
                   />
-                  <Button className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2 whitespace-nowrap">
+                  <Button 
+                    onClick={handleGetStarted}
+                    className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2 whitespace-nowrap"
+                  >
                     <span>Jetzt loslegen</span>
                     <ArrowRight className="w-5 h-5" />
                   </Button>
