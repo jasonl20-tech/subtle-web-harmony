@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import heroLaptop from "@/assets/laptop-centered.jpg";
+import laptopBackground from "@/assets/laptop-centered.jpg";
 import { ArrowDown } from "lucide-react";
 
 // Floating Testimonials Component  
@@ -69,8 +69,8 @@ const Hero = () => {
       {/* Centered Laptop Background */}
       <div className="absolute inset-0 z-0">
         <img 
-          src={heroLaptop} 
-          alt="Laptop mit Excel im Studio"
+          src={laptopBackground} 
+          alt="Laptop mit Excel Tabelle auf Schreibtisch"
           className="w-full h-full object-cover"
         />
         {/* Darker Overlay */}
