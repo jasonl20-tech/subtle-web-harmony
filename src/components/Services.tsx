@@ -54,33 +54,36 @@ const Services = () => {
         </div>
 
         {/* Benefits Section */}
-        <div className="mt-20">
-          <div className="text-center mb-12">
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+        <div className="mt-24">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
               Ihre Vorteile auf einen Blick
             </h3>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+              Revolutionieren Sie Ihre Zeiterfassung mit unserer innovativen Lösung
+            </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">🔒</div>
-              <p className="text-lg font-medium text-foreground mb-2">Datenschutz konform</p>
-              <p className="text-muted-foreground">DSGVO-konforme Verarbeitung</p>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">⚡</div>
-              <p className="text-lg font-medium text-foreground mb-2">Schnell</p>
-              <p className="text-muted-foreground">in nur 5 Minuten fertig</p>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">💰</div>
-              <p className="text-lg font-medium text-foreground mb-2">Spare Kosten und Zeit</p>
-              <p className="text-muted-foreground">keine Mitarbeiter mehr erforderlich</p>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">🤖</div>
-              <p className="text-lg font-medium text-foreground mb-2">100% automatisch</p>
-              <p className="text-muted-foreground">vollständig automatisiert</p>
-            </div>
+            <Card className="card-elegant p-8 text-center hover:shadow-lg transition-all duration-300 group">
+              <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">🔒</div>
+              <h4 className="text-xl font-bold text-foreground mb-4">Datenschutz konform</h4>
+              <p className="text-muted-foreground leading-relaxed">DSGVO-konforme Verarbeitung Ihrer sensiblen Arbeitszeitdaten</p>
+            </Card>
+            <Card className="card-elegant p-8 text-center hover:shadow-lg transition-all duration-300 group">
+              <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">⚡</div>
+              <h4 className="text-xl font-bold text-foreground mb-4">Blitzschnell</h4>
+              <p className="text-muted-foreground leading-relaxed">Fertige Nachweise in nur 5 Minuten - ohne Wartezeit</p>
+            </Card>
+            <Card className="card-elegant p-8 text-center hover:shadow-lg transition-all duration-300 group">
+              <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">💰</div>
+              <h4 className="text-xl font-bold text-foreground mb-4">Kosteneffizient</h4>
+              <p className="text-muted-foreground leading-relaxed">Sparen Sie Personalkosten - keine manuellen Prozesse mehr nötig</p>
+            </Card>
+            <Card className="card-elegant p-8 text-center hover:shadow-lg transition-all duration-300 group">
+              <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">🤖</div>
+              <h4 className="text-xl font-bold text-foreground mb-4">Vollautomatisch</h4>
+              <p className="text-muted-foreground leading-relaxed">100% automatisierte Verarbeitung ohne menschliches Eingreifen</p>
+            </Card>
           </div>
         </div>
 

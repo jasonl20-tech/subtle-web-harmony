@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -7,46 +8,46 @@ const Header = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Links - Website Name */}
           <div className="flex items-center">
-            <span className="font-bold text-xl text-gray-900">Arbeitsstundennachweise</span>
+            <span className="font-bold text-xl text-gray-900">ARBEITSSTUNDENNACHWEISE</span>
           </div>
 
           {/* Mitte - Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a 
-              href="#home" 
+            <Link 
+              to="/" 
               className="text-gray-600 hover:text-primary transition-all duration-300 font-medium relative group"
             >
               Home
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-            </a>
-            <a 
-              href="#tutorial" 
+            </Link>
+            <Link 
+              to="/tutorial" 
               className="text-gray-600 hover:text-primary transition-all duration-300 font-medium relative group"
             >
               Tutorial
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-            </a>
-            <a 
-              href="#help" 
+            </Link>
+            <Link 
+              to="/help" 
               className="text-gray-600 hover:text-primary transition-all duration-300 font-medium relative group"
             >
               Hilfecenter
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-            </a>
-            <a 
-              href="#contact" 
+            </Link>
+            <Link 
+              to="/contact" 
               className="text-gray-600 hover:text-primary transition-all duration-300 font-medium relative group"
             >
               Kontakt
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-            </a>
-            <a 
-              href="#pricing" 
+            </Link>
+            <Link 
+              to="/pricing" 
               className="text-gray-600 hover:text-primary transition-all duration-300 font-medium relative group"
             >
               Preise
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-            </a>
+            </Link>
           </nav>
 
           {/* Rechts - Einloggen und Registrieren */}
