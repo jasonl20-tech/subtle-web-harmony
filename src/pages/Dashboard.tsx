@@ -4,11 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Upload, FileText, LogOut, Plus, X, Download, Calendar, MapPin } from 'lucide-react';
+import { FileText, LogOut, Download, Calendar, Copy, Key } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
@@ -19,77 +15,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
-  const [stundenplanFile, setStundenplanFile] = useState<File | null>(null);
-  const [gesamtstundenFile, setGesamtstundenFile] = useState<File | null>(null);
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
-  const [selectedBundesland, setSelectedBundesland] = useState('');
-  const [rules, setRules] = useState(['']);
   const [userApiKey, setUserApiKey] = useState<string>('');
   const [reports, setReports] = useState<any[]>([]);
-
-  const months = [
-    { value: '01', label: 'Januar' },
-    { value: '02', label: 'Februar' },
-    { value: '03', label: 'März' },
-    { value: '04', label: 'April' },
-    { value: '05', label: 'Mai' },
-    { value: '06', label: 'Juni' },
-    { value: '07', label: 'Juli' },
-    { value: '08', label: 'August' },
-    { value: '09', label: 'September' },
-    { value: '10', label: 'Oktober' },
-    { value: '11', label: 'November' },
-    { value: '12', label: 'Dezember' }
-  ];
-
-  const years = Array.from({ length: 10 }, (_, i) => {
-    const year = new Date().getFullYear() - 5 + i;
-    return { value: year.toString(), label: year.toString() };
-  });
-
-  const bundeslaender = [
-    'Baden-Württemberg', 'Bayern', 'Berlin', 'Brandenburg', 'Bremen',
-    'Hamburg', 'Hessen', 'Mecklenburg-Vorpommern', 'Niedersachsen',
-    'Nordrhein-Westfalen', 'Rheinland-Pfalz', 'Saarland', 'Sachsen',
-    'Sachsen-Anhalt', 'Schleswig-Holstein', 'Thüringen'
-  ];
-
-  const addRule = () => {
-    if (rules.length < 10) {
-      setRules([...rules, '']);
-    }
-  };
-
-  const removeRule = (index: number) => {
-    if (rules.length > 1) {
-      setRules(rules.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateRule = (index: number, value: string) => {
-    const newRules = [...rules];
-    newRules[index] = value;
-    setRules(newRules);
-  };
-
-  const downloadTemplate = (type: 'stundenplan' | 'gesamtstunden') => {
-    // Create a simple CSV template
-    const headers = type === 'stundenplan' 
-      ? ['Datum', 'Startzeit', 'Endzeit', 'Pause', 'Beschreibung']
-      : ['Woche', 'Gesamtstunden', 'Überstunden', 'Bemerkungen'];
-    
-    const csvContent = headers.join(',') + '\n';
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${type}_template.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  };
 
   const fetchUserData = async () => {
     if (!user) return;
@@ -126,63 +53,11 @@ const Dashboard = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    try {
-      const formData = new FormData();
-      
-      // Add form fields
-      formData.append('month', selectedMonth);
-      formData.append('year', selectedYear);
-      formData.append('bundesland', selectedBundesland);
-      
-      // Add rules as rule_1, rule_2, etc.
-      const filteredRules = rules.filter(rule => rule.trim());
-      filteredRules.forEach((rule, index) => {
-        formData.append(`rule_${index + 1}`, rule);
-      });
-      
-      formData.append('api_key', userApiKey);
-      
-      // Add files
-      if (stundenplanFile) {
-        formData.append('stundenplan', stundenplanFile);
-      }
-      if (gesamtstundenFile) {
-        formData.append('gesamtstunden', gesamtstundenFile);
-      }
-
-      const response = await fetch('https://xlk.ai/webhook-test/325480de-a076-41e7-8d11-3bb1edb8f668', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Erfolgreich gesendet",
-          description: "Ihre Daten wurden erfolgreich verarbeitet.",
-        });
-        // Reset form
-        setStundenplanFile(null);
-        setGesamtstundenFile(null);
-        setSelectedMonth('');
-        setSelectedYear('');
-        setSelectedBundesland('');
-        setRules(['']);
-      } else {
-        throw new Error('Upload failed');
-      }
-    } catch (error) {
-      toast({
-        title: "Fehler beim Upload",
-        description: "Es gab ein Problem beim Senden der Daten.",
-        variant: "destructive",
-      });
-    }
-  };
-
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
+    } else if (user) {
+      fetchUserData();
     }
   }, [user, loading, navigate]);
 
@@ -204,6 +79,14 @@ const Dashboard = () => {
       });
       navigate('/');
     }
+  };
+
+  const copyApiKey = () => {
+    navigator.clipboard.writeText(userApiKey);
+    toast({
+      title: "API Key kopiert",
+      description: "Der API Key wurde in die Zwischenablage kopiert.",
+    });
   };
 
   if (loading) {
@@ -230,7 +113,7 @@ const Dashboard = () => {
           <Card className="max-w-2xl mx-auto text-center shadow-lg border-0 bg-card/50 backdrop-blur-sm">
             <CardContent className="py-16">
               <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Upload className="w-10 h-10 text-primary" />
+                <FileText className="w-10 h-10 text-primary" />
               </div>
               <h1 className="text-3xl font-bold text-foreground mb-4">
                 Premium-Mitgliedschaft erforderlich
@@ -339,27 +222,27 @@ const Dashboard = () => {
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">zurück!</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
-              Verwalten Sie Ihre Arbeitsstundennachweise einfach und effizient mit unserer automatisierten Lösung
+              Verwalten Sie Ihre Arbeitsstundennachweise und API-Integration
             </p>
           </div>
         </div>
 
-        <Tabs defaultValue="upload" className="w-full">
+        <Tabs defaultValue="reports" className="w-full">
           <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             <TabsList className="grid w-full grid-cols-3 max-w-4xl mx-auto mb-16 p-2 h-auto bg-white/80 backdrop-blur-sm border border-gray-100 shadow-lg rounded-2xl">
-              <TabsTrigger 
-                value="upload" 
-                className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 text-gray-700 hover:text-gray-900"
-              >
-                <Upload className="w-5 h-5" />
-                <span className="hidden sm:inline font-medium">Upload</span>
-              </TabsTrigger>
               <TabsTrigger 
                 value="reports" 
                 className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 text-gray-700 hover:text-gray-900"
               >
                 <FileText className="w-5 h-5" />
                 <span className="hidden sm:inline font-medium">Berichte</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="api" 
+                className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 text-gray-700 hover:text-gray-900"
+              >
+                <Key className="w-5 h-5" />
+                <span className="hidden sm:inline font-medium">API</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="subscription" 
@@ -371,235 +254,6 @@ const Dashboard = () => {
             </TabsList>
           </div>
 
-          <TabsContent value="upload" className="mt-8">
-            <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              <Card className="max-w-6xl mx-auto bg-white/80 backdrop-blur-sm border border-gray-100 shadow-xl rounded-2xl">
-                <CardHeader className="text-center pb-10 bg-gradient-to-b from-blue-50/50 to-transparent">
-                  <CardTitle className="flex items-center justify-center space-x-4 text-3xl md:text-4xl mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                      <Upload className="w-8 h-8 text-white" />
-                    </div>
-                    <span className="text-gray-900">Dateien hochladen</span>
-                  </CardTitle>
-                  <CardDescription className="text-xl mt-2 max-w-3xl mx-auto leading-relaxed text-gray-600">
-                    Laden Sie Ihre Stundendaten hoch und lassen Sie sie automatisch verarbeiten - in nur wenigen Minuten erhalten Sie Ihren fertigen Nachweis
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-8 p-6">
-                  {/* Upload Sections - More Compact Layout */}
-                  <div className="space-y-6">
-                    {/* Combined Upload Area */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
-                      {/* Stundenplan Upload */}
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-lg font-semibold flex items-center space-x-2">
-                            <div className="w-6 h-6 bg-primary/10 rounded-lg flex items-center justify-center">
-                              <Calendar className="w-4 h-4 text-primary" />
-                            </div>
-                            <span>Stundenplan</span>
-                          </Label>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => downloadTemplate('stundenplan')}
-                            className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors h-8 px-3 text-xs"
-                          >
-                            <Download className="w-3 h-3" />
-                            <span>Template</span>
-                          </Button>
-                        </div>
-                        <div className="upload-area p-6 text-center min-h-[140px] flex flex-col justify-center">
-                          <Upload className="w-10 h-10 mx-auto text-primary mb-3 animate-pulse-subtle" />
-                          <p className="text-sm text-muted-foreground mb-3 font-medium">Stundenplan hier ablegen</p>
-                          <Input
-                            type="file"
-                            accept=".xlsx,.xls,.csv"
-                            onChange={(e) => setStundenplanFile(e.target.files?.[0] || null)}
-                            className="text-xs file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:transition-colors"
-                          />
-                          {stundenplanFile && (
-                            <div className="mt-3 p-2 bg-success/10 border border-success/20 rounded-lg">
-                              <p className="text-success font-medium text-sm">✓ {stundenplanFile.name}</p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Gesamtstundenübersicht Upload */}
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-lg font-semibold flex items-center space-x-2">
-                            <div className="w-6 h-6 bg-primary/10 rounded-lg flex items-center justify-center">
-                              <FileText className="w-4 h-4 text-primary" />
-                            </div>
-                            <span>Gesamtstunden</span>
-                          </Label>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => downloadTemplate('gesamtstunden')}
-                            className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors h-8 px-3 text-xs"
-                          >
-                            <Download className="w-3 h-3" />
-                            <span>Template</span>
-                          </Button>
-                        </div>
-                        <div className="upload-area p-6 text-center min-h-[140px] flex flex-col justify-center">
-                          <Upload className="w-10 h-10 mx-auto text-primary mb-3 animate-pulse-subtle" />
-                          <p className="text-sm text-muted-foreground mb-3 font-medium">Gesamtstunden hier ablegen</p>
-                          <Input
-                            type="file"
-                            accept=".xlsx,.xls,.csv"
-                            onChange={(e) => setGesamtstundenFile(e.target.files?.[0] || null)}
-                            className="text-xs file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:transition-colors"
-                          />
-                          {gesamtstundenFile && (
-                            <div className="mt-3 p-2 bg-success/10 border border-success/20 rounded-lg">
-                              <p className="text-success font-medium text-sm">✓ {gesamtstundenFile.name}</p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Compact Form Row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                      <div className="space-y-2">
-                        <Label className="text-base font-medium flex items-center space-x-2">
-                          <div className="w-4 h-4 bg-primary/10 rounded flex items-center justify-center">
-                            <Calendar className="w-3 h-3 text-primary" />
-                          </div>
-                          <span>Monat</span>
-                        </Label>
-                        <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                          <SelectTrigger className="h-12 bg-card/80 backdrop-blur-sm border-border/50 rounded-xl">
-                            <SelectValue placeholder="Monat" />
-                          </SelectTrigger>
-                          <SelectContent className="backdrop-blur-sm">
-                            {months.map((month) => (
-                              <SelectItem key={month.value} value={month.value}>
-                                {month.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-base font-medium flex items-center space-x-2">
-                          <div className="w-4 h-4 bg-primary/10 rounded flex items-center justify-center">
-                            <Calendar className="w-3 h-3 text-primary" />
-                          </div>
-                          <span>Jahr</span>
-                        </Label>
-                        <Select value={selectedYear} onValueChange={setSelectedYear}>
-                          <SelectTrigger className="h-12 bg-card/80 backdrop-blur-sm border-border/50 rounded-xl">
-                            <SelectValue placeholder="Jahr" />
-                          </SelectTrigger>
-                          <SelectContent className="backdrop-blur-sm">
-                            {years.map((year) => (
-                              <SelectItem key={year.value} value={year.value}>
-                                {year.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-base font-medium flex items-center space-x-2">
-                          <div className="w-4 h-4 bg-primary/10 rounded flex items-center justify-center">
-                            <MapPin className="w-3 h-3 text-primary" />
-                          </div>
-                          <span>Bundesland</span>
-                        </Label>
-                        <Select value={selectedBundesland} onValueChange={setSelectedBundesland}>
-                          <SelectTrigger className="h-12 bg-card/80 backdrop-blur-sm border-border/50 rounded-xl">
-                            <SelectValue placeholder="Bundesland" />
-                          </SelectTrigger>
-                          <SelectContent className="backdrop-blur-sm">
-                            {bundeslaender.map((land) => (
-                              <SelectItem key={land} value={land}>
-                                {land}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    {/* Compact Rules Section */}
-                    <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-                      <div className="flex items-center justify-between">
-                        <Label className="text-lg font-semibold">Regeln & Besonderheiten</Label>
-                        {rules.length < 10 && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={addRule}
-                            className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors h-8 px-3 text-xs"
-                          >
-                            <Plus className="w-3 h-3" />
-                            <span>Hinzufügen</span>
-                          </Button>
-                        )}
-                      </div>
-                      <div className="space-y-3">
-                        {rules.map((rule, index) => (
-                          <div key={index} className="relative">
-                            <Input
-                              value={rule}
-                              onChange={(e) => updateRule(index, e.target.value)}
-                              placeholder="z.B: Die Nachtschicht am Wochenende geht von 6 bis 12 Uhr"
-                              className="pr-12 h-12 bg-card/80 backdrop-blur-sm border-border/50 focus:border-primary rounded-xl"
-                            />
-                            {rules.length > 1 && (
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeRule(index)}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground rounded-lg"
-                              >
-                                <X className="w-4 h-4" />
-                              </Button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Compact Info Section */}
-                    <div className="bg-gradient-to-r from-muted/20 to-secondary/10 rounded-xl p-4 backdrop-blur-sm border border-border/50 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                      <p className="font-semibold mb-3 text-base">Unterstützte Dateiformate:</p>
-                      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-success rounded-full animate-pulse-subtle"></div>
-                          <span>Excel (.xlsx, .xls)</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-success rounded-full animate-pulse-subtle"></div>
-                          <span>CSV (.csv)</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <Button 
-                      className="btn-gradient w-full h-14 text-lg font-semibold text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
-                      onClick={handleSubmit}
-                      disabled={!selectedMonth || !selectedYear || !selectedBundesland || (!stundenplanFile && !gesamtstundenFile)}
-                    >
-                      <Upload className="w-5 h-5 mr-2" />
-                      Daten verarbeiten
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
           <TabsContent value="reports" className="mt-8">
             <div className="animate-fade-in-up">
               <Card className="card-modern max-w-6xl mx-auto">
@@ -608,7 +262,7 @@ const Dashboard = () => {
                     <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/30 rounded-2xl flex items-center justify-center">
                       <FileText className="w-7 h-7 text-primary" />
                     </div>
-                    <span>Berichte</span>
+                    <span>Ihre Berichte</span>
                   </CardTitle>
                   <CardDescription className="text-lg mt-2 max-w-2xl mx-auto leading-relaxed">
                     Übersicht über Ihre verarbeiteten Arbeitsstundennachweise
@@ -659,20 +313,93 @@ const Dashboard = () => {
                       </div>
                       <h3 className="text-2xl font-semibold mb-4">Keine Berichte vorhanden</h3>
                       <p className="text-muted-foreground text-lg mb-8 max-w-md mx-auto">
-                        Laden Sie zuerst Ihre Stundendaten hoch, um Berichte zu erstellen.
+                        Ihre Berichte werden automatisch über die API-Integration hinzugefügt.
                       </p>
                       <Button 
                         variant="outline" 
                         onClick={() => {
-                          const uploadTab = document.querySelector('[value="upload"]') as HTMLElement;
-                          uploadTab?.click();
+                          const apiTab = document.querySelector('[value="api"]') as HTMLElement;
+                          apiTab?.click();
                         }}
                         className="px-8 py-3 hover:bg-primary hover:text-primary-foreground transition-colors"
                       >
-                        Zum Upload
+                        Zur API
                       </Button>
                     </div>
                   )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="api" className="mt-8">
+            <div className="animate-fade-in-up">
+              <Card className="card-modern max-w-4xl mx-auto">
+                <CardHeader className="text-center pb-10 bg-gradient-to-b from-primary/5 to-transparent">
+                  <CardTitle className="flex items-center justify-center space-x-4 text-3xl mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/30 rounded-2xl flex items-center justify-center">
+                      <Key className="w-7 h-7 text-primary" />
+                    </div>
+                    <span>API Integration</span>
+                  </CardTitle>
+                  <CardDescription className="text-lg mt-2 max-w-2xl mx-auto leading-relaxed">
+                    Verwenden Sie Ihren API Key für die automatische Übertragung von Berichten
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-8 p-8">
+                  {/* API Key Section */}
+                  <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-8 border border-primary/20">
+                    <h3 className="text-xl font-semibold mb-4">Ihr API Key</h3>
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div className="flex-1 bg-white/50 rounded-lg p-4 font-mono text-sm border">
+                        {userApiKey || 'Wird geladen...'}
+                      </div>
+                      <Button
+                        variant="outline"
+                        onClick={copyApiKey}
+                        disabled={!userApiKey}
+                        className="flex items-center space-x-2"
+                      >
+                        <Copy className="w-4 h-4" />
+                        <span>Kopieren</span>
+                      </Button>
+                    </div>
+                    <p className="text-muted-foreground text-sm">
+                      Verwenden Sie diesen API Key zur automatischen Übertragung Ihrer Berichte.
+                    </p>
+                  </div>
+
+                  {/* API Usage Documentation */}
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-semibold">API Verwendung</h3>
+                    
+                    <div className="bg-muted/50 rounded-lg p-6 space-y-4">
+                      <h4 className="font-semibold">Berichte hinzufügen</h4>
+                      <p className="text-muted-foreground">
+                        Senden Sie Berichte über die folgende API-Endpoint:
+                      </p>
+                      <div className="bg-white/80 rounded-lg p-4 font-mono text-sm border">
+                        POST https://kcahfnjgcwgntwkwypvx.supabase.co/functions/v1/add-report
+                      </div>
+                      
+                      <h5 className="font-medium mt-4">Payload Format:</h5>
+                      <div className="bg-white/80 rounded-lg p-4 font-mono text-sm border">
+                        {JSON.stringify({
+                          api_key: "ihr-api-key",
+                          title: "Bericht Name",
+                          download_url: "https://example.com/report.pdf",
+                          file_type: "PDF" // optional
+                        }, null, 2)}
+                      </div>
+                    </div>
+
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <h4 className="font-semibold text-blue-900 mb-2">💡 Tipp</h4>
+                      <p className="text-blue-700 text-sm">
+                        Alle über diese API hinzugefügten Berichte erscheinen automatisch in Ihrer Berichte-Übersicht.
+                      </p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
