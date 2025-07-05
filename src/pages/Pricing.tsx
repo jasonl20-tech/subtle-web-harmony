@@ -86,126 +86,149 @@ const Pricing = () => {
     "Sicherheit und Datenschutz"
   ];
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary-light/30">
       <Header />
       <main className="py-20 lg:py-32">
         <div className="container mx-auto px-6 lg:px-8">
           {/* Header Section */}
-          <div className="text-center max-w-4xl mx-auto mb-16">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-              Wählen Sie Ihren Plan
-            </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed mb-8">
-              Automatisieren Sie Ihre Arbeitsstundennachweise mit unserem Premium-Service
-            </p>
+          <div className="text-center max-w-4xl mx-auto mb-20">
+            <div className="animate-fade-in-up">
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground mb-8 leading-tight">
+                Wählen Sie Ihren 
+                <span className="bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent"> Plan</span>
+              </h1>
+              <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed mb-12 max-w-3xl mx-auto">
+                Automatisieren Sie Ihre Arbeitsstundennachweise mit unserem Premium-Service
+              </p>
+            </div>
             
             {subscription.subscribed && (
-              <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium mb-8">
-                <Check className="w-4 h-4 mr-2" />
+              <div className="animate-scale-in inline-flex items-center px-6 py-3 bg-gradient-to-r from-accent-light to-accent-light/80 text-accent rounded-full text-base font-semibold mb-8 shadow-md">
+                <Check className="w-5 h-5 mr-3" />
                 Sie haben bereits ein aktives {subscription.subscription_tier} Abonnement
               </div>
             )}
           </div>
 
           {/* Pricing Cards */}
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* Monthly Plan */}
-            <Card className="relative overflow-hidden shadow-lg border-0 bg-card/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-              <CardHeader className="text-center pb-8 bg-gradient-to-b from-primary/5 to-transparent">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Zap className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-2xl font-bold mb-2">Monatlich</h3>
-                <div className="space-y-2">
-                  <div className="text-4xl font-bold text-primary">49€</div>
-                  <p className="text-muted-foreground">pro Monat (netto)</p>
-                  <p className="text-sm text-muted-foreground">58,31€ inkl. MwSt.</p>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <ul className="space-y-3">
-                  {features.map((feature, index) => (
-                    <li key={index} className="flex items-start space-x-3">
-                      <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <Button 
-                  className="w-full h-12 text-lg bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-200"
-                  onClick={() => handleCheckout('monthly')}
-                  disabled={isLoading.monthly || (subscription.subscribed && subscription.subscription_tier === 'Monatlich')}
-                >
-                  {isLoading.monthly ? (
-                    "Wird geladen..."
-                  ) : subscription.subscribed && subscription.subscription_tier === 'Monatlich' ? (
-                    "Aktueller Plan"
-                  ) : (
-                    "Monatlich starten"
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              <Card className="card-pricing">
+                <CardHeader className="text-center pb-10 bg-gradient-to-b from-primary/5 to-transparent">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary/10 to-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse-subtle">
+                    <Zap className="w-8 h-8 text-primary" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4 text-foreground">Monatlich</h3>
+                  <div className="space-y-3">
+                    <div className="text-5xl font-bold text-primary">49€</div>
+                    <p className="text-muted-foreground text-lg">pro Monat (netto)</p>
+                    <p className="text-sm text-muted-foreground opacity-75">58,31€ inkl. MwSt.</p>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-8 px-8 pb-10">
+                  <ul className="space-y-4">
+                    {features.map((feature, index) => (
+                      <li key={index} className="feature-item flex items-start space-x-4">
+                        <Check className="feature-check w-6 h-6 text-success mt-0.5 flex-shrink-0" />
+                        <span className="text-base leading-relaxed">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <Button 
+                    className="btn-gradient w-full h-14 text-lg font-semibold text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
+                    onClick={() => handleCheckout('monthly')}
+                    disabled={isLoading.monthly || (subscription.subscribed && subscription.subscription_tier === 'Monatlich')}
+                  >
+                    {isLoading.monthly ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent mr-3"></div>
+                        Wird geladen...
+                      </>
+                    ) : subscription.subscribed && subscription.subscription_tier === 'Monatlich' ? (
+                      <>
+                        <Check className="w-5 h-5 mr-2" />
+                        Aktueller Plan
+                      </>
+                    ) : (
+                      "Monatlich starten"
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
 
             {/* Yearly Plan */}
-            <Card className="relative overflow-hidden shadow-lg border-2 border-primary bg-card/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground px-4 py-1 font-semibold">
-                  <Crown className="w-4 h-4 mr-1" />
-                  2 Monate gratis
-                </Badge>
-              </div>
-              
-              <CardHeader className="text-center pb-8 bg-gradient-to-b from-primary/10 to-transparent pt-8">
-                <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Crown className="w-6 h-6 text-primary" />
+            <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <Card className="card-pricing border-2 border-primary/20 bg-gradient-to-b from-card to-primary-light/10">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <Badge className="btn-success-gradient text-success-foreground px-6 py-2 font-bold text-sm shadow-md">
+                    <Crown className="w-4 h-4 mr-2" />
+                    2 Monate gratis
+                  </Badge>
                 </div>
-                <h3 className="text-2xl font-bold mb-2">Jährlich</h3>
-                <div className="space-y-2">
-                  <div className="text-4xl font-bold text-primary">499€</div>
-                  <p className="text-muted-foreground">pro Jahr (netto)</p>
-                  <p className="text-sm text-muted-foreground">593,81€ inkl. MwSt.</p>
-                  <div className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-sm font-medium inline-block">
-                    Sparen Sie 89€ pro Jahr!
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <ul className="space-y-3">
-                  {features.map((feature, index) => (
-                    <li key={index} className="flex items-start space-x-3">
-                      <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
                 
-                <Button 
-                  className="w-full h-12 text-lg bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-600 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-                  onClick={() => handleCheckout('yearly')}
-                  disabled={isLoading.yearly || (subscription.subscribed && subscription.subscription_tier === 'Jährlich')}
-                >
-                  {isLoading.yearly ? (
-                    "Wird geladen..."
-                  ) : subscription.subscribed && subscription.subscription_tier === 'Jährlich' ? (
-                    "Aktueller Plan"
-                  ) : (
-                    "Jährlich starten"
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
+                <CardHeader className="text-center pb-10 bg-gradient-to-b from-primary/10 to-transparent pt-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/30 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse-subtle">
+                    <Crown className="w-8 h-8 text-primary" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4 text-foreground">Jährlich</h3>
+                  <div className="space-y-3">
+                    <div className="text-5xl font-bold text-primary">499€</div>
+                    <p className="text-muted-foreground text-lg">pro Jahr (netto)</p>
+                    <p className="text-sm text-muted-foreground opacity-75">593,81€ inkl. MwSt.</p>
+                    <div className="inline-block bg-gradient-to-r from-success/20 to-success/10 text-success rounded-full px-4 py-2 text-sm font-semibold border border-success/20">
+                      Sparen Sie 89€ pro Jahr!
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-8 px-8 pb-10">
+                  <ul className="space-y-4">
+                    {features.map((feature, index) => (
+                      <li key={index} className="feature-item flex items-start space-x-4">
+                        <Check className="feature-check w-6 h-6 text-success mt-0.5 flex-shrink-0" />
+                        <span className="text-base leading-relaxed">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <Button 
+                    className="btn-success-gradient w-full h-14 text-lg font-semibold text-success-foreground shadow-lg hover:shadow-xl transition-all duration-300"
+                    onClick={() => handleCheckout('yearly')}
+                    disabled={isLoading.yearly || (subscription.subscribed && subscription.subscription_tier === 'Jährlich')}
+                  >
+                    {isLoading.yearly ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent mr-3"></div>
+                        Wird geladen...
+                      </>
+                    ) : subscription.subscribed && subscription.subscription_tier === 'Jährlich' ? (
+                      <>
+                        <Check className="w-5 h-5 mr-2" />
+                        Aktueller Plan
+                      </>
+                    ) : (
+                      "Jährlich starten"
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
           {/* Additional Info */}
-          <div className="text-center max-w-2xl mx-auto mt-16">
-            <p className="text-muted-foreground mb-4">
-              Alle Preise verstehen sich zzgl. der gesetzlichen Mehrwertsteuer.
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Sie können Ihr Abonnement jederzeit über das Kundenportal verwalten oder kündigen.
-            </p>
+          <div className="text-center max-w-3xl mx-auto mt-20">
+            <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+              <div className="bg-gradient-to-r from-muted/50 to-secondary/30 rounded-2xl p-8 backdrop-blur-sm border border-border/50">
+                <p className="text-muted-foreground mb-4 text-lg">
+                  Alle Preise verstehen sich zzgl. der gesetzlichen Mehrwertsteuer.
+                </p>
+                <p className="text-base text-muted-foreground/80">
+                  Sie können Ihr Abonnement jederzeit über das Kundenportal verwalten oder kündigen.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </main>

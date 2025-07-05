@@ -8,53 +8,76 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Professional Clean Design System */
+    /* Modern Design System */
     /* Base Colors */
     --background: 0 0% 100%;               /* Reinweiß #FFFFFF */
-    --foreground: 0 0% 13%;                /* Dunkles Anthrazit #222222 */
+    --foreground: 0 0% 8%;                 /* Tiefes Anthrazit für besseren Kontrast */
     
     /* Card & Container Colors */
     --card: 0 0% 100%;                     /* Weiß für Karten */
-    --card-foreground: 0 0% 13%;           /* Anthrazit Text auf Karten */
+    --card-foreground: 0 0% 8%;            /* Anthrazit Text auf Karten */
     
     /* Popover Colors */
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 13%;
+    --popover-foreground: 0 0% 8%;
     
-    /* Primary Brand Color - Klares Blau */
+    /* Primary Brand Color - Moderne Farbpalette */
     --primary: 225 100% 62%;               /* Klares Blau #3A86FF */
     --primary-foreground: 0 0% 100%;       /* Weiß auf Blau */
     --primary-hover: 225 100% 58%;         /* Helleres Blau für Hover */
+    --primary-light: 225 100% 92%;         /* Sehr helles Blau für Backgrounds */
     
-    /* Secondary Colors - Grautöne */
-    --secondary: 0 0% 94%;                 /* Helles Grau #F0F0F0 */
-    --secondary-foreground: 0 0% 13%;      /* Anthrazit auf hellem Grau */
+    /* Secondary Colors - Erweiterte Grautöne */
+    --secondary: 0 0% 96%;                 /* Sehr helles Grau #F5F5F5 */
+    --secondary-foreground: 0 0% 8%;       /* Anthrazit auf hellem Grau */
     
     /* Muted Colors für sekundäre Texte */
-    --muted: 0 0% 94%;                     /* Helles Grau für Hintergründe */
-    --muted-foreground: 0 0% 40%;          /* Weiches Grau #666666 für sekundäre Texte */
+    --muted: 0 0% 96%;                     /* Sehr helles Grau für Hintergründe */
+    --muted-foreground: 0 0% 35%;          /* Weiches Grau für sekundäre Texte */
     
-    /* Accent Colors */
-    --accent: 0 0% 94%;                    /* Helles Grau */
-    --accent-foreground: 0 0% 13%;         /* Anthrazit */
+    /* Accent Colors - Grün für Success */
+    --accent: 142 76% 36%;                 /* Grün für Erfolg */
+    --accent-foreground: 0 0% 100%;        /* Weiß auf Grün */
+    --accent-light: 142 76% 95%;           /* Helles Grün für Backgrounds */
     
     /* Status Colors */
     --destructive: 0 84% 60%;              /* Sanftes Rot für Fehler */
     --destructive-foreground: 0 0% 100%;
+    --success: 142 76% 36%;                /* Grün für Erfolg */
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;                 /* Orange für Warnungen */
+    --warning-foreground: 0 0% 100%;
     
     /* Border & Input Colors */
-    --border: 0 0% 69%;                    /* Mittelgrau #B0B0B0 für Linien */
-    --input: 0 0% 69%;                     /* Mittelgrau für Input-Rahmen */
+    --border: 0 0% 89%;                    /* Helleres Grau für weichere Linien */
+    --input: 0 0% 89%;                     /* Helleres Grau für Input-Rahmen */
     --input-focus: 225 100% 62%;           /* Blau für Fokus-Zustand */
     --ring: 225 100% 62%;                  /* Blauer Fokus-Ring */
     
     /* Design System Properties */
-    --radius: 0.5rem;                      /* 8px für weiche Border-Radius */
+    --radius: 0.75rem;                     /* 12px für modernere Border Radius */
+    --radius-lg: 1rem;                     /* 16px für große Elemente */
+    --radius-xl: 1.5rem;                   /* 24px für Cards */
     
-    /* Schatten für sanfte Elevation */
-    --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    /* Moderne Schatten für bessere Elevation */
+    --shadow-subtle: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    --shadow-hover: 0 20px 30px -5px rgb(0 0 0 / 0.15), 0 8px 16px -8px rgb(0 0 0 / 0.2);
+    
+    /* Glasmorphism Effects */
+    --glass-bg: rgba(255, 255, 255, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    
+    /* Moderne Farbverläufe */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(225 100% 72%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(0 0% 98%) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    --gradient-success: linear-gradient(135deg, hsl(var(--success)) 0%, hsl(142 76% 46%) 100%);
     
     /* Typography */
     --font-size-base: 16px;                /* Angenehme Lesbarkeit */
@@ -134,28 +157,210 @@ All colors MUST be HSL.
     line-height: 1.2;
   }
   
-  /* Custom Component Styles */
-  .card-elegant {
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-card);
-    transition: box-shadow 0.2s ease-in-out;
+  /* Modern Component Styles */
+  .card-glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  .card-elegant:hover {
+  .card-glass:hover {
+    transform: translateY(-2px);
     box-shadow: var(--shadow-hover);
   }
   
-  .btn-primary-hover {
-    background: hsl(var(--primary-hover));
+  .card-modern {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  /* Input Focus Styles */
-  .input-focus:focus {
-    outline: 2px solid hsl(var(--input-focus));
-    outline-offset: 2px;
-    border-color: hsl(var(--input-focus));
+  .card-modern:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+  
+  .card-pricing {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card-pricing::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-glass);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  
+  .card-pricing:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .card-pricing:hover::before {
+    opacity: 1;
+  }
+  
+  .btn-gradient {
+    background: var(--gradient-primary);
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .btn-gradient:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .btn-success-gradient {
+    background: var(--gradient-success);
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .btn-success-gradient:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  /* Modern Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .animate-slide-in-right {
+    animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+  }
+  
+  /* Upload Area Styles */
+  .upload-area {
+    border: 2px dashed hsl(var(--border));
+    border-radius: var(--radius-xl);
+    background: var(--gradient-glass);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .upload-area:hover {
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary-light));
+    transform: translateY(-2px);
+  }
+  
+  .upload-area.drag-over {
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary-light));
+    transform: scale(1.02);
+  }
+  
+  /* Feature List Animations */
+  .feature-item {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .feature-item:hover {
+    transform: translateX(4px);
+    color: hsl(var(--primary));
+  }
+  
+  .feature-check {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .feature-item:hover .feature-check {
+    transform: scale(1.1);
+    color: hsl(var(--success));
+  }
+  
+  /* Loading States */
+  .skeleton {
+    background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--muted-foreground) / 0.1) 50%, hsl(var(--muted)) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    border-radius: var(--radius);
   }
   
   /* Floating Animation for Math Symbols */

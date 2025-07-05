@@ -258,437 +258,485 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary-light/20">
       <Header />
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
-            Willkommen zurück!
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Verwalten Sie Ihre Arbeitsstundennachweise einfach und effizient
-          </p>
+        <div className="mb-12 text-center">
+          <div className="animate-fade-in-up">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight">
+              Willkommen 
+              <span className="bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent"> zurück!</span>
+            </h1>
+            <p className="text-muted-foreground text-xl max-w-2xl mx-auto leading-relaxed">
+              Verwalten Sie Ihre Arbeitsstundennachweise einfach und effizient
+            </p>
+          </div>
         </div>
 
         <Tabs defaultValue="upload" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 max-w-2xl mx-auto mb-8 bg-card/50 backdrop-blur-sm">
-            <TabsTrigger value="upload" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <Upload className="w-4 h-4" />
-              <span className="hidden sm:inline">Upload</span>
+          <TabsList className="card-modern grid w-full grid-cols-3 max-w-3xl mx-auto mb-12 p-2 h-auto bg-card/80 backdrop-blur-sm">
+            <TabsTrigger 
+              value="upload" 
+              className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-300"
+            >
+              <Upload className="w-5 h-5" />
+              <span className="hidden sm:inline font-medium">Upload</span>
             </TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <FileText className="w-4 h-4" />
-              <span className="hidden sm:inline">Berichte</span>
+            <TabsTrigger 
+              value="reports" 
+              className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-300"
+            >
+              <FileText className="w-5 h-5" />
+              <span className="hidden sm:inline font-medium">Berichte</span>
             </TabsTrigger>
-            <TabsTrigger value="subscription" className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <Calendar className="w-4 h-4" />
-              <span className="hidden sm:inline">Abonnement</span>
+            <TabsTrigger 
+              value="subscription" 
+              className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-300"
+            >
+              <Calendar className="w-5 h-5" />
+              <span className="hidden sm:inline font-medium">Abonnement</span>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="upload" className="mt-8">
-            <Card className="max-w-4xl mx-auto shadow-lg border-0 bg-card/50 backdrop-blur-sm">
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="flex items-center justify-center space-x-3 text-2xl">
-                  <Upload className="w-6 h-6 text-primary" />
-                  <span>Dateien hochladen</span>
-                </CardTitle>
-                <CardDescription className="text-lg mt-2">
-                  Laden Sie Ihre Stundendaten hoch und lassen Sie sie automatisch verarbeiten
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
-                {/* Upload Sections */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Stundenplan Upload */}
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-lg font-semibold flex items-center space-x-2">
-                        <Calendar className="w-5 h-5 text-primary" />
-                        <span>Stundenplan</span>
-                      </Label>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => downloadTemplate('stundenplan')}
-                        className="flex items-center space-x-2"
-                      >
-                        <Download className="w-4 h-4" />
-                        <span>Template</span>
-                      </Button>
+            <div className="animate-fade-in-up">
+              <Card className="card-modern max-w-6xl mx-auto">
+                <CardHeader className="text-center pb-10 bg-gradient-to-b from-primary/5 to-transparent">
+                  <CardTitle className="flex items-center justify-center space-x-4 text-3xl mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/30 rounded-2xl flex items-center justify-center">
+                      <Upload className="w-7 h-7 text-primary" />
                     </div>
-                    <div className="border-2 border-dashed border-primary/20 hover:border-primary/40 transition-colors rounded-xl p-6 text-center bg-gradient-to-b from-card to-card/50">
-                      <Upload className="w-12 h-12 mx-auto text-primary mb-3" />
-                      <p className="text-sm text-muted-foreground mb-3">Stundenplan hier ablegen oder durchsuchen</p>
-                      <Input
-                        type="file"
-                        accept=".xlsx,.xls,.csv"
-                        onChange={(e) => setStundenplanFile(e.target.files?.[0] || null)}
-                        className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
-                      />
-                      {stundenplanFile && (
-                        <p className="text-sm text-primary mt-2">✓ {stundenplanFile.name}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Gesamtstundenübersicht Upload */}
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-lg font-semibold flex items-center space-x-2">
-                        <FileText className="w-5 h-5 text-primary" />
-                        <span>Gesamtstundenübersicht</span>
-                      </Label>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => downloadTemplate('gesamtstunden')}
-                        className="flex items-center space-x-2"
-                      >
-                        <Download className="w-4 h-4" />
-                        <span>Template</span>
-                      </Button>
-                    </div>
-                    <div className="border-2 border-dashed border-primary/20 hover:border-primary/40 transition-colors rounded-xl p-6 text-center bg-gradient-to-b from-card to-card/50">
-                      <Upload className="w-12 h-12 mx-auto text-primary mb-3" />
-                      <p className="text-sm text-muted-foreground mb-3">Gesamtstunden hier ablegen oder durchsuchen</p>
-                      <Input
-                        type="file"
-                        accept=".xlsx,.xls,.csv"
-                        onChange={(e) => setGesamtstundenFile(e.target.files?.[0] || null)}
-                        className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
-                      />
-                      {gesamtstundenFile && (
-                        <p className="text-sm text-primary mt-2">✓ {gesamtstundenFile.name}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Month, Year and Bundesland Selection */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div className="space-y-3">
-                    <Label className="text-base font-medium flex items-center space-x-2">
-                      <Calendar className="w-4 h-4 text-primary" />
-                      <span>Monat</span>
-                    </Label>
-                    <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                      <SelectTrigger className="h-12 bg-card/50">
-                        <SelectValue placeholder="Monat auswählen" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {months.map((month) => (
-                          <SelectItem key={month.value} value={month.value}>
-                            {month.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-3">
-                    <Label className="text-base font-medium flex items-center space-x-2">
-                      <Calendar className="w-4 h-4 text-primary" />
-                      <span>Jahr</span>
-                    </Label>
-                    <Select value={selectedYear} onValueChange={setSelectedYear}>
-                      <SelectTrigger className="h-12 bg-card/50">
-                        <SelectValue placeholder="Jahr auswählen" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {years.map((year) => (
-                          <SelectItem key={year.value} value={year.value}>
-                            {year.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-3 sm:col-span-2 lg:col-span-1">
-                    <Label className="text-base font-medium flex items-center space-x-2">
-                      <MapPin className="w-4 h-4 text-primary" />
-                      <span>Bundesland</span>
-                    </Label>
-                    <Select value={selectedBundesland} onValueChange={setSelectedBundesland}>
-                      <SelectTrigger className="h-12 bg-card/50">
-                        <SelectValue placeholder="Bundesland auswählen" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {bundeslaender.map((land) => (
-                          <SelectItem key={land} value={land}>
-                            {land}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Rules Section */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-lg font-semibold">Regeln & Besonderheiten</Label>
-                    {rules.length < 10 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={addRule}
-                        className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors"
-                      >
-                        <Plus className="w-4 h-4" />
-                        <span>Regel hinzufügen</span>
-                      </Button>
-                    )}
-                  </div>
-                  <div className="space-y-3">
-                    {rules.map((rule, index) => (
-                      <div key={index} className="relative">
+                    <span>Dateien hochladen</span>
+                  </CardTitle>
+                  <CardDescription className="text-lg mt-2 max-w-2xl mx-auto leading-relaxed">
+                    Laden Sie Ihre Stundendaten hoch und lassen Sie sie automatisch verarbeiten
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-10 p-8">
+                  {/* Upload Sections */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Stundenplan Upload */}
+                    <div className="space-y-6 animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xl font-semibold flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <Calendar className="w-5 h-5 text-primary" />
+                          </div>
+                          <span>Stundenplan</span>
+                        </Label>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => downloadTemplate('stundenplan')}
+                          className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+                        >
+                          <Download className="w-4 h-4" />
+                          <span>Template</span>
+                        </Button>
+                      </div>
+                      <div className="upload-area p-8 text-center">
+                        <div className="mb-6">
+                          <Upload className="w-14 h-14 mx-auto text-primary mb-4 animate-pulse-subtle" />
+                          <p className="text-base text-muted-foreground mb-4 font-medium">Stundenplan hier ablegen oder durchsuchen</p>
+                        </div>
                         <Input
-                          value={rule}
-                          onChange={(e) => updateRule(index, e.target.value)}
-                          placeholder="z.B: Die Nachtschicht am Wochenende geht von 6 bis 12 Uhr"
-                          className="pr-12 h-12 bg-card/50 border-primary/20 focus:border-primary"
+                          type="file"
+                          accept=".xlsx,.xls,.csv"
+                          onChange={(e) => setStundenplanFile(e.target.files?.[0] || null)}
+                          className="text-sm file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:transition-colors"
                         />
-                        {rules.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeRule(index)}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground"
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
+                        {stundenplanFile && (
+                          <div className="mt-4 p-3 bg-success/10 border border-success/20 rounded-lg">
+                            <p className="text-success font-medium">✓ {stundenplanFile.name}</p>
+                          </div>
                         )}
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-muted/30 rounded-xl p-6">
-                  <p className="font-semibold mb-3 text-base">Unterstützte Dateiformate:</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span>Excel-Dateien (.xlsx, .xls)</span>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span>CSV-Dateien (.csv)</span>
+
+                    {/* Gesamtstundenübersicht Upload */}
+                    <div className="space-y-6 animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xl font-semibold flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <FileText className="w-5 h-5 text-primary" />
+                          </div>
+                          <span>Gesamtstundenübersicht</span>
+                        </Label>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => downloadTemplate('gesamtstunden')}
+                          className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+                        >
+                          <Download className="w-4 h-4" />
+                          <span>Template</span>
+                        </Button>
+                      </div>
+                      <div className="upload-area p-8 text-center">
+                        <div className="mb-6">
+                          <Upload className="w-14 h-14 mx-auto text-primary mb-4 animate-pulse-subtle" />
+                          <p className="text-base text-muted-foreground mb-4 font-medium">Gesamtstunden hier ablegen oder durchsuchen</p>
+                        </div>
+                        <Input
+                          type="file"
+                          accept=".xlsx,.xls,.csv"
+                          onChange={(e) => setGesamtstundenFile(e.target.files?.[0] || null)}
+                          className="text-sm file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:transition-colors"
+                        />
+                        {gesamtstundenFile && (
+                          <div className="mt-4 p-3 bg-success/10 border border-success/20 rounded-lg">
+                            <p className="text-success font-medium">✓ {gesamtstundenFile.name}</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <Button 
-                  className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-200" 
-                  onClick={handleSubmit}
-                  disabled={!selectedMonth || !selectedYear || !selectedBundesland || (!stundenplanFile && !gesamtstundenFile)}
-                >
-                  <Upload className="w-5 h-5 mr-2" />
-                  Daten verarbeiten
-                </Button>
-              </CardContent>
-            </Card>
+                  {/* Month, Year and Bundesland Selection */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+                    <div className="space-y-4">
+                      <Label className="text-lg font-semibold flex items-center space-x-3">
+                        <div className="w-6 h-6 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <Calendar className="w-4 h-4 text-primary" />
+                        </div>
+                        <span>Monat</span>
+                      </Label>
+                      <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                        <SelectTrigger className="h-14 bg-card/80 backdrop-blur-sm border-border/50 text-base rounded-xl">
+                          <SelectValue placeholder="Monat auswählen" />
+                        </SelectTrigger>
+                        <SelectContent className="backdrop-blur-sm">
+                          {months.map((month) => (
+                            <SelectItem key={month.value} value={month.value}>
+                              {month.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-4">
+                      <Label className="text-lg font-semibold flex items-center space-x-3">
+                        <div className="w-6 h-6 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <Calendar className="w-4 h-4 text-primary" />
+                        </div>
+                        <span>Jahr</span>
+                      </Label>
+                      <Select value={selectedYear} onValueChange={setSelectedYear}>
+                        <SelectTrigger className="h-14 bg-card/80 backdrop-blur-sm border-border/50 text-base rounded-xl">
+                          <SelectValue placeholder="Jahr auswählen" />
+                        </SelectTrigger>
+                        <SelectContent className="backdrop-blur-sm">
+                          {years.map((year) => (
+                            <SelectItem key={year.value} value={year.value}>
+                              {year.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-4 sm:col-span-2 lg:col-span-1">
+                      <Label className="text-lg font-semibold flex items-center space-x-3">
+                        <div className="w-6 h-6 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <MapPin className="w-4 h-4 text-primary" />
+                        </div>
+                        <span>Bundesland</span>
+                      </Label>
+                      <Select value={selectedBundesland} onValueChange={setSelectedBundesland}>
+                        <SelectTrigger className="h-14 bg-card/80 backdrop-blur-sm border-border/50 text-base rounded-xl">
+                          <SelectValue placeholder="Bundesland auswählen" />
+                        </SelectTrigger>
+                        <SelectContent className="backdrop-blur-sm">
+                          {bundeslaender.map((land) => (
+                            <SelectItem key={land} value={land}>
+                              {land}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* Rules Section */}
+                  <div className="space-y-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xl font-semibold">Regeln & Besonderheiten</Label>
+                      {rules.length < 10 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={addRule}
+                          className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span>Regel hinzufügen</span>
+                        </Button>
+                      )}
+                    </div>
+                    <div className="space-y-4">
+                      {rules.map((rule, index) => (
+                        <div key={index} className="relative">
+                          <Input
+                            value={rule}
+                            onChange={(e) => updateRule(index, e.target.value)}
+                            placeholder="z.B: Die Nachtschicht am Wochenende geht von 6 bis 12 Uhr"
+                            className="pr-14 h-14 bg-card/80 backdrop-blur-sm border-border/50 focus:border-primary text-base rounded-xl"
+                          />
+                          {rules.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeRule(index)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground rounded-lg"
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-muted/30 to-secondary/20 rounded-2xl p-8 backdrop-blur-sm border border-border/50 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                    <p className="font-semibold mb-4 text-lg">Unterstützte Dateiformate:</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-base text-muted-foreground">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-success rounded-full animate-pulse-subtle"></div>
+                        <span>Excel-Dateien (.xlsx, .xls)</span>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-success rounded-full animate-pulse-subtle"></div>
+                        <span>CSV-Dateien (.csv)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button 
+                    className="btn-gradient w-full h-16 text-xl font-semibold text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
+                    onClick={handleSubmit}
+                    disabled={!selectedMonth || !selectedYear || !selectedBundesland || (!stundenplanFile && !gesamtstundenFile)}
+                  >
+                    <Upload className="w-6 h-6 mr-3" />
+                    Daten verarbeiten
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="reports" className="mt-8">
-            <Card className="max-w-6xl mx-auto shadow-lg border-0 bg-card/50 backdrop-blur-sm">
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="flex items-center justify-center space-x-3 text-2xl">
-                  <FileText className="w-6 h-6 text-primary" />
-                  <span>Berichte</span>
-                </CardTitle>
-                <CardDescription className="text-lg mt-2">
-                  Übersicht über Ihre verarbeiteten Arbeitsstundennachweise
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {reports.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {reports.map((report) => (
-                      <Card key={report.id} className="bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-shadow duration-200">
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex items-center space-x-3">
-                              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                                <FileText className="w-5 h-5 text-primary" />
-                              </div>
-                              <div>
-                                <h3 className="font-semibold text-foreground line-clamp-1">{report.title}</h3>
-                                <p className="text-sm text-muted-foreground">
-                                  {new Date(report.created_at).toLocaleDateString('de-DE')}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">
-                              {report.file_type || 'Bericht'}
-                            </span>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => window.open(report.download_url, '_blank')}
-                              className="flex items-center space-x-2"
-                            >
-                              <Download className="w-4 h-4" />
-                              <span>Download</span>
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-16">
-                    <div className="w-24 h-24 bg-muted/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <FileText className="w-12 h-12 text-muted-foreground" />
+            <div className="animate-fade-in-up">
+              <Card className="card-modern max-w-6xl mx-auto">
+                <CardHeader className="text-center pb-10 bg-gradient-to-b from-primary/5 to-transparent">
+                  <CardTitle className="flex items-center justify-center space-x-4 text-3xl mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/30 rounded-2xl flex items-center justify-center">
+                      <FileText className="w-7 h-7 text-primary" />
                     </div>
-                    <h3 className="text-xl font-semibold mb-3">Keine Berichte vorhanden</h3>
-                    <p className="text-muted-foreground text-lg mb-6">
-                      Laden Sie zuerst Ihre Stundendaten hoch, um Berichte zu erstellen.
-                    </p>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        const uploadTab = document.querySelector('[value="upload"]') as HTMLElement;
-                        uploadTab?.click();
-                      }}
-                      className="px-6"
-                    >
-                      Zum Upload
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="subscription" className="mt-8">
-            <Card className="max-w-4xl mx-auto shadow-lg border-0 bg-card/50 backdrop-blur-sm">
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="flex items-center justify-center space-x-3 text-2xl">
-                  <Calendar className="w-6 h-6 text-primary" />
-                  <span>Mein Abonnement</span>
-                </CardTitle>
-                <CardDescription className="text-lg mt-2">
-                  Verwalten Sie Ihr Abonnement und Zahlungseinstellungen
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
-                {/* Current Subscription Status */}
-                <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 border border-primary/20">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h3 className="text-xl font-semibold text-foreground">Aktives Abonnement</h3>
-                      <p className="text-muted-foreground">
-                        {subscription.subscription_tier} Plan
-                      </p>
+                    <span>Berichte</span>
+                  </CardTitle>
+                  <CardDescription className="text-lg mt-2 max-w-2xl mx-auto leading-relaxed">
+                    Übersicht über Ihre verarbeiteten Arbeitsstundennachweise
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-8">
+                  {reports.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {reports.map((report, index) => (
+                        <div key={report.id} className="animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                          <Card className="card-modern bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-all duration-300">
+                            <CardContent className="p-6">
+                              <div className="flex items-start justify-between mb-6">
+                                <div className="flex items-center space-x-4">
+                                  <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl flex items-center justify-center">
+                                    <FileText className="w-6 h-6 text-primary" />
+                                  </div>
+                                  <div>
+                                    <h3 className="font-semibold text-foreground text-lg line-clamp-1">{report.title}</h3>
+                                    <p className="text-muted-foreground">
+                                      {new Date(report.created_at).toLocaleDateString('de-DE')}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-muted-foreground font-medium">
+                                  {report.file_type || 'Bericht'}
+                                </span>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => window.open(report.download_url, '_blank')}
+                                  className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+                                >
+                                  <Download className="w-4 h-4" />
+                                  <span>Download</span>
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      ))}
                     </div>
-                    <div className="text-right">
-                      <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">
-                        ✓ Aktiv
+                  ) : (
+                    <div className="text-center py-20">
+                      <div className="w-28 h-28 bg-gradient-to-br from-muted/20 to-muted/10 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <FileText className="w-14 h-14 text-muted-foreground" />
                       </div>
-                    </div>
-                  </div>
-                  
-                  {subscription.subscription_end && (
-                    <div className="text-sm text-muted-foreground">
-                      <p>Nächste Abrechnung: {new Date(subscription.subscription_end).toLocaleDateString('de-DE', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}</p>
+                      <h3 className="text-2xl font-semibold mb-4">Keine Berichte vorhanden</h3>
+                      <p className="text-muted-foreground text-lg mb-8 max-w-md mx-auto">
+                        Laden Sie zuerst Ihre Stundendaten hoch, um Berichte zu erstellen.
+                      </p>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          const uploadTab = document.querySelector('[value="upload"]') as HTMLElement;
+                          uploadTab?.click();
+                        }}
+                        className="px-8 py-3 hover:bg-primary hover:text-primary-foreground transition-colors"
+                      >
+                        Zum Upload
+                      </Button>
                     </div>
                   )}
-                </div>
-
-                {/* Management Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card className="bg-gradient-to-br from-card to-card/50">
-                    <CardContent className="p-6">
-                      <div className="flex items-center space-x-3 mb-4">
-                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                          <Calendar className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold">Zahlungseinstellungen</h3>
-                          <p className="text-sm text-muted-foreground">Zahlungsmethode & Rechnungen</p>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="subscription" className="mt-8">
+            <div className="animate-fade-in-up">
+              <Card className="card-modern max-w-5xl mx-auto">
+                <CardHeader className="text-center pb-10 bg-gradient-to-b from-primary/5 to-transparent">
+                  <CardTitle className="flex items-center justify-center space-x-4 text-3xl mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/30 rounded-2xl flex items-center justify-center">
+                      <Calendar className="w-7 h-7 text-primary" />
+                    </div>
+                    <span>Mein Abonnement</span>
+                  </CardTitle>
+                  <CardDescription className="text-lg mt-2 max-w-2xl mx-auto leading-relaxed">
+                    Verwalten Sie Ihr Abonnement und Zahlungseinstellungen
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-10 p-8">
+                  {/* Current Subscription Status */}
+                  <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-8 border border-primary/20 animate-scale-in">
+                    <div className="flex items-center justify-between mb-6">
+                      <div>
+                        <h3 className="text-2xl font-semibold text-foreground mb-2">Aktives Abonnement</h3>
+                        <p className="text-muted-foreground text-lg">
+                          {subscription.subscription_tier} Plan
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-success/20 to-success/10 text-success text-base font-semibold border border-success/20">
+                          ✓ Aktiv
                         </div>
                       </div>
-                      <Button 
-                        className="w-full" 
-                        variant="outline"
-                        onClick={async () => {
-                          try {
-                            const auth = useAuth();
-                            if (!auth?.session) return;
-                            
-                            const { data, error } = await supabase.functions.invoke('customer-portal', {
-                              headers: {
-                                Authorization: `Bearer ${auth.session.access_token}`,
-                              },
-                            });
-                            
-                            if (error) {
-                              toast({
-                                title: "Fehler",
-                                description: "Kundenportal konnte nicht geöffnet werden.",
-                                variant: "destructive",
-                              });
-                              return;
-                            }
-                            
-                            window.open(data.url, '_blank');
-                          } catch (error) {
-                            toast({
-                              title: "Fehler",
-                              description: "Ein unerwarteter Fehler ist aufgetreten.",
-                              variant: "destructive",
-                            });
-                          }
-                        }}
-                      >
-                        Zahlungen verwalten
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-gradient-to-br from-card to-card/50">
-                    <CardContent className="p-6">
-                      <div className="flex items-center space-x-3 mb-4">
-                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                          <Download className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold">Subscription Status</h3>
-                          <p className="text-sm text-muted-foreground">Status aktualisieren</p>
-                        </div>
+                    </div>
+                    
+                    {subscription.subscription_end && (
+                      <div className="text-muted-foreground">
+                        <p className="text-base">Nächste Abrechnung: {new Date(subscription.subscription_end).toLocaleDateString('de-DE', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}</p>
                       </div>
-                      <Button 
-                        className="w-full" 
-                        variant="outline"
-                        onClick={async () => {
-                          const auth = useAuth();
-                          if (auth?.checkSubscription) {
-                            await auth.checkSubscription();
-                            toast({
-                              title: "Erfolgreich aktualisiert",
-                              description: "Abonnement-Status wurde überprüft.",
-                            });
-                          }
-                        }}
-                      >
-                        Status aktualisieren
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
+                    )}
+                  </div>
+
+                  {/* Management Actions */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
+                      <Card className="card-modern bg-gradient-to-br from-card to-card/50 h-full">
+                        <CardContent className="p-8">
+                          <div className="flex items-center space-x-4 mb-6">
+                            <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl flex items-center justify-center">
+                              <Calendar className="w-6 h-6 text-primary" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-lg">Zahlungseinstellungen</h3>
+                              <p className="text-muted-foreground">Zahlungsmethode & Rechnungen</p>
+                            </div>
+                          </div>
+                          <Button 
+                            className="w-full h-12 text-base" 
+                            variant="outline"
+                            onClick={async () => {
+                              try {
+                                const auth = useAuth();
+                                if (!auth?.session) return;
+                                
+                                const { data, error } = await supabase.functions.invoke('customer-portal', {
+                                  headers: {
+                                    Authorization: `Bearer ${auth.session.access_token}`,
+                                  },
+                                });
+                                
+                                if (error) {
+                                  toast({
+                                    title: "Fehler",
+                                    description: "Kundenportal konnte nicht geöffnet werden.",
+                                    variant: "destructive",
+                                  });
+                                  return;
+                                }
+                                
+                                window.open(data.url, '_blank');
+                              } catch (error) {
+                                toast({
+                                  title: "Fehler",
+                                  description: "Ein unerwarteter Fehler ist aufgetreten.",
+                                  variant: "destructive",
+                                });
+                              }
+                            }}
+                          >
+                            Zahlungen verwalten
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    <div className="animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
+                      <Card className="card-modern bg-gradient-to-br from-card to-card/50 h-full">
+                        <CardContent className="p-8">
+                          <div className="flex items-center space-x-4 mb-6">
+                            <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl flex items-center justify-center">
+                              <Download className="w-6 h-6 text-primary" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-lg">Subscription Status</h3>
+                              <p className="text-muted-foreground">Status aktualisieren</p>
+                            </div>
+                          </div>
+                          <Button 
+                            className="w-full h-12 text-base" 
+                            variant="outline"
+                            onClick={async () => {
+                              const auth = useAuth();
+                              if (auth?.checkSubscription) {
+                                await auth.checkSubscription();
+                                toast({
+                                  title: "Erfolgreich aktualisiert",
+                                  description: "Abonnement-Status wurde überprüft.",
+                                });
+                              }
+                            }}
+                          >
+                            Status aktualisieren
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </main>
