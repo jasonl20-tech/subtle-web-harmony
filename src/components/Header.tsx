@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ChevronDown } from "lucide-react";
 
 const Header = () => {
   const auth = useAuth();
   const user = auth?.user;
+  const navigate = useNavigate();
 
   return (
     <header className="absolute top-0 left-0 right-0 z-50 w-full">
@@ -46,19 +47,30 @@ const Header = () => {
           {/* Rechts - Action Buttons */}
           <div className="flex items-center space-x-4">
             {user ? (
-              <Link 
-                to="/dashboard" 
-                className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-all duration-200 font-medium"
-              >
-                Dashboard →
-              </Link>
+              <div className="flex items-center space-x-4">
+                <Link 
+                  to="/dashboard" 
+                  className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-all duration-200 font-medium"
+                >
+                  Dashboard →
+                </Link>
+                <button
+                  onClick={async () => {
+                    await auth?.signOut();
+                    navigate('/');
+                  }}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-all duration-200 font-medium"
+                >
+                  Abmelden
+                </button>
+              </div>
             ) : (
               <>
                 <Link 
                   to="/auth" 
                   className="bg-gray-100 border border-gray-300 text-gray-900 px-4 py-2 rounded-md hover:bg-gray-200 transition-all duration-200 font-medium"
                 >
-                  Login oder Registrierung
+                  Login
                 </Link>
                 <Link 
                   to="/contact" 

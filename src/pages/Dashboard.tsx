@@ -258,60 +258,94 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary-light/20">
+    <section className="relative min-h-screen overflow-hidden bg-white">
       <Header />
+      
+      {/* Animated Curved Rainbow Gradient Background */}
+      <div className="absolute top-0 left-0 right-0 h-full z-0">
+        <svg
+          className="absolute top-0 left-0 w-full h-full"
+          viewBox="0 0 1400 800"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="dashboardGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#8B5CF6" />
+              <stop offset="25%" stopColor="#EC4899" />
+              <stop offset="50%" stopColor="#F97316" />
+              <stop offset="75%" stopColor="#3B82F6" />
+              <stop offset="100%" stopColor="#8B5CF6" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M-100,0 L1500,0 L1500,60 Q1200,80 1000,120 Q800,160 600,140 Q400,120 200,380 Q100,400 -100,420 Z"
+            fill="url(#dashboardGradient)"
+            opacity="0.10"
+          >
+            <animateTransform
+              attributeName="transform"
+              type="translate"
+              values="0,0; 20,-10; 0,0; -20,10; 0,0"
+              dur="8s"
+              repeatCount="indefinite"
+            />
+          </path>
+        </svg>
+      </div>
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-24">
         {/* Welcome Section */}
-        <div className="mb-12 text-center">
+        <div className="mb-20 text-center">
           <div className="animate-fade-in-up">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight">
-              Willkommen 
-              <span className="bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent"> zurück!</span>
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-8">
+              <span className="text-gray-900">Willkommen </span>
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">zurück!</span>
             </h1>
-            <p className="text-muted-foreground text-xl max-w-2xl mx-auto leading-relaxed">
-              Verwalten Sie Ihre Arbeitsstundennachweise einfach und effizient
+            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+              Verwalten Sie Ihre Arbeitsstundennachweise einfach und effizient mit unserer automatisierten Lösung
             </p>
           </div>
         </div>
 
         <Tabs defaultValue="upload" className="w-full">
-          <TabsList className="card-modern grid w-full grid-cols-3 max-w-3xl mx-auto mb-12 p-2 h-auto bg-card/80 backdrop-blur-sm">
-            <TabsTrigger 
-              value="upload" 
-              className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-300"
-            >
-              <Upload className="w-5 h-5" />
-              <span className="hidden sm:inline font-medium">Upload</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="reports" 
-              className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-300"
-            >
-              <FileText className="w-5 h-5" />
-              <span className="hidden sm:inline font-medium">Berichte</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="subscription" 
-              className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all duration-300"
-            >
-              <Calendar className="w-5 h-5" />
-              <span className="hidden sm:inline font-medium">Abonnement</span>
-            </TabsTrigger>
-          </TabsList>
+          <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            <TabsList className="grid w-full grid-cols-3 max-w-4xl mx-auto mb-16 p-2 h-auto bg-white/80 backdrop-blur-sm border border-gray-100 shadow-lg rounded-2xl">
+              <TabsTrigger 
+                value="upload" 
+                className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 text-gray-700 hover:text-gray-900"
+              >
+                <Upload className="w-5 h-5" />
+                <span className="hidden sm:inline font-medium">Upload</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="reports" 
+                className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 text-gray-700 hover:text-gray-900"
+              >
+                <FileText className="w-5 h-5" />
+                <span className="hidden sm:inline font-medium">Berichte</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="subscription" 
+                className="flex items-center justify-center space-x-3 py-4 px-6 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 text-gray-700 hover:text-gray-900"
+              >
+                <Calendar className="w-5 h-5" />
+                <span className="hidden sm:inline font-medium">Abonnement</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="upload" className="mt-8">
-            <div className="animate-fade-in-up">
-              <Card className="card-modern max-w-6xl mx-auto">
-                <CardHeader className="text-center pb-10 bg-gradient-to-b from-primary/5 to-transparent">
-                  <CardTitle className="flex items-center justify-center space-x-4 text-3xl mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/30 rounded-2xl flex items-center justify-center">
-                      <Upload className="w-7 h-7 text-primary" />
+            <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <Card className="max-w-6xl mx-auto bg-white/80 backdrop-blur-sm border border-gray-100 shadow-xl rounded-2xl">
+                <CardHeader className="text-center pb-10 bg-gradient-to-b from-blue-50/50 to-transparent">
+                  <CardTitle className="flex items-center justify-center space-x-4 text-3xl md:text-4xl mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                      <Upload className="w-8 h-8 text-white" />
                     </div>
-                    <span>Dateien hochladen</span>
+                    <span className="text-gray-900">Dateien hochladen</span>
                   </CardTitle>
-                  <CardDescription className="text-lg mt-2 max-w-2xl mx-auto leading-relaxed">
-                    Laden Sie Ihre Stundendaten hoch und lassen Sie sie automatisch verarbeiten
+                  <CardDescription className="text-xl mt-2 max-w-3xl mx-auto leading-relaxed text-gray-600">
+                    Laden Sie Ihre Stundendaten hoch und lassen Sie sie automatisch verarbeiten - in nur wenigen Minuten erhalten Sie Ihren fertigen Nachweis
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-8 p-6">
@@ -741,7 +775,7 @@ const Dashboard = () => {
         </Tabs>
       </main>
       <Footer />
-    </div>
+    </section>
   );
 };
 
