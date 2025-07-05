@@ -21,35 +21,56 @@ const Services = () => {
   ];
 
   return (
-    <section id="services" className="py-20 lg:py-32 bg-secondary/30">
-      <div className="container mx-auto px-6 lg:px-8">
+    <section id="services" className="relative py-20 lg:py-32 bg-gradient-to-b from-white via-gray-50/50 to-white overflow-hidden">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 opacity-30">
+        <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 400 400">
+          <defs>
+            <linearGradient id="servicesGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#F3F4F6" />
+              <stop offset="100%" stopColor="#E5E7EB" />
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="100" r="50" fill="url(#servicesGradient)" opacity="0.5" />
+          <circle cx="300" cy="200" r="30" fill="url(#servicesGradient)" opacity="0.3" />
+          <circle cx="200" cy="300" r="40" fill="url(#servicesGradient)" opacity="0.4" />
+        </svg>
+      </div>
+      <div className="container mx-auto px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-4xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
-            Wie wir Ihre Arbeitsstunden automatisieren
-          </h2>
-          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Schluss mit manueller Zeiterfassung! Unsere intelligente Lösung erfasst automatisch Ihre Arbeitszeiten 
-            und erstellt professionelle Nachweise - ohne Aufwand, ohne Fehler.
-          </p>
+        <div className="text-center max-w-4xl mx-auto mb-20">
+          <div className="animate-fade-in-up">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-8">
+              <span className="text-gray-900">Wie wir Ihre </span>
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Arbeitsstunden automatisieren
+              </span>
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+              Schluss mit manueller Zeiterfassung! Unsere intelligente Lösung erfasst automatisch Ihre Arbeitszeiten 
+              und erstellt professionelle Nachweise - ohne Aufwand, ohne Fehler.
+            </p>
+          </div>
         </div>
 
         {/* Steps Grid */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
           {steps.map((step, index) => (
-            <Card key={index} className="card-elegant p-8 text-center hover:shadow-lg transition-all duration-300">
-              <div className="mb-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-primary">{step.number}</span>
+            <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+              <Card className="p-8 text-center bg-white/80 backdrop-blur-sm border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group h-full">
+                <div className="mb-6">
+                  <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <span className="text-3xl font-bold text-white">{step.number}</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600 text-lg leading-relaxed">
+                    {step.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3">
-                  {step.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {step.description}
-                </p>
-              </div>
-            </Card>
+              </Card>
+            </div>
           ))}
         </div>
 
