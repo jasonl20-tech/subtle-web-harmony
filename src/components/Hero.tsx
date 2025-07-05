@@ -1,44 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Box, Text } from "@react-three/drei";
 import { useEffect, useState } from "react";
 import laptop1 from "@/assets/laptop-1.jpg";
-
-// 3D Excel Table Component
-function ExcelTable() {
-  return (
-    <group>
-      {/* Table base */}
-      <Box args={[3, 0.1, 2]} position={[0, 0, 0]}>
-        <meshStandardMaterial color="#e8e8e8" />
-      </Box>
-      
-      {/* Table cells */}
-      {Array.from({ length: 5 }).map((_, row) =>
-        Array.from({ length: 4 }).map((_, col) => (
-          <Box
-            key={`${row}-${col}`}
-            args={[0.6, 0.05, 0.4]}
-            position={[-1.2 + col * 0.75, 0.1, -0.6 + row * 0.4]}
-          >
-            <meshStandardMaterial color={row === 0 ? "#3A86FF" : "#ffffff"} />
-          </Box>
-        ))
-      )}
-      
-      {/* Header text simulation */}
-      <Text
-        position={[0, 0.5, 0]}
-        fontSize={0.2}
-        color="#333333"
-        anchorX="center"
-        anchorY="middle"
-      >
-        EXCEL TABELLE
-      </Text>
-    </group>
-  );
-}
 
 // Floating Math Symbols Component
 function FloatingMathSymbols() {
@@ -60,6 +22,33 @@ function FloatingMathSymbols() {
           {symbol}
         </div>
       ))}
+    </div>
+  );
+}
+
+// Simple Excel Table Mock
+function SimpleExcelTable() {
+  return (
+    <div className="relative bg-white/90 backdrop-blur-sm rounded-lg shadow-xl p-6 max-w-sm mx-auto transform rotate-3 hover:rotate-0 transition-transform duration-300">
+      <div className="text-center mb-4">
+        <h3 className="text-primary font-semibold">Excel Tabelle</h3>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-1 text-xs">
+        {/* Header Row */}
+        <div className="bg-primary text-primary-foreground p-2 text-center font-medium">Datum</div>
+        <div className="bg-primary text-primary-foreground p-2 text-center font-medium">Stunden</div>
+        <div className="bg-primary text-primary-foreground p-2 text-center font-medium">Projekt</div>
+        
+        {/* Data Rows */}
+        {Array.from({ length: 4 }).map((_, i) => (
+          <>
+            <div key={`date-${i}`} className="bg-muted p-2 text-center">{String(i + 1).padStart(2, '0')}.01</div>
+            <div key={`hours-${i}`} className="bg-muted p-2 text-center">{8 - i}</div>
+            <div key={`project-${i}`} className="bg-muted p-2 text-center">Web{i + 1}</div>
+          </>
+        ))}
+      </div>
     </div>
   );
 }
@@ -105,19 +94,9 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Right 3D Excel Table */}
-        <div className="h-96 w-full">
-          <Canvas camera={{ position: [0, 2, 5], fov: 50 }}>
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[10, 10, 5]} intensity={1} />
-            <ExcelTable />
-            <OrbitControls 
-              enablePan={false} 
-              enableZoom={false}
-              autoRotate
-              autoRotateSpeed={1}
-            />
-          </Canvas>
+        {/* Right Excel Table */}
+        <div className="flex justify-center items-center">
+          <SimpleExcelTable />
         </div>
       </div>
 
