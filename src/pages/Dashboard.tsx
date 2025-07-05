@@ -149,12 +149,13 @@ const Dashboard = () => {
     if (!isAdmin) return;
     
     try {
-      // Fetch all profiles for admin
+      // Fetch all profiles for admin with subscription info
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select(`
           *,
-          user_roles!inner(role)
+          user_roles!inner(role),
+          subscribers(subscribed, subscription_tier)
         `)
         .order('created_at', { ascending: false });
       
@@ -244,6 +245,61 @@ const Dashboard = () => {
       toast({
         title: "Fehler",
         description: "Abonnement konnte nicht gewährt werden.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const revokeSubscription = async (userId: string, userEmail: string) => {
+    try {
+      const { error } = await supabase
+        .from('subscribers')
+        .upsert({
+          user_id: userId,
+          email: userEmail,
+          subscribed: false,
+          subscription_tier: null,
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Abonnement entzogen",
+        description: "Der Benutzer hat keinen Zugriff mehr auf das Dashboard.",
+      });
+      
+      fetchAdminData();
+    } catch (error) {
+      toast({
+        title: "Fehler",
+        description: "Abonnement konnte nicht entzogen werden.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleUserRole = async (userId: string, currentRole: string) => {
+    try {
+      const newRole = currentRole === 'admin' ? 'user' : 'admin';
+      
+      const { error } = await supabase
+        .from('user_roles')
+        .update({ role: newRole })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Rolle geändert",
+        description: `Benutzer ist jetzt ${newRole === 'admin' ? 'Administrator' : 'normaler User'}.`,
+      });
+      
+      fetchAdminData();
+    } catch (error) {
+      toast({
+        title: "Fehler",
+        description: "Rolle konnte nicht geändert werden.",
         variant: "destructive",
       });
     }
@@ -774,7 +830,8 @@ const Dashboard = () => {
                           <tr className="border-b">
                             <th className="text-left p-4">E-Mail</th>
                             <th className="text-left p-4">Name</th>
-                            <th className="text-left p-4">Registriert</th>
+                            <th className="text-left p-4">Rolle</th>
+                            <th className="text-left p-4">Abonnement</th>
                             <th className="text-left p-4">API Key</th>
                             <th className="text-left p-4">Aktionen</th>
                           </tr>
@@ -785,7 +842,22 @@ const Dashboard = () => {
                               <td className="p-4">{profile.email}</td>
                               <td className="p-4">{profile.full_name || '-'}</td>
                               <td className="p-4">
-                                {new Date(profile.created_at).toLocaleDateString('de-DE')}
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  profile.user_roles[0]?.role === 'admin' 
+                                    ? 'bg-red-100 text-red-800' 
+                                    : 'bg-blue-100 text-blue-800'
+                                }`}>
+                                  {profile.user_roles[0]?.role === 'admin' ? '🛡️ Admin' : '👤 User'}
+                                </span>
+                              </td>
+                              <td className="p-4">
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  profile.subscribers?.[0]?.subscribed 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {profile.subscribers?.[0]?.subscribed ? '✅ Abonniert' : '❌ Nicht abonniert'}
+                                </span>
                               </td>
                               <td className="p-4">
                                 <div className="flex items-center space-x-2">
@@ -802,13 +874,34 @@ const Dashboard = () => {
                                 </div>
                               </td>
                               <td className="p-4">
-                                <Button
-                                  size="sm"
-                                  onClick={() => grantSubscription(profile.user_id, profile.email)}
-                                  className="bg-green-600 hover:bg-green-700 text-white"
-                                >
-                                  Abonnement gewähren
-                                </Button>
+                                <div className="flex space-x-2">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => toggleUserRole(profile.user_id, profile.user_roles[0]?.role)}
+                                    className="text-xs"
+                                  >
+                                    {profile.user_roles[0]?.role === 'admin' ? '👤 User machen' : '🛡️ Admin machen'}
+                                  </Button>
+                                  {profile.subscribers?.[0]?.subscribed ? (
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => revokeSubscription(profile.user_id, profile.email)}
+                                      className="bg-red-50 hover:bg-red-100 text-red-700 text-xs"
+                                    >
+                                      Abo entziehen
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      size="sm"
+                                      onClick={() => grantSubscription(profile.user_id, profile.email)}
+                                      className="bg-green-600 hover:bg-green-700 text-white text-xs"
+                                    >
+                                      Abo gewähren
+                                    </Button>
+                                  )}
+                                </div>
                               </td>
                             </tr>
                           ))}
