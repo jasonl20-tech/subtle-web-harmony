@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const Pricing = () => {
-  const { user, subscription, checkSubscription } = useAuth();
+  const { user, session, subscription, checkSubscription } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState({ monthly: false, yearly: false });
@@ -28,18 +28,22 @@ const Pricing = () => {
       return;
     }
 
+    if (!session) {
+      toast({
+        title: "Keine gültige Session",
+        description: "Bitte melden Sie sich erneut an.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(prev => ({ ...prev, [plan]: true }));
 
     try {
-      const auth = useAuth();
-      if (!auth?.session) {
-        throw new Error('Keine gültige Session');
-      }
-
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { plan },
         headers: {
-          Authorization: `Bearer ${auth.session.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
         },
       });
 
