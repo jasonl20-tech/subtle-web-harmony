@@ -35,19 +35,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     subscription_end: null
   });
   const [loading, setLoading] = useState(true);
+  const [sessionLoading, setSessionLoading] = useState(true);
 
   console.log('AuthProvider rendered, loading:', loading, 'user:', user?.email);
 
   const checkSubscription = async () => {
+    // Don't reset subscription if session is still loading
     if (!session) {
-      console.log('[AUTH] No session, setting unsubscribed state');
-      setSubscription({ subscribed: false, subscription_tier: null, subscription_end: null });
+      if (!sessionLoading) {
+        console.log('[AUTH] No session after loading complete, setting unsubscribed state');
+        setSubscription({ subscribed: false, subscription_tier: null, subscription_end: null });
+      } else {
+        console.log('[AUTH] No session but still loading, keeping current subscription state');
+      }
       return;
     }
 
     try {
       console.log('[AUTH] Checking subscription for user:', session.user.email);
       
+      // Try direct database query first (more reliable)
+      console.log('[AUTH] Checking database directly...');
+      const { data: dbData, error: dbError } = await supabase
+        .from('subscribers')
+        .select('subscribed, subscription_tier, subscription_end')
+        .eq('user_id', session.user.id)
+        .maybeSingle();
+      
+      console.log('[AUTH] Database query result:', { dbData, dbError });
+      
+      if (!dbError && dbData) {
+        setSubscription({
+          subscribed: dbData.subscribed || false,
+          subscription_tier: dbData.subscription_tier || null,
+          subscription_end: dbData.subscription_end || null
+        });
+        console.log('[AUTH] Using database subscription data');
+        return;
+      }
+      
+      // Fallback to edge function if database query fails
+      console.log('[AUTH] Database failed, trying edge function...');
       const { data, error } = await supabase.functions.invoke('check-subscription', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
@@ -57,32 +85,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('[AUTH] Check-subscription response:', { data, error });
 
       if (error) {
-        console.error('[AUTH] Error checking subscription:', error);
-        
-        // Fallback: Check directly from database
-        console.log('[AUTH] Trying database fallback...');
-        const { data: dbData, error: dbError } = await supabase
-          .from('subscribers')
-          .select('subscribed, subscription_tier, subscription_end')
-          .eq('user_id', session.user.id)
-          .maybeSingle();
-        
-        console.log('[AUTH] Database fallback result:', { dbData, dbError });
-        
-        if (!dbError && dbData) {
-          setSubscription({
-            subscribed: dbData.subscribed || false,
-            subscription_tier: dbData.subscription_tier || null,
-            subscription_end: dbData.subscription_end || null
-          });
-          console.log('[AUTH] Using database fallback subscription data');
-          return;
-        }
-        
+        console.error('[AUTH] Edge function also failed:', error);
         return;
       }
 
-      console.log('[AUTH] Setting subscription state:', {
+      console.log('[AUTH] Setting subscription state from edge function:', {
         subscribed: data.subscribed || false,
         subscription_tier: data.subscription_tier || null,
         subscription_end: data.subscription_end || null
@@ -95,29 +102,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     } catch (error) {
       console.error('[AUTH] Error in checkSubscription:', error);
-      
-      // Fallback: Check directly from database
-      try {
-        console.log('[AUTH] Exception fallback: checking database directly...');
-        const { data: dbData, error: dbError } = await supabase
-          .from('subscribers')
-          .select('subscribed, subscription_tier, subscription_end')
-          .eq('user_id', session.user.id)
-          .maybeSingle();
-        
-        console.log('[AUTH] Exception fallback result:', { dbData, dbError });
-        
-        if (!dbError && dbData) {
-          setSubscription({
-            subscribed: dbData.subscribed || false,
-            subscription_tier: dbData.subscription_tier || null,
-            subscription_end: dbData.subscription_end || null
-          });
-          console.log('[AUTH] Using exception fallback subscription data');
-        }
-      } catch (fallbackError) {
-        console.error('[AUTH] Even fallback failed:', fallbackError);
-      }
     }
   };
 
@@ -125,15 +109,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Set up auth state listener
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        console.log('[AUTH] Auth state changed:', event, currentSession?.user?.email);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
+        setSessionLoading(false); // Session loading is complete
         
-        // Check subscription after auth state change
-        if (currentSession?.user) {
-          setTimeout(() => {
-            checkSubscription();
-          }, 0);
-        } else {
+        if (event === 'SIGNED_OUT') {
+          // Only reset subscription on explicit logout
+          console.log('[AUTH] User signed out, resetting subscription');
           setSubscription({ subscribed: false, subscription_tier: null, subscription_end: null });
         }
         
@@ -143,20 +126,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log('[AUTH] Initial session:', currentSession?.user?.email);
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
-      
-      if (currentSession?.user) {
-        setTimeout(() => {
-          checkSubscription();
-        }, 0);
-      }
-      
+      setSessionLoading(false); // Initial session loading is complete
       setLoading(false);
     });
 
     return () => authSubscription.unsubscribe();
   }, []);
+
+  // Separate effect to handle subscription checks when session changes
+  useEffect(() => {
+    if (!sessionLoading && session?.user) {
+      console.log('[AUTH] Session ready, checking subscription');
+      checkSubscription();
+    }
+  }, [session, sessionLoading]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
