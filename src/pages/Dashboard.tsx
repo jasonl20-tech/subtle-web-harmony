@@ -314,216 +314,216 @@ const Dashboard = () => {
                     Laden Sie Ihre Stundendaten hoch und lassen Sie sie automatisch verarbeiten
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-10 p-8">
-                  {/* Upload Sections */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Stundenplan Upload */}
-                    <div className="space-y-6 animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xl font-semibold flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                            <Calendar className="w-5 h-5 text-primary" />
-                          </div>
-                          <span>Stundenplan</span>
-                        </Label>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => downloadTemplate('stundenplan')}
-                          className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors"
-                        >
-                          <Download className="w-4 h-4" />
-                          <span>Template</span>
-                        </Button>
-                      </div>
-                      <div className="upload-area p-8 text-center">
-                        <div className="mb-6">
-                          <Upload className="w-14 h-14 mx-auto text-primary mb-4 animate-pulse-subtle" />
-                          <p className="text-base text-muted-foreground mb-4 font-medium">Stundenplan hier ablegen oder durchsuchen</p>
+                <CardContent className="space-y-8 p-6">
+                  {/* Upload Sections - More Compact Layout */}
+                  <div className="space-y-6">
+                    {/* Combined Upload Area */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
+                      {/* Stundenplan Upload */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-lg font-semibold flex items-center space-x-2">
+                            <div className="w-6 h-6 bg-primary/10 rounded-lg flex items-center justify-center">
+                              <Calendar className="w-4 h-4 text-primary" />
+                            </div>
+                            <span>Stundenplan</span>
+                          </Label>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => downloadTemplate('stundenplan')}
+                            className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors h-8 px-3 text-xs"
+                          >
+                            <Download className="w-3 h-3" />
+                            <span>Template</span>
+                          </Button>
                         </div>
-                        <Input
-                          type="file"
-                          accept=".xlsx,.xls,.csv"
-                          onChange={(e) => setStundenplanFile(e.target.files?.[0] || null)}
-                          className="text-sm file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:transition-colors"
-                        />
-                        {stundenplanFile && (
-                          <div className="mt-4 p-3 bg-success/10 border border-success/20 rounded-lg">
-                            <p className="text-success font-medium">✓ {stundenplanFile.name}</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Gesamtstundenübersicht Upload */}
-                    <div className="space-y-6 animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xl font-semibold flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                            <FileText className="w-5 h-5 text-primary" />
-                          </div>
-                          <span>Gesamtstundenübersicht</span>
-                        </Label>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => downloadTemplate('gesamtstunden')}
-                          className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors"
-                        >
-                          <Download className="w-4 h-4" />
-                          <span>Template</span>
-                        </Button>
-                      </div>
-                      <div className="upload-area p-8 text-center">
-                        <div className="mb-6">
-                          <Upload className="w-14 h-14 mx-auto text-primary mb-4 animate-pulse-subtle" />
-                          <p className="text-base text-muted-foreground mb-4 font-medium">Gesamtstunden hier ablegen oder durchsuchen</p>
-                        </div>
-                        <Input
-                          type="file"
-                          accept=".xlsx,.xls,.csv"
-                          onChange={(e) => setGesamtstundenFile(e.target.files?.[0] || null)}
-                          className="text-sm file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:transition-colors"
-                        />
-                        {gesamtstundenFile && (
-                          <div className="mt-4 p-3 bg-success/10 border border-success/20 rounded-lg">
-                            <p className="text-success font-medium">✓ {gesamtstundenFile.name}</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Month, Year and Bundesland Selection */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-                    <div className="space-y-4">
-                      <Label className="text-lg font-semibold flex items-center space-x-3">
-                        <div className="w-6 h-6 bg-primary/10 rounded-lg flex items-center justify-center">
-                          <Calendar className="w-4 h-4 text-primary" />
-                        </div>
-                        <span>Monat</span>
-                      </Label>
-                      <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                        <SelectTrigger className="h-14 bg-card/80 backdrop-blur-sm border-border/50 text-base rounded-xl">
-                          <SelectValue placeholder="Monat auswählen" />
-                        </SelectTrigger>
-                        <SelectContent className="backdrop-blur-sm">
-                          {months.map((month) => (
-                            <SelectItem key={month.value} value={month.value}>
-                              {month.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-4">
-                      <Label className="text-lg font-semibold flex items-center space-x-3">
-                        <div className="w-6 h-6 bg-primary/10 rounded-lg flex items-center justify-center">
-                          <Calendar className="w-4 h-4 text-primary" />
-                        </div>
-                        <span>Jahr</span>
-                      </Label>
-                      <Select value={selectedYear} onValueChange={setSelectedYear}>
-                        <SelectTrigger className="h-14 bg-card/80 backdrop-blur-sm border-border/50 text-base rounded-xl">
-                          <SelectValue placeholder="Jahr auswählen" />
-                        </SelectTrigger>
-                        <SelectContent className="backdrop-blur-sm">
-                          {years.map((year) => (
-                            <SelectItem key={year.value} value={year.value}>
-                              {year.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-4 sm:col-span-2 lg:col-span-1">
-                      <Label className="text-lg font-semibold flex items-center space-x-3">
-                        <div className="w-6 h-6 bg-primary/10 rounded-lg flex items-center justify-center">
-                          <MapPin className="w-4 h-4 text-primary" />
-                        </div>
-                        <span>Bundesland</span>
-                      </Label>
-                      <Select value={selectedBundesland} onValueChange={setSelectedBundesland}>
-                        <SelectTrigger className="h-14 bg-card/80 backdrop-blur-sm border-border/50 text-base rounded-xl">
-                          <SelectValue placeholder="Bundesland auswählen" />
-                        </SelectTrigger>
-                        <SelectContent className="backdrop-blur-sm">
-                          {bundeslaender.map((land) => (
-                            <SelectItem key={land} value={land}>
-                              {land}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  {/* Rules Section */}
-                  <div className="space-y-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                    <div className="flex items-center justify-between">
-                      <Label className="text-xl font-semibold">Regeln & Besonderheiten</Label>
-                      {rules.length < 10 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={addRule}
-                          className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors"
-                        >
-                          <Plus className="w-4 h-4" />
-                          <span>Regel hinzufügen</span>
-                        </Button>
-                      )}
-                    </div>
-                    <div className="space-y-4">
-                      {rules.map((rule, index) => (
-                        <div key={index} className="relative">
+                        <div className="upload-area p-6 text-center min-h-[140px] flex flex-col justify-center">
+                          <Upload className="w-10 h-10 mx-auto text-primary mb-3 animate-pulse-subtle" />
+                          <p className="text-sm text-muted-foreground mb-3 font-medium">Stundenplan hier ablegen</p>
                           <Input
-                            value={rule}
-                            onChange={(e) => updateRule(index, e.target.value)}
-                            placeholder="z.B: Die Nachtschicht am Wochenende geht von 6 bis 12 Uhr"
-                            className="pr-14 h-14 bg-card/80 backdrop-blur-sm border-border/50 focus:border-primary text-base rounded-xl"
+                            type="file"
+                            accept=".xlsx,.xls,.csv"
+                            onChange={(e) => setStundenplanFile(e.target.files?.[0] || null)}
+                            className="text-xs file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:transition-colors"
                           />
-                          {rules.length > 1 && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => removeRule(index)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground rounded-lg"
-                            >
-                              <X className="w-4 h-4" />
-                            </Button>
+                          {stundenplanFile && (
+                            <div className="mt-3 p-2 bg-success/10 border border-success/20 rounded-lg">
+                              <p className="text-success font-medium text-sm">✓ {stundenplanFile.name}</p>
+                            </div>
                           )}
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-r from-muted/30 to-secondary/20 rounded-2xl p-8 backdrop-blur-sm border border-border/50 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-                    <p className="font-semibold mb-4 text-lg">Unterstützte Dateiformate:</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-base text-muted-foreground">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-3 h-3 bg-success rounded-full animate-pulse-subtle"></div>
-                        <span>Excel-Dateien (.xlsx, .xls)</span>
                       </div>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-3 h-3 bg-success rounded-full animate-pulse-subtle"></div>
-                        <span>CSV-Dateien (.csv)</span>
+
+                      {/* Gesamtstundenübersicht Upload */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-lg font-semibold flex items-center space-x-2">
+                            <div className="w-6 h-6 bg-primary/10 rounded-lg flex items-center justify-center">
+                              <FileText className="w-4 h-4 text-primary" />
+                            </div>
+                            <span>Gesamtstunden</span>
+                          </Label>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => downloadTemplate('gesamtstunden')}
+                            className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors h-8 px-3 text-xs"
+                          >
+                            <Download className="w-3 h-3" />
+                            <span>Template</span>
+                          </Button>
+                        </div>
+                        <div className="upload-area p-6 text-center min-h-[140px] flex flex-col justify-center">
+                          <Upload className="w-10 h-10 mx-auto text-primary mb-3 animate-pulse-subtle" />
+                          <p className="text-sm text-muted-foreground mb-3 font-medium">Gesamtstunden hier ablegen</p>
+                          <Input
+                            type="file"
+                            accept=".xlsx,.xls,.csv"
+                            onChange={(e) => setGesamtstundenFile(e.target.files?.[0] || null)}
+                            className="text-xs file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:transition-colors"
+                          />
+                          {gesamtstundenFile && (
+                            <div className="mt-3 p-2 bg-success/10 border border-success/20 rounded-lg">
+                              <p className="text-success font-medium text-sm">✓ {gesamtstundenFile.name}</p>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <Button 
-                    className="btn-gradient w-full h-16 text-xl font-semibold text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
-                    onClick={handleSubmit}
-                    disabled={!selectedMonth || !selectedYear || !selectedBundesland || (!stundenplanFile && !gesamtstundenFile)}
-                  >
-                    <Upload className="w-6 h-6 mr-3" />
-                    Daten verarbeiten
-                  </Button>
+                    {/* Compact Form Row */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                      <div className="space-y-2">
+                        <Label className="text-base font-medium flex items-center space-x-2">
+                          <div className="w-4 h-4 bg-primary/10 rounded flex items-center justify-center">
+                            <Calendar className="w-3 h-3 text-primary" />
+                          </div>
+                          <span>Monat</span>
+                        </Label>
+                        <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                          <SelectTrigger className="h-12 bg-card/80 backdrop-blur-sm border-border/50 rounded-xl">
+                            <SelectValue placeholder="Monat" />
+                          </SelectTrigger>
+                          <SelectContent className="backdrop-blur-sm">
+                            {months.map((month) => (
+                              <SelectItem key={month.value} value={month.value}>
+                                {month.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-base font-medium flex items-center space-x-2">
+                          <div className="w-4 h-4 bg-primary/10 rounded flex items-center justify-center">
+                            <Calendar className="w-3 h-3 text-primary" />
+                          </div>
+                          <span>Jahr</span>
+                        </Label>
+                        <Select value={selectedYear} onValueChange={setSelectedYear}>
+                          <SelectTrigger className="h-12 bg-card/80 backdrop-blur-sm border-border/50 rounded-xl">
+                            <SelectValue placeholder="Jahr" />
+                          </SelectTrigger>
+                          <SelectContent className="backdrop-blur-sm">
+                            {years.map((year) => (
+                              <SelectItem key={year.value} value={year.value}>
+                                {year.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-base font-medium flex items-center space-x-2">
+                          <div className="w-4 h-4 bg-primary/10 rounded flex items-center justify-center">
+                            <MapPin className="w-3 h-3 text-primary" />
+                          </div>
+                          <span>Bundesland</span>
+                        </Label>
+                        <Select value={selectedBundesland} onValueChange={setSelectedBundesland}>
+                          <SelectTrigger className="h-12 bg-card/80 backdrop-blur-sm border-border/50 rounded-xl">
+                            <SelectValue placeholder="Bundesland" />
+                          </SelectTrigger>
+                          <SelectContent className="backdrop-blur-sm">
+                            {bundeslaender.map((land) => (
+                              <SelectItem key={land} value={land}>
+                                {land}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {/* Compact Rules Section */}
+                    <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+                      <div className="flex items-center justify-between">
+                        <Label className="text-lg font-semibold">Regeln & Besonderheiten</Label>
+                        {rules.length < 10 && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={addRule}
+                            className="flex items-center space-x-2 hover:bg-primary hover:text-primary-foreground transition-colors h-8 px-3 text-xs"
+                          >
+                            <Plus className="w-3 h-3" />
+                            <span>Hinzufügen</span>
+                          </Button>
+                        )}
+                      </div>
+                      <div className="space-y-3">
+                        {rules.map((rule, index) => (
+                          <div key={index} className="relative">
+                            <Input
+                              value={rule}
+                              onChange={(e) => updateRule(index, e.target.value)}
+                              placeholder="z.B: Die Nachtschicht am Wochenende geht von 6 bis 12 Uhr"
+                              className="pr-12 h-12 bg-card/80 backdrop-blur-sm border-border/50 focus:border-primary rounded-xl"
+                            />
+                            {rules.length > 1 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeRule(index)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground rounded-lg"
+                              >
+                                <X className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Compact Info Section */}
+                    <div className="bg-gradient-to-r from-muted/20 to-secondary/10 rounded-xl p-4 backdrop-blur-sm border border-border/50 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                      <p className="font-semibold mb-3 text-base">Unterstützte Dateiformate:</p>
+                      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-success rounded-full animate-pulse-subtle"></div>
+                          <span>Excel (.xlsx, .xls)</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-success rounded-full animate-pulse-subtle"></div>
+                          <span>CSV (.csv)</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button 
+                      className="btn-gradient w-full h-14 text-lg font-semibold text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
+                      onClick={handleSubmit}
+                      disabled={!selectedMonth || !selectedYear || !selectedBundesland || (!stundenplanFile && !gesamtstundenFile)}
+                    >
+                      <Upload className="w-5 h-5 mr-2" />
+                      Daten verarbeiten
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>
