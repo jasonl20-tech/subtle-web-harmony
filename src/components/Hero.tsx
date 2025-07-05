@@ -219,44 +219,6 @@ function DesktopMockup() {
   );
 }
 
-// Floating Company Logos Component
-function FloatingCompanyLogos() {
-  const companies = [
-    { name: "Shell", color: "#FFCF00", textColor: "#000" },
-    { name: "Aral", color: "#0066CC", textColor: "#FFF" },
-    { name: "Jet", color: "#E31E24", textColor: "#FFF" },
-    { name: "Agip", color: "#FFD700", textColor: "#000" },
-    { name: "Esso", color: "#FF0000", textColor: "#FFF" }
-  ];
-
-  return (
-    <div className="absolute inset-0 pointer-events-none z-5">
-      {companies.map((company, index) => (
-        <div
-          key={company.name}
-          className="absolute animate-pulse"
-          style={{
-            left: `${15 + index * 18}%`,
-            top: `${20 + (index % 2) * 40}%`,
-            animationDelay: `${index * 0.8}s`,
-            animationDuration: `${4 + index}s`
-          }}
-        >
-          <div 
-            className="w-16 h-16 rounded-2xl flex items-center justify-center text-xs font-bold shadow-lg transition-all duration-1000 hover:scale-110"
-            style={{ 
-              backgroundColor: company.color,
-              color: company.textColor,
-              animation: `float ${6 + index}s ease-in-out infinite`
-            }}
-          >
-            {company.name}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 // Tankstellen Logos Component - Animated
 function TankstellenLogos() {

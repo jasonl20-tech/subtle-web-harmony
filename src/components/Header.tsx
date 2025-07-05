@@ -17,28 +17,24 @@ const Header = () => {
               to="/"
               className="font-bold text-2xl text-white hover:text-white/90 transition-colors duration-200"
             >
-              StundenPro
+              Arbeitsstundennachweis
             </Link>
           </div>
 
           {/* Mitte - Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <div className="flex items-center space-x-1 text-white/90 hover:text-white transition-colors cursor-pointer">
-              <span className="font-medium">Produkte</span>
-              <ChevronDown className="w-4 h-4" />
-            </div>
-            <div className="flex items-center space-x-1 text-white/90 hover:text-white transition-colors cursor-pointer">
-              <span className="font-medium">Lösungen</span>
-              <ChevronDown className="w-4 h-4" />
-            </div>
-            <div className="flex items-center space-x-1 text-white/90 hover:text-white transition-colors cursor-pointer">
-              <span className="font-medium">Entwickler/innen</span>
-              <ChevronDown className="w-4 h-4" />
-            </div>
-            <div className="flex items-center space-x-1 text-white/90 hover:text-white transition-colors cursor-pointer">
-              <span className="font-medium">Ressourcen</span>
-              <ChevronDown className="w-4 h-4" />
-            </div>
+            <Link 
+              to="/help" 
+              className="text-white/90 hover:text-white transition-colors font-medium"
+            >
+              Hilfe
+            </Link>
+            <Link 
+              to="/tutorial" 
+              className="text-white/90 hover:text-white transition-colors font-medium"
+            >
+              Tutorial
+            </Link>
             <Link 
               to="/pricing" 
               className="text-white/90 hover:text-white transition-colors font-medium"
