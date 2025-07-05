@@ -125,73 +125,95 @@ function DesktopMockup() {
     <div className="absolute top-8 -right-32 z-10 animate-slide-in-right">
       {/* Desktop Monitor */}
       <div className="relative">
-        {/* Monitor Screen */}
-        <div className="w-[600px] h-[400px] bg-gray-900 rounded-t-3xl p-2 shadow-2xl">
-          <div className="w-full h-full bg-white rounded-t-2xl overflow-hidden">
+        {/* Monitor Screen with better styling */}
+        <div className="w-[600px] h-[400px] bg-gradient-to-b from-gray-800 to-gray-900 rounded-t-3xl p-3 shadow-2xl border-2 border-gray-700">
+          <div className="w-full h-full bg-gradient-to-br from-white to-gray-50 rounded-t-2xl overflow-hidden shadow-inner border border-gray-200">
             {/* Excel Interface */}
             <div className="h-full flex flex-col">
-              {/* Excel Toolbar */}
-              <div className="bg-gray-50 px-3 py-2 border-b border-gray-200 flex items-center space-x-2">
-                <div className="flex space-x-1">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              {/* Excel Toolbar - Enhanced */}
+              <div className="bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100 px-4 py-3 border-b border-gray-300 flex items-center space-x-3 shadow-sm">
+                <div className="flex space-x-2">
+                  <div className="w-3 h-3 bg-red-500 rounded-full shadow-sm hover:bg-red-600 transition-colors"></div>
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full shadow-sm hover:bg-yellow-600 transition-colors"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full shadow-sm hover:bg-green-600 transition-colors"></div>
                 </div>
                 <div className="flex-1 text-center">
-                  <span className="text-xs font-medium text-gray-700">Arbeitsstunden_Juli_2025.xlsx</span>
+                  <span className="text-sm font-semibold text-gray-800 bg-white px-3 py-1 rounded shadow-sm">
+                    📊 Arbeitsstunden_Juli_2025.xlsx
+                  </span>
                 </div>
               </div>
 
-              {/* Excel Header */}
-              <div className="bg-green-600 text-white text-xs font-bold px-2 py-1">
-                <div className="grid grid-cols-6 gap-1">
-                  <div>Datum</div>
-                  <div>Start</div>
-                  <div>Ende</div>
-                  <div>Pause</div>
-                  <div>Stunden</div>
-                  <div>Status</div>
+              {/* Excel Header - Enhanced */}
+              <div className="bg-gradient-to-r from-green-600 via-green-500 to-green-600 text-white text-sm font-bold px-3 py-2 shadow-md">
+                <div className="grid grid-cols-6 gap-2">
+                  <div className="flex items-center space-x-1">
+                    <span>📅</span>
+                    <span>Datum</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span>🕐</span>
+                    <span>Start</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span>🕕</span>
+                    <span>Ende</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span>⏸️</span>
+                    <span>Pause</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span>⏱️</span>
+                    <span>Stunden</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span>✅</span>
+                    <span>Status</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Excel Data Rows */}
-              <div className="flex-1 overflow-hidden">
+              {/* Excel Data Rows - Enhanced */}
+              <div className="flex-1 overflow-hidden bg-white">
                 {excelData.map((row, index) => (
                   <div 
                     key={index}
-                    className={`grid grid-cols-6 gap-1 px-2 py-1 text-xs border-b border-gray-200 transition-all duration-500 ${
-                      index === currentRow - 1 ? 'bg-blue-100 border-blue-300' : 'bg-white'
+                    className={`grid grid-cols-6 gap-2 px-3 py-2 text-sm border-b border-gray-100 transition-all duration-500 hover:bg-gray-50 ${
+                      index === currentRow - 1 ? 'bg-blue-50 border-blue-200 shadow-sm' : 'bg-white'
                     }`}
                   >
-                    <div className="font-medium">{row.date}</div>
-                    <div>{row.start}</div>
-                    <div>{row.end}</div>
-                    <div>{row.break}</div>
-                    <div className="font-bold text-green-600">{row.hours}h</div>
-                    <div className={`font-medium ${
-                      row.status === 'Erfasst' ? 'text-green-600' :
-                      row.status === 'Bearbeitung...' ? 'text-blue-600 animate-pulse' :
-                      'text-gray-400'
+                    <div className="font-medium text-gray-800">{row.date}</div>
+                    <div className="text-gray-700">{row.start}</div>
+                    <div className="text-gray-700">{row.end}</div>
+                    <div className="text-gray-700">{row.break}</div>
+                    <div className="font-bold text-green-600 bg-green-50 px-2 py-1 rounded text-center">{row.hours}h</div>
+                    <div className={`font-medium px-2 py-1 rounded text-center text-xs ${
+                      row.status === 'Erfasst' ? 'text-green-700 bg-green-100' :
+                      row.status === 'Bearbeitung...' ? 'text-blue-700 bg-blue-100 animate-pulse' :
+                      'text-gray-500 bg-gray-100'
                     }`}>
                       {row.status}
                     </div>
                   </div>
                 ))}
                 
-                {/* Sum Row */}
-                <div className="grid grid-cols-6 gap-1 px-2 py-1 text-xs bg-gray-100 border-t-2 border-gray-300 font-bold">
-                  <div className="col-span-4">Gesamt:</div>
-                  <div className="text-green-700">39.5h</div>
-                  <div className="text-green-600">✓</div>
+                {/* Sum Row - Enhanced */}
+                <div className="grid grid-cols-6 gap-2 px-3 py-3 text-sm bg-gradient-to-r from-gray-100 to-gray-200 border-t-2 border-gray-300 font-bold shadow-inner">
+                  <div className="col-span-4 text-gray-800 flex items-center">
+                    <span>📊 Gesamt:</span>
+                  </div>
+                  <div className="text-green-700 bg-green-100 px-2 py-1 rounded text-center">39.5h</div>
+                  <div className="text-green-600 bg-green-100 px-2 py-1 rounded text-center">✅ Fertig</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
         
-        {/* Monitor Stand */}
-        <div className="w-48 h-12 bg-gray-300 mx-auto rounded-b-xl"></div>
-        <div className="w-64 h-4 bg-gray-400 mx-auto rounded-full"></div>
+        {/* Monitor Stand - Enhanced */}
+        <div className="w-48 h-12 bg-gradient-to-b from-gray-400 to-gray-500 mx-auto rounded-b-xl shadow-lg"></div>
+        <div className="w-64 h-4 bg-gradient-to-r from-gray-500 via-gray-400 to-gray-500 mx-auto rounded-full shadow-md"></div>
       </div>
     </div>
   );
@@ -236,7 +258,7 @@ function FloatingCompanyLogos() {
   );
 }
 
-// Tankstellen Logos Component (static at bottom)
+// Tankstellen Logos Component - Animated
 function TankstellenLogos() {
   const tankstellen = [
     { name: "Shell", color: "#FFCF00" },
@@ -256,14 +278,18 @@ function TankstellenLogos() {
         {tankstellen.map((station, index) => (
           <div 
             key={station.name}
-            className="animate-fade-in opacity-60 hover:opacity-100 transition-all duration-300"
-            style={{ animationDelay: `${index * 150}ms` }}
+            className="animate-fade-in opacity-60 hover:opacity-100 transition-all duration-500 hover:scale-110 cursor-pointer"
+            style={{ 
+              animationDelay: `${index * 200}ms`,
+              animation: `fadeInUp 0.6s ease-out ${index * 200}ms both, float ${4 + index * 0.5}s ease-in-out infinite`
+            }}
           >
             <div 
-              className="w-14 h-14 rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-lg"
+              className="w-16 h-16 rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
               style={{ backgroundColor: station.color }}
             >
-              {station.name}
+              <div className="absolute inset-0 bg-white opacity-0 hover:opacity-20 transition-opacity duration-300"></div>
+              <span className="relative z-10">{station.name}</span>
             </div>
           </div>
         ))}
@@ -430,9 +456,6 @@ const Hero = () => {
             <div className="relative lg:h-[600px]">
               {/* Desktop Mockup */}
               <DesktopMockup />
-              
-              {/* Floating Company Logos */}
-              <FloatingCompanyLogos />
             </div>
           </div>
         </div>
