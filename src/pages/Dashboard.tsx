@@ -220,7 +220,7 @@ const Dashboard = () => {
     }
   };
 
-  const grantPremium = async (userId: string, userEmail: string) => {
+  const grantSubscription = async (userId: string, userEmail: string) => {
     try {
       const { error } = await supabase
         .from('subscribers')
@@ -228,22 +228,22 @@ const Dashboard = () => {
           user_id: userId,
           email: userEmail,
           subscribed: true,
-          subscription_tier: 'Premium',
+          subscription_tier: 'Standard',
           updated_at: new Date().toISOString()
         });
 
       if (error) throw error;
 
       toast({
-        title: "Premium gewährt",
-        description: "Der Benutzer hat jetzt Premium-Zugang.",
+        title: "Abonnement gewährt",
+        description: "Der Benutzer kann jetzt das Dashboard nutzen.",
       });
       
       fetchAdminData();
     } catch (error) {
       toast({
         title: "Fehler",
-        description: "Premium konnte nicht gewährt werden.",
+        description: "Abonnement konnte nicht gewährt werden.",
         variant: "destructive",
       });
     }
@@ -319,10 +319,10 @@ const Dashboard = () => {
                 <Upload className="w-10 h-10 text-primary" />
               </div>
               <h1 className="text-3xl font-bold text-foreground mb-4">
-                Premium-Mitgliedschaft erforderlich
+                Abonnement erforderlich
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
-                Um das Dashboard und alle Funktionen nutzen zu können, benötigen Sie eine aktive Premium-Mitgliedschaft.
+                Um das Dashboard nutzen zu können, benötigen Sie ein aktives Abonnement.
               </p>
               <div className="space-y-4">
                 <Button 
@@ -348,7 +348,7 @@ const Dashboard = () => {
                   onClick={() => navigate('/pricing')}
                   className="w-full max-w-sm mx-auto bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
                 >
-                  Jetzt Premium werden
+                  Jetzt abonnieren
                 </Button>
                 <Button 
                   variant="outline" 
@@ -804,10 +804,10 @@ const Dashboard = () => {
                               <td className="p-4">
                                 <Button
                                   size="sm"
-                                  onClick={() => grantPremium(profile.user_id, profile.email)}
+                                  onClick={() => grantSubscription(profile.user_id, profile.email)}
                                   className="bg-green-600 hover:bg-green-700 text-white"
                                 >
-                                  Premium gewähren
+                                  Abonnement gewähren
                                 </Button>
                               </td>
                             </tr>
@@ -887,7 +887,7 @@ const Dashboard = () => {
                       <div>
                         <h3 className="text-2xl font-semibold text-foreground mb-2">Aktives Abonnement</h3>
                         <p className="text-muted-foreground text-lg">
-                          {subscription.subscription_tier} Plan
+                          {subscription.subscription_tier || 'Standard'} Plan
                         </p>
                       </div>
                       <div className="text-right">
