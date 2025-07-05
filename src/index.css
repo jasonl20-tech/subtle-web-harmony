@@ -8,35 +8,57 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    /* Professional Clean Design System */
+    /* Base Colors */
+    --background: 0 0% 100%;               /* Reinweiß #FFFFFF */
+    --foreground: 0 0% 13%;                /* Dunkles Anthrazit #222222 */
+    
+    /* Card & Container Colors */
+    --card: 0 0% 100%;                     /* Weiß für Karten */
+    --card-foreground: 0 0% 13%;           /* Anthrazit Text auf Karten */
+    
+    /* Popover Colors */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --popover-foreground: 0 0% 13%;
+    
+    /* Primary Brand Color - Klares Blau */
+    --primary: 225 100% 62%;               /* Klares Blau #3A86FF */
+    --primary-foreground: 0 0% 100%;       /* Weiß auf Blau */
+    --primary-hover: 225 100% 58%;         /* Helleres Blau für Hover */
+    
+    /* Secondary Colors - Grautöne */
+    --secondary: 0 0% 94%;                 /* Helles Grau #F0F0F0 */
+    --secondary-foreground: 0 0% 13%;      /* Anthrazit auf hellem Grau */
+    
+    /* Muted Colors für sekundäre Texte */
+    --muted: 0 0% 94%;                     /* Helles Grau für Hintergründe */
+    --muted-foreground: 0 0% 40%;          /* Weiches Grau #666666 für sekundäre Texte */
+    
+    /* Accent Colors */
+    --accent: 0 0% 94%;                    /* Helles Grau */
+    --accent-foreground: 0 0% 13%;         /* Anthrazit */
+    
+    /* Status Colors */
+    --destructive: 0 84% 60%;              /* Sanftes Rot für Fehler */
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Border & Input Colors */
+    --border: 0 0% 69%;                    /* Mittelgrau #B0B0B0 für Linien */
+    --input: 0 0% 69%;                     /* Mittelgrau für Input-Rahmen */
+    --input-focus: 225 100% 62%;           /* Blau für Fokus-Zustand */
+    --ring: 225 100% 62%;                  /* Blauer Fokus-Ring */
+    
+    /* Design System Properties */
+    --radius: 0.5rem;                      /* 8px für weiche Border-Radius */
+    
+    /* Schatten für sanfte Elevation */
+    --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    
+    /* Typography */
+    --font-size-base: 16px;                /* Angenehme Lesbarkeit */
+    --line-height-base: 1.6;               /* Komfortable Zeilenhöhe */
 
     --sidebar-background: 0 0% 98%;
 
@@ -101,5 +123,38 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+  }
+  
+  /* Professional Typography Styles */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground font-medium;
+    line-height: 1.2;
+  }
+  
+  /* Custom Component Styles */
+  .card-elegant {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.2s ease-in-out;
+  }
+  
+  .card-elegant:hover {
+    box-shadow: var(--shadow-hover);
+  }
+  
+  .btn-primary-hover {
+    background: hsl(var(--primary-hover));
+  }
+  
+  /* Input Focus Styles */
+  .input-focus:focus {
+    outline: 2px solid hsl(var(--input-focus));
+    outline-offset: 2px;
+    border-color: hsl(var(--input-focus));
   }
 }
