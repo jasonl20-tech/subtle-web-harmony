@@ -234,7 +234,7 @@ const Hero = () => {
         <Header />
       </div>
       
-      {/* Curved Rainbow Gradient Background - Diagonal from middle-left to top-right */}
+      {/* Animated Curved Rainbow Gradient Background - More swing and movement */}
       <div className="absolute top-0 left-0 right-0 h-full z-0">
         <svg
           className="absolute top-0 left-0 w-full h-full"
@@ -249,23 +249,68 @@ const Hero = () => {
               <stop offset="75%" stopColor="#3B82F6" />
               <stop offset="100%" stopColor="#8B5CF6" />
             </linearGradient>
+            <linearGradient id="rainbowGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#EC4899" />
+              <stop offset="25%" stopColor="#F97316" />
+              <stop offset="50%" stopColor="#3B82F6" />
+              <stop offset="75%" stopColor="#8B5CF6" />
+              <stop offset="100%" stopColor="#EC4899" />
+            </linearGradient>
           </defs>
-          {/* Full gradient coverage - no white space above */}
+          {/* Animated wavy gradient layers with more swing */}
           <path
-            d="M0,0 L1200,0 L1200,80 Q900,100 600,150 Q300,200 0,400 Z"
+            d="M0,0 L1200,0 L1200,60 Q1000,80 800,120 Q600,160 400,140 Q200,120 0,380 Z"
             fill="url(#rainbowGradient)"
-            opacity="0.15"
-          />
+            opacity="0.18"
+          >
+            <animateTransform
+              attributeName="transform"
+              type="translate"
+              values="0,0; 20,-10; 0,0; -20,10; 0,0"
+              dur="8s"
+              repeatCount="indefinite"
+            />
+          </path>
           <path
-            d="M0,0 L1200,0 L1200,60 Q950,90 700,130 Q350,180 0,420 Z"
+            d="M0,0 L1200,0 L1200,80 Q900,60 700,140 Q500,220 300,180 Q150,140 0,420 Z"
+            fill="url(#rainbowGradient2)"
+            opacity="0.15"
+          >
+            <animateTransform
+              attributeName="transform"
+              type="translate"
+              values="0,0; -15,5; 0,0; 25,-8; 0,0"
+              dur="10s"
+              repeatCount="indefinite"
+            />
+          </path>
+          <path
+            d="M0,0 L1200,0 L1200,100 Q850,140 650,110 Q450,80 250,160 Q100,240 0,360 Z"
             fill="url(#rainbowGradient)"
             opacity="0.12"
-          />
+          >
+            <animateTransform
+              attributeName="transform"
+              type="translate"
+              values="0,0; 30,15; 0,0; -10,-5; 0,0"
+              dur="12s"
+              repeatCount="indefinite"
+            />
+          </path>
+          {/* Additional flowing wave */}
           <path
-            d="M0,0 L1200,0 L1200,100 Q850,120 550,170 Q250,220 0,380 Z"
-            fill="url(#rainbowGradient)"
-            opacity="0.1"
-          />
+            d="M0,0 L1200,0 L1200,120 Q1050,100 850,160 Q650,220 450,200 Q250,180 50,240 Q25,260 0,300 Z"
+            fill="url(#rainbowGradient2)"
+            opacity="0.08"
+          >
+            <animateTransform
+              attributeName="transform"
+              type="translate"
+              values="0,0; -25,-12; 0,0; 15,8; 0,0"
+              dur="15s"
+              repeatCount="indefinite"
+            />
+          </path>
         </svg>
       </div>
 
