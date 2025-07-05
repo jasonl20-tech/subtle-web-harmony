@@ -4,91 +4,6 @@ import { ArrowRight, Clock, TrendingUp, BarChart, CreditCard, Users, DollarSign 
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 
-// Floating Dashboard Cards Component - Mobile optimized
-function FloatingDashboardCards() {
-  const cards = [
-    {
-      title: "Nettovolumen",
-      value: "€3.528.198,72",
-      subtitle: "Heute",
-      trend: "+2.1%",
-      color: "from-blue-500 to-purple-600",
-      chartData: [20, 45, 35, 60, 55, 75, 70, 85]
-    },
-    {
-      title: "Verkäufe",
-      value: "2.951.556",
-      subtitle: "Gestern",
-      trend: "+321.9%",
-      color: "from-green-500 to-teal-600",
-      chartData: [30, 25, 45, 35, 65, 55, 85, 75]
-    },
-    {
-      title: "Neue Kunden",
-      value: "37",
-      subtitle: "Heute",
-      trend: "+321.9%",
-      color: "from-orange-500 to-red-600",
-      chartData: [10, 35, 25, 55, 45, 75, 65, 95]
-    }
-  ];
-  
-  const [visibleCards, setVisibleCards] = useState([0, 1, 2]);
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setVisibleCards(prev => {
-        const rotated = [...prev];
-        rotated.push(rotated.shift()!);
-        return rotated;
-      });
-    }, 4000);
-    
-    return () => clearInterval(interval);
-  }, []);
-  
-  return (
-    <div className="absolute top-8 right-4 lg:top-32 lg:right-8 w-64 lg:w-80 space-y-3 lg:space-y-4 z-20">
-      {visibleCards.slice(0, 2).map((index, i) => (
-        <div 
-          key={`${index}-${i}`}
-          className="animate-fade-in transition-all duration-700 ease-out"
-          style={{ 
-            animationDelay: `${i * 200}ms`,
-            transform: `translateX(${i * 10}px) translateY(${i * 10}px)` 
-          }}
-        >
-          <div className="bg-white/95 backdrop-blur-md p-4 lg:p-6 rounded-xl lg:rounded-2xl shadow-xl lg:shadow-2xl border border-gray-100">
-            <div className="flex items-center justify-between mb-3 lg:mb-4">
-              <div className={`w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl bg-gradient-to-r ${cards[index].color} flex items-center justify-center`}>
-                {index === 0 && <DollarSign className="w-4 h-4 lg:w-5 lg:h-5 text-white" />}
-                {index === 1 && <BarChart className="w-4 h-4 lg:w-5 lg:h-5 text-white" />}
-                {index === 2 && <Users className="w-4 h-4 lg:w-5 lg:h-5 text-white" />}
-              </div>
-              <span className={`text-xs lg:text-sm font-semibold ${cards[index].trend.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
-                {cards[index].trend}
-              </span>
-            </div>
-            <h3 className="text-xs lg:text-sm text-gray-500 mb-1">{cards[index].title}</h3>
-            <p className="text-lg lg:text-2xl font-bold text-gray-900 mb-2 lg:mb-3">{cards[index].value}</p>
-            <p className="text-xs text-gray-400 mb-2 lg:mb-3">{cards[index].subtitle}</p>
-            
-            {/* Mini Chart */}
-            <div className="h-8 lg:h-12 flex items-end space-x-1">
-              {cards[index].chartData.map((height, idx) => (
-                <div
-                  key={idx}
-                  className={`bg-gradient-to-t ${cards[index].color} rounded-sm flex-1 opacity-80`}
-                  style={{ height: `${height}%` }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 // Desktop Mockup Component with Animated Excel - Mobile optimized
 function DesktopMockup() {
@@ -418,9 +333,6 @@ const Hero = () => {
             <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] mt-8 lg:mt-0">
               {/* Desktop Mockup - Only on large screens */}
               <DesktopMockup />
-              
-              {/* Floating Dashboard Cards - Responsive */}
-              <FloatingDashboardCards />
             </div>
           </div>
         </div>
