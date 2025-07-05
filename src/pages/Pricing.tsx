@@ -23,6 +23,8 @@ const Pricing = () => {
   }, [user, checkSubscription]);
 
   const handleCheckout = async (plan: 'monthly' | 'yearly') => {
+    console.log('Checkout started', { plan, user: !!user, session: !!session });
+    
     if (!user) {
       navigate('/auth');
       return;
@@ -40,6 +42,7 @@ const Pricing = () => {
     setIsLoading(prev => ({ ...prev, [plan]: true }));
 
     try {
+      console.log('Invoking create-checkout function');
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { plan },
         headers: {
@@ -47,17 +50,24 @@ const Pricing = () => {
         },
       });
 
+      console.log('Function response', { data, error });
+
       if (error) {
         throw error;
       }
 
+      if (!data?.url) {
+        throw new Error('Keine Checkout-URL erhalten');
+      }
+
+      console.log('Opening checkout URL:', data.url);
       // Open Stripe checkout in new tab
       window.open(data.url, '_blank');
     } catch (error) {
       console.error('Checkout error:', error);
       toast({
         title: "Fehler beim Checkout",
-        description: "Es gab ein Problem beim Öffnen des Checkouts. Bitte versuchen Sie es erneut.",
+        description: error instanceof Error ? error.message : "Es gab ein Problem beim Öffnen des Checkouts. Bitte versuchen Sie es erneut.",
         variant: "destructive",
       });
     } finally {
@@ -67,7 +77,7 @@ const Pricing = () => {
 
   const features = [
     "Unbegrenzte Stundennachweise hochladen",
-    "Automatische Verarbeitung und Analyse",
+    "Automatische Verarbeitung und Analyse", 
     "Export in verschiedene Formate",
     "Bundesland-spezifische Regelungen",
     "Individuelle Arbeitszeit-Regeln",
