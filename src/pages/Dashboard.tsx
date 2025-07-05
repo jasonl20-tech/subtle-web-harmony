@@ -18,7 +18,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
-  const [uploadType, setUploadType] = useState('stundenplan');
+  const [stundenplanFile, setStundenplanFile] = useState<File | null>(null);
+  const [gesamtstundenFile, setGesamtstundenFile] = useState<File | null>(null);
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedBundesland, setSelectedBundesland] = useState('');
@@ -67,6 +68,64 @@ const Dashboard = () => {
     const newRules = [...rules];
     newRules[index] = value;
     setRules(newRules);
+  };
+
+  const downloadTemplate = (type: 'stundenplan' | 'gesamtstunden') => {
+    // Create a simple CSV template
+    const headers = type === 'stundenplan' 
+      ? ['Datum', 'Startzeit', 'Endzeit', 'Pause', 'Beschreibung']
+      : ['Woche', 'Gesamtstunden', 'Überstunden', 'Bemerkungen'];
+    
+    const csvContent = headers.join(',') + '\n';
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${type}_template.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const formData = new FormData();
+      
+      // Add form fields
+      formData.append('month', selectedMonth);
+      formData.append('year', selectedYear);
+      formData.append('bundesland', selectedBundesland);
+      formData.append('rules', JSON.stringify(rules.filter(rule => rule.trim())));
+      
+      // Add files
+      if (stundenplanFile) {
+        formData.append('stundenplan', stundenplanFile);
+      }
+      if (gesamtstundenFile) {
+        formData.append('gesamtstunden', gesamtstundenFile);
+      }
+
+      const response = await fetch('https://xlk.ai/webhook-test/325480de-a076-41e7-8d11-3bb1edb8f668', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Erfolgreich gesendet",
+          description: "Ihre Daten wurden erfolgreich verarbeitet.",
+        });
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (error) {
+      toast({
+        title: "Fehler beim Upload",
+        description: "Es gab ein Problem beim Senden der Daten.",
+        variant: "destructive",
+      });
+    }
   };
 
   useEffect(() => {
@@ -136,19 +195,57 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Upload Type Selection */}
-                <div className="space-y-3">
-                  <Label className="text-base font-medium">Art des Uploads</Label>
-                  <RadioGroup value={uploadType} onValueChange={setUploadType}>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="stundenplan" id="stundenplan" />
-                      <Label htmlFor="stundenplan">Stundenplan</Label>
+                {/* Upload Sections */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Stundenplan Upload */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base font-medium">Stundenplan</Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => downloadTemplate('stundenplan')}
+                      >
+                        Download Template
+                      </Button>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="gesamtstunden" id="gesamtstunden" />
-                      <Label htmlFor="gesamtstunden">Gesamtstundenübersicht</Label>
+                    <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-4 text-center">
+                      <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground mb-2">Stundenplan hier ablegen</p>
+                      <Input
+                        type="file"
+                        accept=".xlsx,.xls,.csv"
+                        onChange={(e) => setStundenplanFile(e.target.files?.[0] || null)}
+                        className="text-sm"
+                      />
                     </div>
-                  </RadioGroup>
+                  </div>
+
+                  {/* Gesamtstundenübersicht Upload */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base font-medium">Gesamtstundenübersicht</Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => downloadTemplate('gesamtstunden')}
+                      >
+                        Download Template
+                      </Button>
+                    </div>
+                    <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-4 text-center">
+                      <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground mb-2">Gesamtstunden hier ablegen</p>
+                      <Input
+                        type="file"
+                        accept=".xlsx,.xls,.csv"
+                        onChange={(e) => setGesamtstundenFile(e.target.files?.[0] || null)}
+                        className="text-sm"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Month and Year Selection */}
@@ -241,21 +338,6 @@ const Dashboard = () => {
                   ))}
                 </div>
 
-                {/* File Upload */}
-                <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
-                  <Upload className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Dateien hier ablegen</h3>
-                  <p className="text-muted-foreground mb-4">
-                    oder klicken Sie zum Auswählen
-                  </p>
-                  <Input
-                    type="file"
-                    className="max-w-sm mx-auto"
-                    accept=".xlsx,.xls,.csv"
-                    multiple
-                  />
-                </div>
-                
                 <div className="text-sm text-muted-foreground">
                   <p className="font-medium mb-2">Unterstützte Dateiformate:</p>
                   <ul className="list-disc list-inside space-y-1">
@@ -264,8 +346,13 @@ const Dashboard = () => {
                   </ul>
                 </div>
 
-                <Button className="w-full" size="lg">
-                  Dateien verarbeiten
+                <Button 
+                  className="w-full" 
+                  size="lg"
+                  onClick={handleSubmit}
+                  disabled={!selectedMonth || !selectedYear || !selectedBundesland}
+                >
+                  Daten verarbeiten
                 </Button>
               </CardContent>
             </Card>
