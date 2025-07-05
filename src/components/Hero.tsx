@@ -1,72 +1,89 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import laptop1 from "@/assets/laptop-1.jpg";
+import laptop2 from "@/assets/laptop-2.jpg"; 
+import laptop3 from "@/assets/laptop-3.jpg";
+import laptop4 from "@/assets/laptop-4.jpg";
 
 const Hero = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  const slides = [
+    { image: laptop1, alt: "Laptop mit Tabellenkalkulationen" },
+    { image: laptop2, alt: "MacBook Pro Arbeitsplatz" },
+    { image: laptop3, alt: "MacBook mit Code auf dem Bildschirm" },
+    { image: laptop4, alt: "Grauer Laptop auf Schreibtisch" }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
   return (
-    <section className="py-20 lg:py-32 bg-background">
-      <div className="container mx-auto px-6 lg:px-8">
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Main Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
-            Professionelle Web-Lösungen
-            <span className="block text-primary mt-2">für Ihr Unternehmen</span>
-          </h1>
-          
-          {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-12 leading-relaxed max-w-3xl mx-auto">
-            Wir entwickeln moderne, elegante Webanwendungen mit klarem Design 
-            und perfekter Benutzererfahrung. Minimalistisch, funktional, professionell.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Button 
-              size="lg" 
-              className="bg-primary hover:bg-primary-hover text-primary-foreground font-medium px-8 py-4 text-lg shadow-card hover:shadow-hover transition-all duration-200"
-            >
-              Projekt starten
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="border-border text-foreground hover:bg-secondary font-medium px-8 py-4 text-lg shadow-subtle hover:shadow-card transition-all duration-200"
-            >
-              Portfolio ansehen
-            </Button>
+    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* Background Slideshow */}
+      <div className="absolute inset-0 z-0">
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-1000 ${
+              index === currentSlide ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <img 
+              src={slide.image} 
+              alt={slide.alt}
+              className="w-full h-full object-cover"
+            />
+            {/* Dark Overlay */}
+            <div className="absolute inset-0 bg-black/50"></div>
           </div>
+        ))}
+      </div>
 
-          {/* Feature Cards */}
-          <div className="grid md:grid-cols-3 gap-8 mt-20">
-            <Card className="card-elegant p-8 text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <div className="w-6 h-6 bg-primary rounded"></div>
-              </div>
-              <h3 className="text-xl font-semibold text-foreground mb-3">Clean Design</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Minimalistisches, elegantes Design mit großzügigem Weißraum und klaren Linien.
-              </p>
-            </Card>
+      {/* Content */}
+      <div className="relative z-10 text-center max-w-4xl mx-auto px-6 lg:px-8">
+        {/* Main Heading */}
+        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-12 leading-tight">
+          Arbeitsstundennachweis
+        </h1>
 
-            <Card className="card-elegant p-8 text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <div className="w-6 h-6 bg-primary rounded-full"></div>
-              </div>
-              <h3 className="text-xl font-semibold text-foreground mb-3">Responsive</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Perfekte Darstellung auf allen Geräten - vom Smartphone bis zum Desktop.
-              </p>
-            </Card>
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <Button 
+            size="lg" 
+            className="bg-primary hover:bg-primary-hover text-primary-foreground font-medium px-10 py-4 text-lg shadow-hover transition-all duration-200"
+          >
+            Jetzt starten
+          </Button>
+          <Button 
+            variant="outline" 
+            size="lg"
+            className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-medium px-10 py-4 text-lg shadow-card transition-all duration-200"
+          >
+            Demo ansehen
+          </Button>
+        </div>
+      </div>
 
-            <Card className="card-elegant p-8 text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <div className="w-6 h-6 bg-primary rounded-lg transform rotate-45"></div>
-              </div>
-              <h3 className="text-xl font-semibold text-foreground mb-3">Performance</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Schnelle Ladezeiten und optimierte Performance für beste Nutzererfahrung.
-              </p>
-            </Card>
-          </div>
+      {/* Slide Indicators */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="flex space-x-3">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                index === currentSlide 
+                  ? 'bg-white shadow-lg' 
+                  : 'bg-white/50 hover:bg-white/70'
+              }`}
+            />
+          ))}
         </div>
       </div>
     </section>
