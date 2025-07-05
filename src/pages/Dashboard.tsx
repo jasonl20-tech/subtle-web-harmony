@@ -220,16 +220,16 @@ const Dashboard = () => {
     }
   };
 
-  const grantPremium = async (userId: string) => {
+  const grantPremium = async (userId: string, userEmail: string) => {
     try {
       const { error } = await supabase
         .from('subscribers')
         .upsert({
           user_id: userId,
-          email: allProfiles.find(p => p.user_id === userId)?.email || '',
+          email: userEmail,
           subscribed: true,
           subscription_tier: 'Premium',
-          subscription_end: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+          updated_at: new Date().toISOString()
         });
 
       if (error) throw error;
@@ -804,7 +804,7 @@ const Dashboard = () => {
                               <td className="p-4">
                                 <Button
                                   size="sm"
-                                  onClick={() => grantPremium(profile.user_id)}
+                                  onClick={() => grantPremium(profile.user_id, profile.email)}
                                   className="bg-green-600 hover:bg-green-700 text-white"
                                 >
                                   Premium gewähren
