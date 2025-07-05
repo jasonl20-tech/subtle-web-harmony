@@ -29,7 +29,9 @@ const Dashboard = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [allProfiles, setAllProfiles] = useState<any[]>([]);
-  const [webhookUrl, setWebhookUrl] = useState('https://xlk.ai/webhook-test/325480de-a076-41e7-8d11-3bb1edb8f668');
+  const [webhookUrl, setWebhookUrl] = useState('');
+  const [isLoadingWebhook, setIsLoadingWebhook] = useState(false);
+  const [webhookTestStatus, setWebhookTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
 
   const months = [
     { value: '01', label: 'Januar' },
@@ -199,8 +201,131 @@ const Dashboard = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const loadWebhookUrl = async () => {
+    if (!isAdmin) return;
+    
     try {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('value')
+        .eq('key', 'webhook_url')
+        .single();
+      
+      if (!error && data) {
+        setWebhookUrl(data.value);
+        console.log('[ADMIN] Loaded webhook URL from database');
+      } else {
+        console.log('[ADMIN] No webhook URL found, using empty string');
+        setWebhookUrl('');
+      }
+    } catch (error) {
+      console.error('Error loading webhook URL:', error);
+    }
+  };
+
+  const saveWebhookUrl = async (url: string) => {
+    if (!isAdmin) return false;
+    
+    setIsLoadingWebhook(true);
+    try {
+      // Validate URL format
+      if (url && !isValidUrl(url)) {
+        toast({
+          title: "Ungültige URL",
+          description: "Bitte geben Sie eine gültige HTTP/HTTPS URL ein.",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      const { error } = await supabase
+        .from('settings')
+        .upsert({ 
+          key: 'webhook_url', 
+          value: url,
+          description: 'Webhook URL für Datenverarbeitung'
+        }, { 
+          onConflict: 'key' 
+        });
+      
+      if (error) throw error;
+
+      console.log('[ADMIN] Webhook URL saved to database:', url);
+      return true;
+    } catch (error) {
+      console.error('Error saving webhook URL:', error);
+      toast({
+        title: "Fehler beim Speichern",
+        description: "Webhook URL konnte nicht gespeichert werden.",
+        variant: "destructive",
+      });
+      return false;
+    } finally {
+      setIsLoadingWebhook(false);
+    }
+  };
+
+  const isValidUrl = (string: string) => {
+    try {
+      const url = new URL(string);
+      return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const testWebhookUrl = async (url: string) => {
+    if (!url || !isValidUrl(url)) {
+      setWebhookTestStatus('error');
+      return false;
+    }
+
+    setWebhookTestStatus('testing');
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ test: true, timestamp: new Date().toISOString() }),
+      });
+      
+      if (response.ok) {
+        setWebhookTestStatus('success');
+        return true;
+      } else {
+        setWebhookTestStatus('error');
+        return false;
+      }
+    } catch (error) {
+      console.error('Webhook test failed:', error);
+      setWebhookTestStatus('error');
+      return false;
+    }
+  };
+
+  const handleSubmit = async () => {
+    // Validation checks
+    if (!webhookUrl) {
+      toast({
+        title: "Fehler",
+        description: "Keine Webhook URL konfiguriert. Bitte kontaktieren Sie den Administrator.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!isValidUrl(webhookUrl)) {
+      toast({
+        title: "Fehler",
+        description: "Ungültige Webhook URL konfiguriert. Bitte kontaktieren Sie den Administrator.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      console.log('[UPLOAD] Starting upload to webhook:', webhookUrl);
       const formData = new FormData();
       
       // Add form fields
@@ -219,9 +344,11 @@ const Dashboard = () => {
       // Add files
       if (stundenplanFile) {
         formData.append('stundenplan', stundenplanFile);
+        console.log('[UPLOAD] Added stundenplan file:', stundenplanFile.name);
       }
       if (gesamtstundenFile) {
         formData.append('gesamtstunden', gesamtstundenFile);
+        console.log('[UPLOAD] Added gesamtstunden file:', gesamtstundenFile.name);
       }
 
       const response = await fetch(webhookUrl, {
@@ -229,11 +356,18 @@ const Dashboard = () => {
         body: formData,
       });
 
+      console.log('[UPLOAD] Response status:', response.status);
+      console.log('[UPLOAD] Response headers:', Object.fromEntries(response.headers.entries()));
+
       if (response.ok) {
+        const responseText = await response.text();
+        console.log('[UPLOAD] Response body:', responseText);
+        
         toast({
           title: "Erfolgreich gesendet",
           description: "Ihre Daten wurden erfolgreich verarbeitet.",
         });
+        
         // Reset form
         setStundenplanFile(null);
         setGesamtstundenFile(null);
@@ -242,12 +376,36 @@ const Dashboard = () => {
         setSelectedBundesland('');
         setRules(['']);
       } else {
-        throw new Error('Upload failed');
+        const errorText = await response.text();
+        console.error('[UPLOAD] Error response:', errorText);
+        
+        let errorMessage = 'Upload fehlgeschlagen';
+        if (response.status === 404) {
+          errorMessage = 'Webhook-Endpoint nicht gefunden. Bitte kontaktieren Sie den Administrator.';
+        } else if (response.status === 500) {
+          errorMessage = 'Server-Fehler beim Verarbeiten der Daten.';
+        } else if (response.status >= 400 && response.status < 500) {
+          errorMessage = 'Ungültige Anfrage. Überprüfen Sie Ihre Daten.';
+        }
+        
+        throw new Error(`${errorMessage} (Status: ${response.status})`);
       }
     } catch (error) {
+      console.error('[UPLOAD] Upload failed:', error);
+      
+      let errorTitle = "Fehler beim Upload";
+      let errorDescription = "Es gab ein Problem beim Senden der Daten.";
+      
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        errorTitle = "Verbindungsfehler";
+        errorDescription = "Webhook-URL ist nicht erreichbar. Bitte kontaktieren Sie den Administrator.";
+      } else if (error instanceof Error) {
+        errorDescription = error.message;
+      }
+      
       toast({
-        title: "Fehler beim Upload",
-        description: "Es gab ein Problem beim Senden der Daten.",
+        title: errorTitle,
+        description: errorDescription,
         variant: "destructive",
       });
     }
@@ -362,6 +520,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (isAdmin) {
       fetchAdminData();
+      loadWebhookUrl();
     }
   }, [isAdmin]);
 
@@ -1018,20 +1177,60 @@ const Dashboard = () => {
                             className="font-mono text-sm"
                           />
                           <Button
-                            onClick={() => {
+                            onClick={async () => {
+                              const success = await saveWebhookUrl(webhookUrl);
+                              if (success) {
+                                toast({
+                                  title: "Webhook URL gespeichert",
+                                  description: "Die neue Webhook URL wird für alle Uploads verwendet.",
+                                });
+                              }
+                            }}
+                            variant="outline"
+                            disabled={isLoadingWebhook}
+                          >
+                            <Settings className="w-4 h-4 mr-2" />
+                            {isLoadingWebhook ? 'Speichert...' : 'Speichern'}
+                          </Button>
+                          <Button
+                            onClick={async () => {
+                              const success = await testWebhookUrl(webhookUrl);
                               toast({
-                                title: "Webhook URL gespeichert",
-                                description: "Die neue Webhook URL wird für alle Uploads verwendet.",
+                                title: success ? "Test erfolgreich" : "Test fehlgeschlagen",
+                                description: success 
+                                  ? "Die Webhook URL ist erreichbar und funktioniert."
+                                  : "Die Webhook URL ist nicht erreichbar oder funktioniert nicht korrekt.",
+                                variant: success ? "default" : "destructive",
                               });
                             }}
                             variant="outline"
+                            disabled={!webhookUrl || webhookTestStatus === 'testing'}
                           >
-                            <Settings className="w-4 h-4 mr-2" />
-                            Speichern
+                            {webhookTestStatus === 'testing' ? 'Testet...' : 'Test'}
                           </Button>
                         </div>
-                        <div className="text-sm text-muted-foreground">
+                        
+                        {/* Status indicator */}
+                        {webhookTestStatus !== 'idle' && (
+                          <div className={`flex items-center space-x-2 text-sm ${
+                            webhookTestStatus === 'success' ? 'text-green-600' : 
+                            webhookTestStatus === 'error' ? 'text-red-600' : 'text-yellow-600'
+                          }`}>
+                            <div className={`w-2 h-2 rounded-full ${
+                              webhookTestStatus === 'success' ? 'bg-green-600' : 
+                              webhookTestStatus === 'error' ? 'bg-red-600' : 'bg-yellow-600'
+                            }`}></div>
+                            <span>
+                              {webhookTestStatus === 'success' && 'Webhook URL funktioniert korrekt'}
+                              {webhookTestStatus === 'error' && 'Webhook URL nicht erreichbar'}
+                              {webhookTestStatus === 'testing' && 'Teste Webhook URL...'}
+                            </span>
+                          </div>
+                        )}
+                        
+                        <div className="text-sm text-muted-foreground space-y-2">
                           <p>Diese URL wird für alle Benutzer-Uploads verwendet. Stellen Sie sicher, dass der Endpoint die POST-Anfragen korrekt verarbeitet.</p>
+                          <p className="font-semibold">Erwartete Felder: month, year, bundesland, rule_1, rule_2, ..., api_key, stundenplan (Datei), gesamtstunden (Datei)</p>
                         </div>
                       </div>
                     </div>
