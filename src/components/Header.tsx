@@ -17,9 +17,7 @@ const Header = () => {
               to="/"
               className="font-bold text-2xl text-gray-900 hover:text-gray-700 transition-colors duration-200"
             >
-              <span className="block leading-tight">
-                Arbeits-<br />stundennachweis
-              </span>
+              Arbeitsstundennachweis
             </Link>
           </div>
 
