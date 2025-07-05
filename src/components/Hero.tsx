@@ -250,19 +250,19 @@ const Hero = () => {
               <stop offset="100%" stopColor="#8B5CF6" />
             </linearGradient>
           </defs>
-          {/* Diagonal curved gradient from middle-left to top-right */}
+          {/* Full gradient coverage - no white space above */}
           <path
-            d="M0,400 Q300,200 600,150 Q900,100 1200,80 L1200,0 Q900,20 600,70 Q300,120 0,320 Z"
+            d="M0,0 L1200,0 L1200,80 Q900,100 600,150 Q300,200 0,400 Z"
+            fill="url(#rainbowGradient)"
+            opacity="0.15"
+          />
+          <path
+            d="M0,0 L1200,0 L1200,60 Q950,90 700,130 Q350,180 0,420 Z"
             fill="url(#rainbowGradient)"
             opacity="0.12"
           />
           <path
-            d="M0,420 Q350,180 700,130 Q950,90 1200,60 L1200,0 Q950,40 700,80 Q350,130 0,350 Z"
-            fill="url(#rainbowGradient)"
-            opacity="0.08"
-          />
-          <path
-            d="M0,380 Q250,220 550,170 Q850,120 1200,100 L1200,0 Q850,70 550,120 Q250,170 0,300 Z"
+            d="M0,0 L1200,0 L1200,100 Q850,120 550,170 Q250,220 0,380 Z"
             fill="url(#rainbowGradient)"
             opacity="0.1"
           />
