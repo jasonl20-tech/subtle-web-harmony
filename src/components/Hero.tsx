@@ -234,11 +234,11 @@ const Hero = () => {
         <Header />
       </div>
       
-      {/* Curved Rainbow Gradient Background */}
-      <div className="absolute top-0 left-0 right-0 h-96 z-0">
+      {/* Curved Rainbow Gradient Background - Diagonal from middle-left to top-right */}
+      <div className="absolute top-0 left-0 right-0 h-full z-0">
         <svg
           className="absolute top-0 left-0 w-full h-full"
-          viewBox="0 0 1200 400"
+          viewBox="0 0 1200 800"
           preserveAspectRatio="none"
         >
           <defs>
@@ -250,15 +250,21 @@ const Hero = () => {
               <stop offset="100%" stopColor="#8B5CF6" />
             </linearGradient>
           </defs>
+          {/* Diagonal curved gradient from middle-left to top-right */}
           <path
-            d="M0,0 Q300,200 600,100 T1200,50 L1200,0 Z"
+            d="M0,400 Q300,200 600,150 Q900,100 1200,80 L1200,0 Q900,20 600,70 Q300,120 0,320 Z"
             fill="url(#rainbowGradient)"
-            opacity="0.1"
+            opacity="0.12"
           />
           <path
-            d="M0,0 Q400,150 800,80 T1200,30 L1200,0 Z"
+            d="M0,420 Q350,180 700,130 Q950,90 1200,60 L1200,0 Q950,40 700,80 Q350,130 0,350 Z"
             fill="url(#rainbowGradient)"
-            opacity="0.15"
+            opacity="0.08"
+          />
+          <path
+            d="M0,380 Q250,220 550,170 Q850,120 1200,100 L1200,0 Q850,70 550,120 Q250,170 0,300 Z"
+            fill="url(#rainbowGradient)"
+            opacity="0.1"
           />
         </svg>
       </div>
