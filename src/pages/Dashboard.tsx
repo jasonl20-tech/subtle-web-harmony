@@ -150,22 +150,50 @@ const Dashboard = () => {
     if (!isAdmin) return;
     
     try {
-      // Fetch all profiles for admin with LEFT JOIN to show all users, even without roles
+      // Use a more explicit query to get all data properly
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select(`
-          *,
-          user_roles(role),
-          subscribers(subscribed, subscription_tier)
+          id,
+          user_id,
+          email,
+          full_name,
+          api_key,
+          created_at,
+          updated_at
         `)
         .order('created_at', { ascending: false });
       
-      if (!profilesError && profilesData) {
-        console.log('[ADMIN] Fetched profiles:', profilesData);
-        setAllProfiles(profilesData);
-      } else {
+      if (profilesError) {
         console.error('[ADMIN] Error fetching profiles:', profilesError);
+        return;
       }
+
+      // Fetch user roles separately
+      const { data: rolesData } = await supabase
+        .from('user_roles')
+        .select('user_id, role');
+
+      // Fetch subscribers separately  
+      const { data: subscribersData } = await supabase
+        .from('subscribers')
+        .select('user_id, subscribed, subscription_tier');
+
+      // Combine the data
+      const enrichedProfiles = profilesData?.map(profile => {
+        const userRole = rolesData?.find(role => role.user_id === profile.user_id);
+        const subscriber = subscribersData?.find(sub => sub.user_id === profile.user_id);
+        
+        return {
+          ...profile,
+          user_roles: userRole ? [userRole] : [],
+          subscribers: subscriber ? [subscriber] : []
+        };
+      });
+
+      console.log('[ADMIN] Fetched enriched profiles:', enrichedProfiles);
+      setAllProfiles(enrichedProfiles || []);
+      
     } catch (error) {
       console.error('Error fetching admin data:', error);
     }
