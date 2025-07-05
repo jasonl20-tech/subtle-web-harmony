@@ -37,6 +37,12 @@ const Header = () => {
               Tutorial
             </Link>
             <Link 
+              to="/contact" 
+              className="text-gray-900 hover:text-gray-700 transition-colors font-medium"
+            >
+              Kontakt
+            </Link>
+            <Link 
               to="/pricing" 
               className="text-gray-900 hover:text-gray-700 transition-colors font-medium"
             >
@@ -73,10 +79,10 @@ const Header = () => {
                   Login
                 </Link>
                 <Link 
-                  to="/contact" 
+                  to="/auth" 
                   className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition-all duration-200 font-medium"
                 >
-                  Sales-Team kontaktieren →
+                  Registrieren →
                 </Link>
               </>
             )}

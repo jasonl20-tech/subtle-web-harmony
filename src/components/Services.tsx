@@ -121,9 +121,10 @@ const Services = () => {
             <div className="flex justify-center">
               <Button 
                 size="lg"
-                className="bg-primary hover:bg-primary-hover text-primary-foreground font-medium px-12 shadow-card hover:shadow-hover transition-all duration-200"
+                onClick={() => window.location.href = '/auth'}
+                className="bg-gray-900 hover:bg-gray-800 text-white font-medium px-12 shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                Jetzt starten
+                Jetzt registrieren
               </Button>
             </div>
           </Card>
