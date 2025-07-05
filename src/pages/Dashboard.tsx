@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -6,13 +6,68 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Upload, FileText, LogOut } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Upload, FileText, LogOut, Plus, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 const Dashboard = () => {
   const { user, signOut, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  const [uploadType, setUploadType] = useState('stundenplan');
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [selectedBundesland, setSelectedBundesland] = useState('');
+  const [rules, setRules] = useState(['']);
+
+  const months = [
+    { value: '01', label: 'Januar' },
+    { value: '02', label: 'Februar' },
+    { value: '03', label: 'März' },
+    { value: '04', label: 'April' },
+    { value: '05', label: 'Mai' },
+    { value: '06', label: 'Juni' },
+    { value: '07', label: 'Juli' },
+    { value: '08', label: 'August' },
+    { value: '09', label: 'September' },
+    { value: '10', label: 'Oktober' },
+    { value: '11', label: 'November' },
+    { value: '12', label: 'Dezember' }
+  ];
+
+  const years = Array.from({ length: 10 }, (_, i) => {
+    const year = new Date().getFullYear() - 5 + i;
+    return { value: year.toString(), label: year.toString() };
+  });
+
+  const bundeslaender = [
+    'Baden-Württemberg', 'Bayern', 'Berlin', 'Brandenburg', 'Bremen',
+    'Hamburg', 'Hessen', 'Mecklenburg-Vorpommern', 'Niedersachsen',
+    'Nordrhein-Westfalen', 'Rheinland-Pfalz', 'Saarland', 'Sachsen',
+    'Sachsen-Anhalt', 'Schleswig-Holstein', 'Thüringen'
+  ];
+
+  const addRule = () => {
+    if (rules.length < 10) {
+      setRules([...rules, '']);
+    }
+  };
+
+  const removeRule = (index: number) => {
+    if (rules.length > 1) {
+      setRules(rules.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateRule = (index: number, value: string) => {
+    const newRules = [...rules];
+    newRules[index] = value;
+    setRules(newRules);
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -54,22 +109,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-white shadow-sm">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-muted-foreground">
-                Willkommen, {user.email}
-              </span>
-              <Button variant="outline" onClick={handleSignOut}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Abmelden
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="container mx-auto px-6 py-8">
         <Tabs defaultValue="upload" className="w-full">
@@ -96,6 +136,112 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Upload Type Selection */}
+                <div className="space-y-3">
+                  <Label className="text-base font-medium">Art des Uploads</Label>
+                  <RadioGroup value={uploadType} onValueChange={setUploadType}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="stundenplan" id="stundenplan" />
+                      <Label htmlFor="stundenplan">Stundenplan</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="gesamtstunden" id="gesamtstunden" />
+                      <Label htmlFor="gesamtstunden">Gesamtstundenübersicht</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                {/* Month and Year Selection */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Monat</Label>
+                    <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Monat auswählen" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {months.map((month) => (
+                          <SelectItem key={month.value} value={month.value}>
+                            {month.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Jahr</Label>
+                    <Select value={selectedYear} onValueChange={setSelectedYear}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Jahr auswählen" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {years.map((year) => (
+                          <SelectItem key={year.value} value={year.value}>
+                            {year.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Bundesland Selection */}
+                <div className="space-y-2">
+                  <Label>Bundesland</Label>
+                  <Select value={selectedBundesland} onValueChange={setSelectedBundesland}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Bundesland auswählen" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {bundeslaender.map((land) => (
+                        <SelectItem key={land} value={land}>
+                          {land}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Rules Section */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-medium">Regeln</Label>
+                    {rules.length < 10 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addRule}
+                        className="flex items-center space-x-1"
+                      >
+                        <Plus className="w-4 h-4" />
+                        <span>Regel hinzufügen</span>
+                      </Button>
+                    )}
+                  </div>
+                  {rules.map((rule, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <Input
+                        value={rule}
+                        onChange={(e) => updateRule(index, e.target.value)}
+                        placeholder="z.B: Die Nachtschicht am Wochenende geht von 6 bis 12 Uhr"
+                        className="flex-1"
+                      />
+                      {rules.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeRule(index)}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* File Upload */}
                 <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
                   <Upload className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                   <h3 className="text-lg font-semibold mb-2">Dateien hier ablegen</h3>
@@ -149,6 +295,7 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </main>
+      <Footer />
     </div>
   );
 };
