@@ -29,6 +29,7 @@ const Dashboard = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [allProfiles, setAllProfiles] = useState<any[]>([]);
+  const [webhookUrl, setWebhookUrl] = useState('https://xlk.ai/webhook-test/325480de-a076-41e7-8d11-3bb1edb8f668');
 
   const months = [
     { value: '01', label: 'Januar' },
@@ -149,18 +150,21 @@ const Dashboard = () => {
     if (!isAdmin) return;
     
     try {
-      // Fetch all profiles for admin with subscription info
+      // Fetch all profiles for admin with LEFT JOIN to show all users, even without roles
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select(`
           *,
-          user_roles!inner(role),
+          user_roles(role),
           subscribers(subscribed, subscription_tier)
         `)
         .order('created_at', { ascending: false });
       
       if (!profilesError && profilesData) {
+        console.log('[ADMIN] Fetched profiles:', profilesData);
         setAllProfiles(profilesData);
+      } else {
+        console.error('[ADMIN] Error fetching profiles:', profilesError);
       }
     } catch (error) {
       console.error('Error fetching admin data:', error);
@@ -192,7 +196,7 @@ const Dashboard = () => {
         formData.append('gesamtstunden', gesamtstundenFile);
       }
 
-      const response = await fetch('https://xlk.ai/webhook-test/325480de-a076-41e7-8d11-3bb1edb8f668', {
+      const response = await fetch(webhookUrl, {
         method: 'POST',
         body: formData,
       });
@@ -279,14 +283,19 @@ const Dashboard = () => {
     }
   };
 
-  const toggleUserRole = async (userId: string, currentRole: string) => {
+  const toggleUserRole = async (userId: string, currentRole?: string) => {
     try {
       const newRole = currentRole === 'admin' ? 'user' : 'admin';
       
+      // Use upsert to handle users without existing roles
       const { error } = await supabase
         .from('user_roles')
-        .update({ role: newRole })
-        .eq('user_id', userId);
+        .upsert({ 
+          user_id: userId, 
+          role: newRole 
+        }, { 
+          onConflict: 'user_id' 
+        });
 
       if (error) throw error;
 
@@ -843,11 +852,11 @@ const Dashboard = () => {
                               <td className="p-4">{profile.full_name || '-'}</td>
                               <td className="p-4">
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  profile.user_roles[0]?.role === 'admin' 
+                                  profile.user_roles?.[0]?.role === 'admin' 
                                     ? 'bg-red-100 text-red-800' 
                                     : 'bg-blue-100 text-blue-800'
                                 }`}>
-                                  {profile.user_roles[0]?.role === 'admin' ? '🛡️ Admin' : '👤 User'}
+                                  {profile.user_roles?.[0]?.role === 'admin' ? '🛡️ Admin' : '👤 User'}
                                 </span>
                               </td>
                               <td className="p-4">
@@ -878,10 +887,10 @@ const Dashboard = () => {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    onClick={() => toggleUserRole(profile.user_id, profile.user_roles[0]?.role)}
+                                    onClick={() => toggleUserRole(profile.user_id, profile.user_roles?.[0]?.role)}
                                     className="text-xs"
                                   >
-                                    {profile.user_roles[0]?.role === 'admin' ? '👤 User machen' : '🛡️ Admin machen'}
+                                    {profile.user_roles?.[0]?.role === 'admin' ? '👤 User machen' : '🛡️ Admin machen'}
                                   </Button>
                                   {profile.subscribers?.[0]?.subscribed ? (
                                     <Button
@@ -951,6 +960,51 @@ const Dashboard = () => {
     "download_url": "https://example.com/report.pdf",
     "file_type": "PDF"
   }'`}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Webhook URL Management */}
+                <Card className="card-modern max-w-6xl mx-auto">
+                  <CardHeader className="text-center pb-6 bg-gradient-to-b from-purple-50 to-transparent">
+                    <CardTitle className="flex items-center justify-center space-x-4 text-3xl mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-600/30 rounded-2xl flex items-center justify-center">
+                        <Settings className="w-7 h-7 text-purple-600" />
+                      </div>
+                      <span>Webhook Einstellungen</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-8 space-y-6">
+                    <div className="bg-muted/50 rounded-lg p-6">
+                      <h3 className="text-xl font-semibold mb-4">Webhook URL</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Diese URL wird für die Verarbeitung der Arbeitsstundennachweise verwendet:
+                      </p>
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-4">
+                          <Input
+                            value={webhookUrl}
+                            onChange={(e) => setWebhookUrl(e.target.value)}
+                            placeholder="https://example.com/webhook"
+                            className="font-mono text-sm"
+                          />
+                          <Button
+                            onClick={() => {
+                              toast({
+                                title: "Webhook URL gespeichert",
+                                description: "Die neue Webhook URL wird für alle Uploads verwendet.",
+                              });
+                            }}
+                            variant="outline"
+                          >
+                            <Settings className="w-4 h-4 mr-2" />
+                            Speichern
+                          </Button>
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          <p>Diese URL wird für alle Benutzer-Uploads verwendet. Stellen Sie sicher, dass der Endpoint die POST-Anfragen korrekt verarbeitet.</p>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
