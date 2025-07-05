@@ -134,7 +134,13 @@ const Dashboard = () => {
       formData.append('month', selectedMonth);
       formData.append('year', selectedYear);
       formData.append('bundesland', selectedBundesland);
-      formData.append('rules', JSON.stringify(rules.filter(rule => rule.trim())));
+      
+      // Add rules as rule_1, rule_2, etc.
+      const filteredRules = rules.filter(rule => rule.trim());
+      filteredRules.forEach((rule, index) => {
+        formData.append(`rule_${index + 1}`, rule);
+      });
+      
       formData.append('api_key', userApiKey);
       
       // Add files
