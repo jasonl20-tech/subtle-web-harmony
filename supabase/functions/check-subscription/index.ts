@@ -46,6 +46,24 @@ serve(async (req) => {
     
     if (customers.data.length === 0) {
       logStep("No customer found, updating unsubscribed state");
+      
+      // Get existing admin access info to preserve it
+      const { data: existingRecord } = await supabaseClient
+        .from("subscribers")
+        .select("admin_granted_access, admin_access_end")
+        .eq("email", user.email)
+        .maybeSingle();
+      
+      // Check if admin access has expired and clear it
+      let adminGrantedAccess = existingRecord?.admin_granted_access || false;
+      let adminAccessEnd = existingRecord?.admin_access_end || null;
+      
+      if (adminGrantedAccess && adminAccessEnd && new Date(adminAccessEnd) < new Date()) {
+        adminGrantedAccess = false;
+        adminAccessEnd = null;
+        logStep("Admin access expired, clearing admin access", { adminAccessEnd });
+      }
+      
       await supabaseClient.from("subscribers").upsert({
         email: user.email,
         user_id: user.id,
@@ -53,6 +71,8 @@ serve(async (req) => {
         subscribed: false,
         subscription_tier: null,
         subscription_end: null,
+        admin_granted_access: adminGrantedAccess,
+        admin_access_end: adminAccessEnd,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'email' });
       
@@ -99,7 +119,24 @@ serve(async (req) => {
       logStep("No active subscription found");
     }
 
-    // Update subscriber record
+    // Update only Stripe-related fields, never touch admin_granted_access fields
+    const { data: existingRecord } = await supabaseClient
+      .from("subscribers")
+      .select("admin_granted_access, admin_access_end")
+      .eq("email", user.email)
+      .maybeSingle();
+
+    // Check if admin access has expired and clear it
+    let adminGrantedAccess = existingRecord?.admin_granted_access || false;
+    let adminAccessEnd = existingRecord?.admin_access_end || null;
+    
+    if (adminGrantedAccess && adminAccessEnd && new Date(adminAccessEnd) < new Date()) {
+      adminGrantedAccess = false;
+      adminAccessEnd = null;
+      logStep("Admin access expired, clearing admin access", { adminAccessEnd });
+    }
+
+    // Update subscriber record - only touch Stripe fields and expired admin access
     await supabaseClient.from("subscribers").upsert({
       email: user.email,
       user_id: user.id,
@@ -107,6 +144,8 @@ serve(async (req) => {
       subscribed: hasActiveSub,
       subscription_tier: subscriptionTier,
       subscription_end: subscriptionEnd,
+      admin_granted_access: adminGrantedAccess,
+      admin_access_end: adminAccessEnd,
       updated_at: new Date().toISOString(),
     }, { onConflict: 'email' });
 

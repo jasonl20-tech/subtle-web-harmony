@@ -6,6 +6,10 @@ interface SubscriptionData {
   subscribed: boolean;
   subscription_tier: string | null;
   subscription_end: string | null;
+  admin_granted_access: boolean;
+  admin_access_end: string | null;
+  hasAccess: boolean;
+  accessType: 'stripe' | 'admin' | 'both' | 'none';
 }
 
 interface AuthContextType {
@@ -32,19 +36,60 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [subscription, setSubscription] = useState<SubscriptionData>({
     subscribed: false,
     subscription_tier: null,
-    subscription_end: null
+    subscription_end: null,
+    admin_granted_access: false,
+    admin_access_end: null,
+    hasAccess: false,
+    accessType: 'none'
   });
   const [loading, setLoading] = useState(true);
   const [sessionLoading, setSessionLoading] = useState(true);
 
   console.log('AuthProvider rendered, loading:', loading, 'user:', user?.email);
 
+  // Helper function to calculate access status
+  const calculateAccessStatus = (data: {
+    subscribed?: boolean;
+    subscription_tier?: string | null;
+    subscription_end?: string | null;
+    admin_granted_access?: boolean;
+    admin_access_end?: string | null;
+  }): SubscriptionData => {
+    const subscribed = data.subscribed || false;
+    const adminGrantedAccess = data.admin_granted_access || false;
+    const adminAccessEnd = data.admin_access_end;
+    
+    // Check if admin access has expired
+    const adminAccessValid = adminGrantedAccess && (!adminAccessEnd || new Date(adminAccessEnd) > new Date());
+    
+    let hasAccess = subscribed || adminAccessValid;
+    let accessType: 'stripe' | 'admin' | 'both' | 'none' = 'none';
+    
+    if (subscribed && adminAccessValid) {
+      accessType = 'both';
+    } else if (subscribed) {
+      accessType = 'stripe';
+    } else if (adminAccessValid) {
+      accessType = 'admin';
+    }
+    
+    return {
+      subscribed,
+      subscription_tier: data.subscription_tier || null,
+      subscription_end: data.subscription_end || null,
+      admin_granted_access: adminGrantedAccess,
+      admin_access_end: adminAccessEnd || null,
+      hasAccess,
+      accessType
+    };
+  };
+
   const checkSubscription = async () => {
     // Don't reset subscription if session is still loading
     if (!session) {
       if (!sessionLoading) {
         console.log('[AUTH] No session after loading complete, setting unsubscribed state');
-        setSubscription({ subscribed: false, subscription_tier: null, subscription_end: null });
+        setSubscription(calculateAccessStatus({}));
       } else {
         console.log('[AUTH] No session but still loading, keeping current subscription state');
       }
@@ -58,18 +103,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('[AUTH] Checking database directly...');
       const { data: dbData, error: dbError } = await supabase
         .from('subscribers')
-        .select('subscribed, subscription_tier, subscription_end')
+        .select('subscribed, subscription_tier, subscription_end, admin_granted_access, admin_access_end')
         .eq('user_id', session.user.id)
         .maybeSingle();
       
       console.log('[AUTH] Database query result:', { dbData, dbError });
       
       if (!dbError && dbData) {
-        setSubscription({
-          subscribed: dbData.subscribed || false,
-          subscription_tier: dbData.subscription_tier || null,
-          subscription_end: dbData.subscription_end || null
-        });
+        setSubscription(calculateAccessStatus(dbData));
         console.log('[AUTH] Using database subscription data');
         return;
       }
@@ -95,11 +136,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         subscription_end: data.subscription_end || null
       });
 
-      setSubscription({
+      setSubscription(calculateAccessStatus({
         subscribed: data.subscribed || false,
         subscription_tier: data.subscription_tier || null,
         subscription_end: data.subscription_end || null
-      });
+      }));
     } catch (error) {
       console.error('[AUTH] Error in checkSubscription:', error);
     }
@@ -117,7 +158,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (event === 'SIGNED_OUT') {
           // Only reset subscription on explicit logout
           console.log('[AUTH] User signed out, resetting subscription');
-          setSubscription({ subscribed: false, subscription_tier: null, subscription_end: null });
+          setSubscription(calculateAccessStatus({}));
         }
         
         setLoading(false);

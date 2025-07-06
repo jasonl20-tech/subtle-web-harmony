@@ -504,6 +504,118 @@ const Dashboard = () => {
     }
   };
 
+  const grantAdminAccess = async (userId: string, userEmail: string, accessEnd?: Date) => {
+    try {
+      console.log('[ADMIN] Granting admin dashboard access to:', { userId, userEmail, accessEnd });
+      const { error } = await supabase
+        .from('subscribers')
+        .upsert({
+          user_id: userId,
+          email: userEmail,
+          admin_granted_access: true,
+          admin_access_end: accessEnd?.toISOString() || null,
+          updated_at: new Date().toISOString()
+        }, { 
+          onConflict: 'email' 
+        });
+
+      if (error) {
+        console.error('[ADMIN] Error granting admin access:', error);
+        throw error;
+      }
+
+      console.log('[ADMIN] Admin access granted successfully');
+      const durationText = accessEnd ? `bis ${accessEnd.toLocaleDateString('de-DE')}` : 'unbegrenzt';
+      toast({
+        title: "Dashboard-Zugang gewährt",
+        description: `Der Benutzer hat jetzt Dashboard-Zugang ${durationText}.`,
+      });
+      
+      fetchAdminData();
+    } catch (error) {
+      console.error('[ADMIN] Failed to grant admin access:', error);
+      toast({
+        title: "Fehler",
+        description: "Dashboard-Zugang konnte nicht gewährt werden.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const revokeAdminAccess = async (userId: string, userEmail: string) => {
+    try {
+      console.log('[ADMIN] Revoking admin dashboard access from:', { userId, userEmail });
+      const { error } = await supabase
+        .from('subscribers')
+        .upsert({
+          user_id: userId,
+          email: userEmail,
+          admin_granted_access: false,
+          admin_access_end: null,
+          updated_at: new Date().toISOString()
+        }, { 
+          onConflict: 'email' 
+        });
+
+      if (error) {
+        console.error('[ADMIN] Error revoking admin access:', error);
+        throw error;
+      }
+
+      console.log('[ADMIN] Admin access revoked successfully');
+      toast({
+        title: "Dashboard-Zugang entzogen",
+        description: "Der Benutzer hat keinen Admin-Dashboard-Zugang mehr.",
+      });
+      
+      fetchAdminData();
+    } catch (error) {
+      console.error('[ADMIN] Failed to revoke admin access:', error);
+      toast({
+        title: "Fehler",
+        description: "Dashboard-Zugang konnte nicht entzogen werden.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const extendAdminAccess = async (userId: string, userEmail: string, newAccessEnd: Date) => {
+    try {
+      console.log('[ADMIN] Extending admin dashboard access for:', { userId, userEmail, newAccessEnd });
+      const { error } = await supabase
+        .from('subscribers')
+        .upsert({
+          user_id: userId,
+          email: userEmail,
+          admin_granted_access: true,
+          admin_access_end: newAccessEnd.toISOString(),
+          updated_at: new Date().toISOString()
+        }, { 
+          onConflict: 'email' 
+        });
+
+      if (error) {
+        console.error('[ADMIN] Error extending admin access:', error);
+        throw error;
+      }
+
+      console.log('[ADMIN] Admin access extended successfully');
+      toast({
+        title: "Dashboard-Zugang verlängert",
+        description: `Zugang verlängert bis ${newAccessEnd.toLocaleDateString('de-DE')}.`,
+      });
+      
+      fetchAdminData();
+    } catch (error) {
+      console.error('[ADMIN] Failed to extend admin access:', error);
+      toast({
+        title: "Fehler",
+        description: "Dashboard-Zugang konnte nicht verlängert werden.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const toggleUserRole = async (userId: string, currentRole?: string) => {
     try {
       const newRole = currentRole === 'admin' ? 'user' : 'admin';
@@ -594,8 +706,8 @@ const Dashboard = () => {
     return null;
   }
 
-  // Check if user has active subscription
-  if (!subscription.subscribed) {
+  // Check if user has dashboard access (Stripe subscription or admin-granted access)
+  if (!subscription.hasAccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
         <Header />
@@ -606,10 +718,10 @@ const Dashboard = () => {
                 <Upload className="w-10 h-10 text-primary" />
               </div>
               <h1 className="text-3xl font-bold text-foreground mb-4">
-                Abonnement erforderlich
+                Dashboard-Zugang erforderlich
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
-                Um das Dashboard nutzen zu können, benötigen Sie ein aktives Abonnement.
+                Um das Dashboard nutzen zu können, benötigen Sie ein aktives Abonnement oder eine Admin-Berechtigung.
               </p>
               <div className="space-y-4">
                 <Button 
@@ -620,7 +732,7 @@ const Dashboard = () => {
                       console.log('[DASHBOARD] Manual subscription refresh triggered');
                       auth.checkSubscription();
                       toast({
-                        title: "Abonnement wird überprüft...",
+                        title: "Zugang wird überprüft...",
                         description: "Einen Moment bitte.",
                       });
                     }
@@ -1063,6 +1175,7 @@ const Dashboard = () => {
                             <th className="text-left p-4">Name</th>
                             <th className="text-left p-4">Rolle</th>
                             <th className="text-left p-4">Abonnement</th>
+                            <th className="text-left p-4">Dashboard-Zugang</th>
                             <th className="text-left p-4">API Key</th>
                             <th className="text-left p-4">Aktionen</th>
                           </tr>
@@ -1082,13 +1195,31 @@ const Dashboard = () => {
                                 </span>
                               </td>
                               <td className="p-4">
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  profile.subscribers?.[0]?.subscribed 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-gray-100 text-gray-800'
-                                }`}>
-                                  {profile.subscribers?.[0]?.subscribed ? '✅ Abonniert' : '❌ Nicht abonniert'}
-                                </span>
+                                <div className="space-y-1">
+                                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                    profile.subscribers?.[0]?.subscribed 
+                                      ? 'bg-green-100 text-green-800' 
+                                      : 'bg-gray-100 text-gray-800'
+                                  }`}>
+                                    {profile.subscribers?.[0]?.subscribed ? '✅ Stripe-Abo' : '❌ Kein Abo'}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="p-4">
+                                <div className="space-y-1">
+                                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                    profile.subscribers?.[0]?.admin_granted_access 
+                                      ? 'bg-blue-100 text-blue-800' 
+                                      : 'bg-gray-100 text-gray-800'
+                                  }`}>
+                                    {profile.subscribers?.[0]?.admin_granted_access ? '🔓 Admin-Zugang' : '🔒 Kein Zugang'}
+                                  </span>
+                                  {profile.subscribers?.[0]?.admin_access_end && (
+                                    <div className="text-xs text-muted-foreground">
+                                      bis {new Date(profile.subscribers[0].admin_access_end).toLocaleDateString('de-DE')}
+                                    </div>
+                                  )}
+                                </div>
                               </td>
                               <td className="p-4">
                                 <div className="flex items-center space-x-2">

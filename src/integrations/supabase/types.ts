@@ -116,6 +116,8 @@ export type Database = {
       }
       subscribers: {
         Row: {
+          admin_access_end: string | null
+          admin_granted_access: boolean
           created_at: string
           email: string
           id: string
@@ -127,6 +129,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          admin_access_end?: string | null
+          admin_granted_access?: boolean
           created_at?: string
           email: string
           id?: string
@@ -138,6 +142,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          admin_access_end?: string | null
+          admin_granted_access?: boolean
           created_at?: string
           email?: string
           id?: string
