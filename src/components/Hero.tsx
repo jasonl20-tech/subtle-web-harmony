@@ -287,7 +287,7 @@ const Hero = () => {
                     Automatisierte
                   </span>
                   <span className="text-gray-900 hover:text-blue-600 transition-all duration-300 cursor-default hover:scale-105 inline-block">
-                    {" "}Arbeitszeit-<br />erfassung
+                    {" "}Arbeitszeit-<br />nachweis
                   </span>
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     {" "}für Ihr Gewerbe
