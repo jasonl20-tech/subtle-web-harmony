@@ -207,8 +207,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    return { error };
+    console.log('[AUTH] SignOut called, clearing local state first...');
+    
+    // Clear local state immediately
+    setUser(null);
+    setSession(null);
+    setSubscription({
+      subscribed: false,
+      subscription_tier: null,
+      subscription_end: null,
+      admin_granted_access: false,
+      admin_access_end: null,
+      hasAccess: false,
+      accessType: 'none'
+    });
+    
+    try {
+      const { error } = await supabase.auth.signOut();
+      console.log('[AUTH] Supabase signOut result:', { error });
+      
+      if (error) {
+        console.log('[AUTH] SignOut error (but local state already cleared):', error);
+        // Don't return error since local state is already cleared
+        // This handles cases where the session is already invalid
+      }
+      
+      return { error: null };
+    } catch (err) {
+      console.error('[AUTH] SignOut exception:', err);
+      // Even if signOut fails, local state is cleared
+      return { error: null };
+    }
   };
 
   const value = {
