@@ -284,22 +284,22 @@ const Hero = () => {
               <div className="animate-fade-in-up">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Lösung für die 
+                    Automatisierte
                   </span>
                   <span className="text-gray-900 hover:text-blue-600 transition-all duration-300 cursor-default hover:scale-105 inline-block">
-                    Arbeitsstunden<br />nachweise
+                    {" "}Arbeitszeit-<br />erfassung
                   </span>
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    {" "}deines Gewerbes
+                    {" "}für Ihr Gewerbe
                   </span>
                 </h1>
               </div>
 
               {/* Subtitle */}
               <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                  Nutzen Sie modernste Technologie für automatisierte Arbeitsstundennachweise, 
-                  optimierte Zahlungsabwicklung und nachhaltige Gewinnsteigerung in Ihrem Unternehmen.
+                <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                  Sparen Sie täglich Stunden mit automatisierten Arbeitszeitnachweisen. 
+                  Upload → 5 Min warten → Fertiges PDF. DSGVO-konform und sofort einsatzbereit.
                 </p>
               </div>
 

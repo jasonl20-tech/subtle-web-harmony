@@ -291,6 +291,69 @@ All colors MUST be HSL.
       background-position: 1000px 0;
     }
   }
+
+  /* Responsive Utilities */
+  @media (max-width: 640px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    /* Mobile-first typography scaling */
+    h1 { font-size: clamp(1.75rem, 8vw, 3rem); }
+    h2 { font-size: clamp(1.5rem, 6vw, 2.5rem); }
+    h3 { font-size: clamp(1.25rem, 5vw, 2rem); }
+    h4 { font-size: clamp(1.125rem, 4vw, 1.75rem); }
+    
+    .card-modern, .card-glass, .card-pricing {
+      margin-bottom: 1rem;
+    }
+    
+    /* Improved button spacing on mobile */
+    .btn-mobile {
+      width: 100%;
+      padding: 0.875rem 1.5rem;
+      font-size: 1rem;
+    }
+    
+    /* Better form layouts on mobile */
+    .form-mobile {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .form-mobile input {
+      width: 100%;
+    }
+  }
+  
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    
+    /* Tablet-specific adjustments */
+    .grid-tablet-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  /* Enhanced responsive text scaling */
+  .text-responsive-xl {
+    font-size: clamp(1.875rem, 4vw, 4rem);
+    line-height: 1.1;
+  }
+  
+  .text-responsive-lg {
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    line-height: 1.2;
+  }
+  
+  .text-responsive-md {
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    line-height: 1.4;
+  }
   
   .animate-fade-in-up {
     animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);

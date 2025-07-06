@@ -25,7 +25,7 @@ const Contact = () => {
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-white">
+    <section className="relative min-h-screen overflow-hidden bg-background">
       <Header />
       
       {/* Animated Curved Rainbow Gradient Background */}
@@ -37,17 +37,17 @@ const Contact = () => {
         >
           <defs>
             <linearGradient id="contactGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#F97316" />
-              <stop offset="25%" stopColor="#3B82F6" />
-              <stop offset="50%" stopColor="#8B5CF6" />
-              <stop offset="75%" stopColor="#EC4899" />
-              <stop offset="100%" stopColor="#F97316" />
+              <stop offset="0%" stopColor="hsl(var(--primary))" />
+              <stop offset="25%" stopColor="hsl(var(--primary-hover))" />
+              <stop offset="50%" stopColor="hsl(var(--accent))" />
+              <stop offset="75%" stopColor="hsl(var(--primary))" />
+              <stop offset="100%" stopColor="hsl(var(--primary-hover))" />
             </linearGradient>
           </defs>
           <path
             d="M-100,0 L1500,0 L1500,100 Q1050,140 850,110 Q650,80 450,160 Q300,240 100,360 Q0,380 -100,400 Z"
             fill="url(#contactGradient)"
-            opacity="0.12"
+            opacity="0.08"
           >
             <animateTransform
               attributeName="transform"
@@ -60,89 +60,89 @@ const Contact = () => {
         </svg>
       </div>
 
-      <main className="relative z-10 py-24 lg:py-32">
-        <div className="container mx-auto px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto mb-20">
+      <main className="relative z-10 py-16 sm:py-20 lg:py-32">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-4xl mx-auto mb-12 sm:mb-16 lg:mb-20">
             <div className="animate-fade-in-up">
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-8">
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-responsive-xl font-bold leading-tight mb-6 sm:mb-8">
+                <span className="bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
                   Kontakt
                 </span>
-                <span className="text-gray-900">
+                <span className="text-foreground">
                   {" "}aufnehmen
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+              <p className="text-responsive-md text-muted-foreground leading-relaxed max-w-3xl mx-auto">
                 Haben Sie Fragen zu unseren automatisierten Arbeitsstundennachweisen? Wir sind für Sie da und helfen gerne weiter.
               </p>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
             {/* Contact Information */}
             <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-              <Card className="p-8 bg-white/80 backdrop-blur-sm border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-                <div className="flex items-start space-x-4 mb-8">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-xl">📞</span>
+              <Card className="card-modern p-6 sm:p-8 h-full">
+                <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-4 mb-6 sm:mb-8">
+                  <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary-hover rounded-xl flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0">
+                    <span className="text-primary-foreground text-xl">📞</span>
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Kontaktinformationen</h3>
-                    <p className="text-gray-600 text-lg">Erreichen Sie uns direkt über die folgenden Kanäle</p>
+                  <div className="text-center sm:text-left">
+                    <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2 sm:mb-4">Kontaktinformationen</h3>
+                    <p className="text-muted-foreground text-base sm:text-lg">Erreichen Sie uns direkt über die folgenden Kanäle</p>
                   </div>
                 </div>
                 
-                <div className="space-y-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-blue-600 text-sm">✉</span>
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-2 sm:space-y-0 sm:space-x-4">
+                    <div className="w-8 h-8 bg-primary-light rounded-lg flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0">
+                      <span className="text-primary text-sm">✉</span>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">E-Mail</h4>
+                    <div className="text-center sm:text-left">
+                      <h4 className="font-semibold text-foreground mb-1">E-Mail</h4>
                       <a 
                         href="mailto:info@arbeitsstundennachweis.com"
-                        className="text-gray-600 hover:text-blue-600 transition-colors duration-200 hover:underline"
+                        className="text-muted-foreground hover:text-primary transition-colors duration-200 hover:underline break-all"
                       >
                         info@arbeitsstundennachweis.com
                       </a>
                     </div>
                   </div>
                   
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-green-600 text-sm">📞</span>
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-2 sm:space-y-0 sm:space-x-4">
+                    <div className="w-8 h-8 bg-accent-light rounded-lg flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0">
+                      <span className="text-accent text-sm">📞</span>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Telefon</h4>
+                    <div className="text-center sm:text-left">
+                      <h4 className="font-semibold text-foreground mb-1">Telefon</h4>
                       <a 
                         href="tel:+4915147918371"
-                        className="text-gray-600 hover:text-blue-600 transition-colors duration-200 hover:underline"
+                        className="text-muted-foreground hover:text-primary transition-colors duration-200 hover:underline"
                       >
                         + 49 (0) 151 47918371
                       </a>
                     </div>
                   </div>
                   
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-purple-600 text-sm">📍</span>
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-2 sm:space-y-0 sm:space-x-4">
+                    <div className="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0">
+                      <span className="text-primary text-sm">📍</span>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Adresse</h4>
-                      <div className="text-gray-600">
+                    <div className="text-center sm:text-left">
+                      <h4 className="font-semibold text-foreground mb-1">Adresse</h4>
+                      <div className="text-muted-foreground">
                         67292 Kirchheimbolanden<br />
                         Schlossplatz 1
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-orange-600 text-sm">🕐</span>
+                  <div className="flex flex-col sm:flex-row sm:items-start space-y-2 sm:space-y-0 sm:space-x-4">
+                    <div className="w-8 h-8 bg-warning/20 rounded-lg flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0">
+                      <span className="text-warning text-sm">🕐</span>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Geschäftszeiten</h4>
-                      <div className="text-gray-600">
+                    <div className="text-center sm:text-left">
+                      <h4 className="font-semibold text-foreground mb-1">Geschäftszeiten</h4>
+                      <div className="text-muted-foreground">
                         Mo-Fr: 9:00 - 18:00 Uhr<br />
                         Sa-So: Nach Vereinbarung
                       </div>
@@ -154,20 +154,20 @@ const Contact = () => {
             
             {/* Contact Form */}
             <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              <Card className="p-8 bg-white/80 backdrop-blur-sm border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-                <div className="flex items-start space-x-4 mb-8">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-xl">📝</span>
+              <Card className="card-modern p-6 sm:p-8 h-full">
+                <div className="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-4 mb-6 sm:mb-8">
+                  <div className="w-12 h-12 bg-gradient-to-r from-accent to-accent/80 rounded-xl flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0">
+                    <span className="text-accent-foreground text-xl">📝</span>
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Nachricht senden</h3>
-                    <p className="text-gray-600 text-lg">Schreiben Sie uns direkt eine Nachricht</p>
+                  <div className="text-center sm:text-left">
+                    <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2 sm:mb-4">Nachricht senden</h3>
+                    <p className="text-muted-foreground text-base sm:text-lg">Schreiben Sie uns direkt eine Nachricht</p>
                   </div>
                 </div>
                 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Ihr Name
                     </label>
                     <input 
@@ -176,13 +176,13 @@ const Contact = () => {
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Max Mustermann" 
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm transition-all duration-200"
+                      className="w-full px-4 py-3 border border-border rounded-xl text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background shadow-sm transition-all duration-200"
                       required
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       E-Mail-Adresse
                     </label>
                     <input 
@@ -191,13 +191,13 @@ const Contact = () => {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="max@beispiel.de" 
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm transition-all duration-200"
+                      className="w-full px-4 py-3 border border-border rounded-xl text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background shadow-sm transition-all duration-200"
                       required
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Ihre Nachricht
                     </label>
                     <textarea 
@@ -206,14 +206,14 @@ const Contact = () => {
                       onChange={handleChange}
                       placeholder="Beschreiben Sie hier Ihr Anliegen..." 
                       rows={5}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm transition-all duration-200 resize-vertical"
+                      className="w-full px-4 py-3 border border-border rounded-xl text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background shadow-sm transition-all duration-200 resize-vertical"
                       required
                     />
                   </div>
                   
                   <Button 
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                    className="btn-gradient w-full py-3 sm:py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl"
                   >
                     Nachricht senden
                   </Button>
@@ -223,27 +223,27 @@ const Contact = () => {
           </div>
 
           {/* Additional Info */}
-          <div className="animate-fade-in-up mt-20" style={{ animationDelay: '0.3s' }}>
-            <Card className="p-8 md:p-12 bg-gradient-to-r from-blue-50/80 to-purple-50/80 backdrop-blur-sm border border-gray-100 shadow-lg max-w-4xl mx-auto">
+          <div className="animate-fade-in-up mt-12 sm:mt-16 lg:mt-20" style={{ animationDelay: '0.3s' }}>
+            <Card className="card-modern p-6 sm:p-8 lg:p-12 bg-gradient-to-r from-primary-light/50 to-secondary/30 max-w-4xl mx-auto">
               <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <span className="text-white text-2xl">🚀</span>
+                <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary-hover rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <span className="text-primary-foreground text-2xl">🚀</span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                <h3 className="text-responsive-lg font-bold text-foreground mb-6">
                   Schnelle Antwortzeiten garantiert
                 </h3>
-                <div className="grid md:grid-cols-3 gap-6 text-center">
-                  <div className="space-y-2">
-                    <div className="text-2xl font-bold text-blue-600">&lt; 2h</div>
-                    <p className="text-gray-600">E-Mail-Antworten während Geschäftszeiten</p>
+                <div className="grid sm:grid-cols-3 gap-4 sm:gap-6 text-center">
+                  <div className="space-y-2 p-4 bg-background/50 rounded-xl">
+                    <div className="text-xl sm:text-2xl font-bold text-primary">&lt; 2h</div>
+                    <p className="text-muted-foreground text-sm sm:text-base">E-Mail-Antworten während Geschäftszeiten</p>
                   </div>
-                  <div className="space-y-2">
-                    <div className="text-2xl font-bold text-purple-600">24/7</div>
-                    <p className="text-gray-600">Automatisierte Nachweiserstellung</p>
+                  <div className="space-y-2 p-4 bg-background/50 rounded-xl">
+                    <div className="text-xl sm:text-2xl font-bold text-primary">24/7</div>
+                    <p className="text-muted-foreground text-sm sm:text-base">Automatisierte Nachweiserstellung</p>
                   </div>
-                  <div className="space-y-2">
-                    <div className="text-2xl font-bold text-green-600">DSGVO</div>
-                    <p className="text-gray-600">Vollständig datenschutzkonform</p>
+                  <div className="space-y-2 p-4 bg-background/50 rounded-xl">
+                    <div className="text-xl sm:text-2xl font-bold text-accent">DSGVO</div>
+                    <p className="text-muted-foreground text-sm sm:text-base">Vollständig datenschutzkonform</p>
                   </div>
                 </div>
               </div>
