@@ -137,14 +137,25 @@ const Dashboard = () => {
         setUserApiKey(profile.api_key);
         
         // Fetch user reports
+        console.log('[REPORTS] Fetching reports for user:', user.id);
         const { data: reportsData, error: reportsError } = await supabase
           .from('reports')
           .select('*')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
         
+        console.log('[REPORTS] Query result:', { reportsData, reportsError });
+        
+        if (reportsError) {
+          console.error('[REPORTS] Error fetching reports:', reportsError);
+        }
+        
         if (!reportsError && reportsData) {
+          console.log('[REPORTS] Setting reports:', reportsData.length, 'reports found');
           setReports(reportsData);
+        } else {
+          console.log('[REPORTS] No reports data or error occurred');
+          setReports([]);
         }
       }
     } catch (error) {
