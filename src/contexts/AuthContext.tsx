@@ -99,24 +99,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('[AUTH] Checking subscription for user:', session.user.email);
       
-      // Try direct database query first (more reliable)
-      console.log('[AUTH] Checking database directly...');
-      const { data: dbData, error: dbError } = await supabase
-        .from('subscribers')
-        .select('subscribed, subscription_tier, subscription_end, admin_granted_access, admin_access_end')
-        .eq('user_id', session.user.id)
-        .maybeSingle();
-      
-      console.log('[AUTH] Database query result:', { dbData, dbError });
-      
-      if (!dbError && dbData) {
-        setSubscription(calculateAccessStatus(dbData));
-        console.log('[AUTH] Using database subscription data');
-        return;
-      }
-      
-      // Fallback to edge function if database query fails
-      console.log('[AUTH] Database failed, trying edge function...');
+      // Always call edge function first to get current Stripe status
+      console.log('[AUTH] Calling check-subscription edge function...');
       const { data, error } = await supabase.functions.invoke('check-subscription', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
@@ -125,22 +109,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       console.log('[AUTH] Check-subscription response:', { data, error });
 
-      if (error) {
-        console.error('[AUTH] Edge function also failed:', error);
+      if (!error && data) {
+        console.log('[AUTH] Setting subscription state from edge function:', {
+          subscribed: data.subscribed || false,
+          subscription_tier: data.subscription_tier || null,
+          subscription_end: data.subscription_end || null
+        });
+
+        setSubscription(calculateAccessStatus({
+          subscribed: data.subscribed || false,
+          subscription_tier: data.subscription_tier || null,
+          subscription_end: data.subscription_end || null
+        }));
         return;
       }
-
-      console.log('[AUTH] Setting subscription state from edge function:', {
-        subscribed: data.subscribed || false,
-        subscription_tier: data.subscription_tier || null,
-        subscription_end: data.subscription_end || null
-      });
-
-      setSubscription(calculateAccessStatus({
-        subscribed: data.subscribed || false,
-        subscription_tier: data.subscription_tier || null,
-        subscription_end: data.subscription_end || null
-      }));
+      
+      // Fallback to database query if edge function fails
+      console.log('[AUTH] Edge function failed, checking database as fallback...');
+      const { data: dbData, error: dbError } = await supabase
+        .from('subscribers')
+        .select('subscribed, subscription_tier, subscription_end, admin_granted_access, admin_access_end')
+        .eq('user_id', session.user.id)
+        .maybeSingle();
+      
+      console.log('[AUTH] Database fallback result:', { dbData, dbError });
+      
+      if (!dbError && dbData) {
+        setSubscription(calculateAccessStatus(dbData));
+        console.log('[AUTH] Using database subscription data as fallback');
+      }
     } catch (error) {
       console.error('[AUTH] Error in checkSubscription:', error);
     }

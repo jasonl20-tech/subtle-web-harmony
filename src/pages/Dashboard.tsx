@@ -14,7 +14,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 const Dashboard = () => {
-  const { user, subscription, loading } = useAuth();
+  const { user, subscription, loading, checkSubscription } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -1517,12 +1517,17 @@ const Dashboard = () => {
                             className="w-full h-12 text-base" 
                             variant="outline"
                             onClick={async () => {
-                              const auth = useAuth();
-                              if (auth?.checkSubscription) {
-                                await auth.checkSubscription();
+                              try {
+                                await checkSubscription();
                                 toast({
                                   title: "Erfolgreich aktualisiert",
                                   description: "Abonnement-Status wurde überprüft.",
+                                });
+                              } catch (error) {
+                                toast({
+                                  title: "Fehler beim Aktualisieren",
+                                  description: "Abonnement-Status konnte nicht überprüft werden.",
+                                  variant: "destructive",
                                 });
                               }
                             }}
