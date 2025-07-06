@@ -1090,6 +1090,25 @@ const Dashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-8">
+                  {/* Important Download Notice */}
+                  {reports.length > 0 && (
+                    <div className="bg-warning/10 border border-warning/20 rounded-xl p-6 mb-8 animate-fade-in-up">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-10 h-10 bg-warning/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <span className="text-warning text-lg">⚠️</span>
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-semibold text-foreground mb-2">
+                            Wichtiger Hinweis zum Download
+                          </h4>
+                          <p className="text-muted-foreground leading-relaxed">
+                            Bitte laden Sie Ihre Berichte <strong>sofort herunter</strong>. 
+                            Die Dateien werden aus Sicherheitsgründen nach ein paar Stunden automatisch gelöscht.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   {reports.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {reports.map((report, index) => (
