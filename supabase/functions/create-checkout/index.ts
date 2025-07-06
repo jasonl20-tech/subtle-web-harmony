@@ -93,7 +93,7 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/dashboard?success=true`,
+      success_url: `${req.headers.get("origin")}/thank-you`,
       cancel_url: `${req.headers.get("origin")}/pricing?canceled=true`,
     });
 
