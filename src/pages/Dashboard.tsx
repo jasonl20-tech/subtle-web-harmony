@@ -679,9 +679,12 @@ const Dashboard = () => {
   useEffect(() => {
     if (isAdmin) {
       fetchAdminData();
+    }
+    // Load webhook URL for all authenticated users
+    if (user) {
       loadWebhookUrl();
     }
-  }, [isAdmin]);
+  }, [isAdmin, user]);
 
   const handleSignOut = async () => {
     const auth = useAuth();
