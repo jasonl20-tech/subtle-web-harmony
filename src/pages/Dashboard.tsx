@@ -232,24 +232,25 @@ const Dashboard = () => {
   };
 
   const loadWebhookUrl = async () => {
-    if (!isAdmin) return;
-    
     try {
+      console.log('[WEBHOOK] Loading webhook URL for user:', user?.id, 'isAdmin:', isAdmin);
       const { data, error } = await supabase
         .from('settings')
         .select('value')
         .eq('key', 'webhook_url')
         .single();
       
+      console.log('[WEBHOOK] Database response:', { data, error });
+      
       if (!error && data) {
         setWebhookUrl(data.value);
-        console.log('[ADMIN] Loaded webhook URL from database');
+        console.log('[WEBHOOK] Loaded webhook URL from database:', data.value);
       } else {
-        console.log('[ADMIN] No webhook URL found, using empty string');
+        console.log('[WEBHOOK] No webhook URL found or error:', error);
         setWebhookUrl('');
       }
     } catch (error) {
-      console.error('Error loading webhook URL:', error);
+      console.error('[WEBHOOK] Error loading webhook URL:', error);
     }
   };
 
